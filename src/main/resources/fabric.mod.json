@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "fsit",
+	"version": "${version}",
+	"name": "FSit",
+	"description": "A server-side mod that allows players to sit anywhere.\n",
+	"authors": [
+		"rvbsm"
+	],
+	"contact": {
+		"sources": "https://github.com/rvbsm/fsit",
+		"issues": "https://github.com/rvbsm/fsit/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/fsit/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.rvbsm.fsit.FSitMod"
+		]
+	},
+	"mixins": [
+		"fsit.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.17",
+		"minecraft": "1.19.3"
+	}
+}

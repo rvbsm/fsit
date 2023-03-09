@@ -1,0 +1,6 @@
+{
+	"package": "dev.rvbsm.fsit.mixin",
+	"mixins": [
+		"EntityMixin"
+	]
+}
