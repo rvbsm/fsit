@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - 'next/**'
-  pull_requests:
+  pull_request:
     branches:
       - 'next/**'
 
