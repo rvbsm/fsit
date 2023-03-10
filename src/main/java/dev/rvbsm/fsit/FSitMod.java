@@ -1,7 +1,9 @@
 package dev.rvbsm.fsit;
 
+import dev.rvbsm.fsit.entity.SeatEntity;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,14 @@ public class FSitMod implements ModInitializer {
 
 	public void clearSneaked(@NotNull PlayerEntity player) {
 		while (this.removeSneaked(player));
+	}
+
+	public void spawnSeat(@NotNull PlayerEntity player, @NotNull World world, double x, double y, double z) {
+		final SeatEntity seatEntity = new SeatEntity(world, x, y, z);
+		world.spawnEntity(seatEntity);
+
+		player.startRiding(seatEntity, true);
+		this.clearSneaked(player);
 	}
 
 	@Override

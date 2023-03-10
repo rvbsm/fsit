@@ -1,7 +1,6 @@
 package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.entity.SeatEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
@@ -35,12 +34,8 @@ public abstract class EntityMixin {
 		if (this.world.isClient) return;
 		if (!this.isOnGround()) return;
 
-		if ((Entity) (Object) this instanceof PlayerEntity player) if (FSit.isNeedSeat(player) && !sneaking) {
-			final SeatEntity seatEntity = new SeatEntity(this.world, this.getX(), this.getY(), this.getZ());
-			this.world.spawnEntity(seatEntity);
-
-			player.startRiding(seatEntity, true);
-			FSit.clearSneaked(player);
-		} else FSit.addSneaked(player);
+		if ((Entity) (Object) this instanceof PlayerEntity player) if (FSit.isNeedSeat(player) && !sneaking)
+			FSit.spawnSeat(player, this.world, this.getX(), this.getY(), this.getZ());
+		else FSit.addSneaked(player);
 	}
 }
