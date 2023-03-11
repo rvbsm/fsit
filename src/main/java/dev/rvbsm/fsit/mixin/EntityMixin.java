@@ -15,19 +15,15 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class EntityMixin {
 
 	private final FSitMod FSit = FSitMod.getInstance();
-	public @Shadow World world;
+	@Shadow public World world;
 
-	@Shadow
-	public abstract boolean isOnGround();
+	@Shadow public abstract boolean isOnGround();
 
-	@Shadow
-	public abstract double getX();
+	@Shadow public abstract double getX();
 
-	@Shadow
-	public abstract double getY();
+	@Shadow public abstract double getY();
 
-	@Shadow
-	public abstract double getZ();
+	@Shadow public abstract double getZ();
 
 	@Inject(at = @At(value = "TAIL"), method = "setSneaking", locals = LocalCapture.CAPTURE_FAILHARD)
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
