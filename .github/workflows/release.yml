@@ -23,6 +23,8 @@ jobs:
             quilt
           dependencies:
             modmenu | suggest | *
+          game-versions: |
+            1.19.3
 
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-id: J5NAzRqK
