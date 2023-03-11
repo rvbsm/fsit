@@ -8,11 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class FSitMod implements ModInitializer {
@@ -23,6 +22,7 @@ public class FSitMod implements ModInitializer {
 	private static FSitMod instance;
 	private final Logger logger = LoggerFactory.getLogger(MOD_ID);
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new HashMap<>();
 	private final List<UUID> sneakedPlayers = new LinkedList<>();
 
 	public static FSitMod getInstance() {
@@ -38,9 +38,10 @@ public class FSitMod implements ModInitializer {
 	}
 
 	public void addSneaked(@NotNull PlayerEntity player) {
+		final UUID playerUid = player.getUuid();
 		if (player.getPitch() >= MIN_ANGLE) {
-			sneakedPlayers.add(player.getUuid());
-			scheduler.schedule(() -> removeSneaked(player), SHIFT_DELAY, TimeUnit.MILLISECONDS);
+			sneakedPlayers.add(playerUid);
+			this.scheduledTasks.put(playerUid, scheduler.schedule(() -> removeSneaked(player), SHIFT_DELAY, TimeUnit.MILLISECONDS));
 		}
 	}
 
@@ -49,7 +50,14 @@ public class FSitMod implements ModInitializer {
 	}
 
 	public void clearSneaked(@NotNull PlayerEntity player) {
-		while (this.removeSneaked(player));
+		while (this.removeSneaked(player)) {
+			final UUID playerUid = player.getUuid();
+			final ScheduledFuture<Boolean> task = this.scheduledTasks.get(playerUid);
+			if (task == null) continue;
+			task.cancel(true);
+
+			this.scheduledTasks.remove(playerUid);
+		}
 	}
 
 	public void spawnSeat(@NotNull PlayerEntity player, @NotNull World world, double x, double y, double z) {
