@@ -3,6 +3,7 @@ package dev.rvbsm.fsit.entity;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class SeatEntity extends AreaEffectCloudEntity {
@@ -15,7 +16,7 @@ public class SeatEntity extends AreaEffectCloudEntity {
 		super.setNoGravity(true);
 		super.setInvulnerable(true);
 		super.setInvisible(true);
-		super.setCustomName(Text.literal("seat"));
+		super.setCustomName(Text.literal("FSit Seat"));
 
 		super.setRadius(.0f);
 		super.setDuration(Integer.MAX_VALUE);
@@ -36,5 +37,9 @@ public class SeatEntity extends AreaEffectCloudEntity {
 	@Override
 	public void tick() {
 		if (this.mounted && super.isAlive() && !super.hasPassengers()) super.discard();
+
+		// ! is there a better way to check if the block was broken?
+		final BlockPos blockPos = this.getBlockPos();
+		if (this.world.getBlockState(blockPos).isAir()) super.discard();
 	}
 }
