@@ -17,10 +17,10 @@ import java.util.concurrent.TimeUnit;
 public class FSitMod implements ModInitializer {
 
 	private static final String MOD_ID = "fsit";
+	static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static final int SHIFT_DELAY = 1000; // ms
 	private static final float MIN_ANGLE = 66.6f; // to sit down
 	private static FSitMod instance;
-	private final Logger logger = LoggerFactory.getLogger(MOD_ID);
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new HashMap<>();
 	private final List<UUID> sneakedPlayers = new LinkedList<>();
@@ -29,8 +29,8 @@ public class FSitMod implements ModInitializer {
 		return instance;
 	}
 
-	public Logger getLogger() {
-		return this.logger;
+	public static Logger getLogger() {
+		return LOGGER;
 	}
 
 	public boolean isNeedSeat(@NotNull PlayerEntity player) {
@@ -63,7 +63,6 @@ public class FSitMod implements ModInitializer {
 	public void spawnSeat(@NotNull PlayerEntity player, @NotNull World world, double x, double y, double z) {
 		final SeatEntity seatEntity = new SeatEntity(world, x, y, z);
 		world.spawnEntity(seatEntity);
-
 		player.startRiding(seatEntity, true);
 		this.clearSneaked(player);
 	}
