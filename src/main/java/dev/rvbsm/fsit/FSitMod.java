@@ -18,7 +18,7 @@ public class FSitMod implements ModInitializer {
 
 	private static final String MOD_ID = "fsit";
 	static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	private static final int SHIFT_DELAY = 1000; // ms
+	private static final int SHIFT_DELAY = 600; // ms
 	private static final float MIN_ANGLE = 66.6f; // to sit down
 	private static FSitMod instance;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
