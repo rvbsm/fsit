@@ -1,10 +1,11 @@
 name: Release
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,24 +16,7 @@ jobs:
           java-version: 17
           cache: gradle
       - run: ./gradlew build
-      - uses: Kir-Antipov/mc-publish@v3.2
+      - uses: marvinpinto/action-automatic-releases@latest
         with:
-          loaders: |
-            fabric
-            quilt
-          game-versions: |
-            1.19
-            1.19.1
-            1.19.2
-            1.19.3
-          dependencies:
-            modmenu | suggests | *
-
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          modrinth-id: J5NAzRqK
-
-#          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-#          curseforge-id: 835911
-
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-draft: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          files: build/libs/*
