@@ -21,15 +21,19 @@ jobs:
           loaders: |
             fabric
             quilt
-          dependencies:
-            modmenu | suggest | *
           game-versions: |
+            1.19
+            1.19.1
+            1.19.2
             1.19.3
+          dependencies:
+            modmenu | suggests | *
 
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-id: J5NAzRqK
 
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          curseforge-id: 835911
+#          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+#          curseforge-id: 835911
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-draft: true
