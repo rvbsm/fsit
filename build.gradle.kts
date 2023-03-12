@@ -6,7 +6,7 @@ plugins {
 }
 
 group = property("maven_group")!!
-version = "git --no-pager describe --always".runCommand()
+version = "git --no-pager describe --tags --always".runCommand()
 
 dependencies {
 	minecraft(libs.minecraft)
