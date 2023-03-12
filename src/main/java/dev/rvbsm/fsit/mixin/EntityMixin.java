@@ -25,12 +25,14 @@ public abstract class EntityMixin {
 
 	@Shadow public abstract double getZ();
 
-	@Inject(at = @At(value = "TAIL"), method = "setSneaking", locals = LocalCapture.CAPTURE_FAILHARD)
+	@Shadow public abstract boolean hasVehicle();
+
+	@Inject(at = @At(value = "HEAD"), method = "setSneaking", locals = LocalCapture.CAPTURE_FAILHARD)
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
 		if (this.world.isClient) return;
-		if (!this.isOnGround()) return;
+		if (!this.isOnGround() || this.hasVehicle()) return;
 
-		if ((Entity) (Object) this instanceof PlayerEntity player) if (FSit.isNeedSeat(player) && !sneaking)
+		if ((Entity) (Object) this instanceof final PlayerEntity player) if (FSit.isNeedSeat(player) && !sneaking)
 			FSit.spawnSeat(player, this.world, this.getX(), this.getY(), this.getZ());
 		else FSit.addSneaked(player);
 	}
