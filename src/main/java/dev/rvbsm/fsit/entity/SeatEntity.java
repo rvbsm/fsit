@@ -1,5 +1,6 @@
 package dev.rvbsm.fsit.entity;
 
+import dev.rvbsm.fsit.FSitMod;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
@@ -8,6 +9,7 @@ import net.minecraft.world.World;
 
 public class SeatEntity extends AreaEffectCloudEntity {
 
+	private static final FSitMod FSit = FSitMod.getInstance();
 	private boolean mounted = false;
 
 	public SeatEntity(World world, double x, double y, double z) {
@@ -36,10 +38,16 @@ public class SeatEntity extends AreaEffectCloudEntity {
 
 	@Override
 	public void tick() {
-		if (this.mounted && super.isAlive() && !super.hasPassengers()) super.discard();
+		if (this.mounted && super.isAlive() && !super.hasPassengers()) this.discardSeat();
 
 		// ! is there a better way to check if the block was broken?
 		final BlockPos blockPos = this.getBlockPos();
-		if (this.world.getBlockState(blockPos).isAir()) super.discard();
+		if (this.world.getBlockState(blockPos).isAir()) this.discardSeat();
 	}
+
+	private void discardSeat() {
+		FSit.removeSeatAt(this.getX(), this.getY() + .5f, this.getZ());
+		super.discard();
+	}
+
 }

@@ -40,21 +40,23 @@ public class ServerPlayerInteractionManagerMixin {
 			if (player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof BlockItem) return;
 			else if (player.getStackInHand(Hand.OFF_HAND).getItem() instanceof BlockItem) return;
 
-			final BlockState blockAbove = world.getBlockState(blockPos.up());
-			if (!blockAbove.isAir()) return;
-			if (Math.abs(player.getBlockX() - blockPos.getX()) > 1) return;
-			else if (Math.abs(player.getBlockZ() - blockPos.getZ()) > 1) return;
-			else if (player.getY() < blockPos.getY() - .5) return;
+			final double x = blockPos.getX() + .5f, y = blockPos.getY() + .5f, z = blockPos.getZ() + .5f;
+			if (FSit.hasSeatAt(x, y, z)) return;
+
+			if (Math.abs(player.getBlockX() - blockPos.getX()) > 2) return;
+			else if (Math.abs(player.getBlockZ() - blockPos.getZ()) > 2) return;
+			else if (player.getY() < blockPos.getY() - .5f) return;
 			else if (player.getY() - blockPos.getY() > 2) return;
 			else if (!player.isOnGround() && !player.hasVehicle() || player.isSneaking()) return;
 
+			final BlockState blockAbove = world.getBlockState(blockPos.up());
+			if (!blockAbove.isAir()) return;
+
 			if (block instanceof SlabBlock) {
-				if (blockState.get(Properties.SLAB_TYPE) == SlabType.BOTTOM)
-					FSit.spawnSeat(player, world, blockPos.getX() + .5f, blockPos.getY() + .5f, blockPos.getZ() + .5f);
-			} else {
-				if (blockState.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM)
-					FSit.spawnSeat(player, world, blockPos.getX() + .5f, blockPos.getY() + .5f, blockPos.getZ() + .5f);
-			}
+				if (blockState.get(Properties.SLAB_TYPE) != SlabType.BOTTOM) return;
+			} else if (blockState.get(Properties.BLOCK_HALF) != BlockHalf.BOTTOM) return;
+
+			FSit.spawnSeat(player, world, x, y, z);
 		}
 	}
 }

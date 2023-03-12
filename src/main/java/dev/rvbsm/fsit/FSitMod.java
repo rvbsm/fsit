@@ -23,7 +23,8 @@ public class FSitMod implements ModInitializer {
 	private static FSitMod instance;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new HashMap<>();
-	private final List<UUID> sneakedPlayers = new LinkedList<>();
+	private final Collection<UUID> sneakedPlayers = new LinkedList<>();
+	private final Set<List<Double>> existingSeats = new LinkedHashSet<>();
 
 	public static FSitMod getInstance() {
 		return instance;
@@ -62,9 +63,22 @@ public class FSitMod implements ModInitializer {
 
 	public void spawnSeat(@NotNull PlayerEntity player, @NotNull World world, double x, double y, double z) {
 		final SeatEntity seatEntity = new SeatEntity(world, x, y, z);
+		this.addSeatAt(x, y, z);
 		world.spawnEntity(seatEntity);
 		player.startRiding(seatEntity, true);
 		this.clearSneaked(player);
+	}
+
+	private void addSeatAt(double x, double y, double z) {
+		this.existingSeats.add(List.of(x, y, z));
+	}
+
+	public void removeSeatAt(double x, double y, double z) {
+		this.existingSeats.remove(List.of(x, y, z));
+	}
+
+	public boolean hasSeatAt(double x, double y, double z) {
+		return this.existingSeats.contains(List.of(x, y, z));
 	}
 
 	@Override
