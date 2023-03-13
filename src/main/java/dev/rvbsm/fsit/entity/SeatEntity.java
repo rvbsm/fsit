@@ -3,7 +3,6 @@ package dev.rvbsm.fsit.entity;
 import dev.rvbsm.fsit.FSitMod;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -18,7 +17,6 @@ public class SeatEntity extends AreaEffectCloudEntity {
 		super.setNoGravity(true);
 		super.setInvulnerable(true);
 		super.setInvisible(true);
-		super.setCustomName(Text.literal("FSit Seat"));
 
 		super.setRadius(.0f);
 		super.setDuration(Integer.MAX_VALUE);
