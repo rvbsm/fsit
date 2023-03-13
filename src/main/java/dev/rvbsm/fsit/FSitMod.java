@@ -5,8 +5,6 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -16,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 public class FSitMod implements ModInitializer {
 
-	private static final String MOD_ID = "fsit";
-	static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static final int SHIFT_DELAY = 600; // ms
 	private static final float MIN_ANGLE = 66.6f; // to sit down
 	private static FSitMod instance;
@@ -28,10 +24,6 @@ public class FSitMod implements ModInitializer {
 
 	public static FSitMod getInstance() {
 		return instance;
-	}
-
-	public static Logger getLogger() {
-		return LOGGER;
 	}
 
 	public boolean isNeedSeat(@NotNull PlayerEntity player) {
