@@ -25,19 +25,16 @@ public class SeatEntity extends AreaEffectCloudEntity {
 		super.setWaitTime(0);
 	}
 
-	@Override
-	protected void addPassenger(Entity passenger) {
+	@Override protected void addPassenger(Entity passenger) {
 		super.addPassenger(passenger);
 		this.mounted = true;
 	}
 
-	@Override
-	protected boolean canAddPassenger(Entity passenger) {
+	@Override protected boolean canAddPassenger(Entity passenger) {
 		return true;
 	}
 
-	@Override
-	public void tick() {
+	@Override public void tick() {
 		if (this.mounted && super.isAlive() && !super.hasPassengers()) this.discardSeat();
 
 		// ! is there a better way to check if the block was broken?
@@ -49,5 +46,4 @@ public class SeatEntity extends AreaEffectCloudEntity {
 		FSit.removeSeatAt(this.getX(), this.getY() + .5f, this.getZ());
 		super.discard();
 	}
-
 }
