@@ -50,7 +50,7 @@ public class ServerPlayerInteractionManagerMixin {
 		if (Math.abs(player.getBlockPos().getX() - blockPos.getX()) > RADIUS) return false;
 		else if (Math.abs(player.getBlockPos().getZ() - blockPos.getZ()) > RADIUS) return false;
 		else if (Math.round(player.getY()) < blockPos.getY() || player.getY() - blockPos.getY() > RADIUS) return false;
-		else if (!player.isOnGround() && !player.hasVehicle() || player.isSneaking()) return false;
+		else if (!player.isOnGround() && !player.hasVehicle() || !player.isSneaking()) return false;
 
 		final BlockState blockAbove = world.getBlockState(blockPos.up());
 		if (!blockAbove.isAir()) return false;
