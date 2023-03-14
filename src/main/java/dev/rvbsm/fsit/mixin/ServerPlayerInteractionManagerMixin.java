@@ -30,33 +30,34 @@ public class ServerPlayerInteractionManagerMixin {
 	private final FSitMod FSit = FSitMod.getInstance();
 
 	@Inject(at = @At(value = "HEAD"), method = "interactBlock", locals = LocalCapture.CAPTURE_FAILHARD)
-	public void interactBlock(ServerPlayerEntity player, @NotNull World world, ItemStack stack, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
-		if (world.isClient) return;
+	public void interactBlock(ServerPlayerEntity player, @NotNull World world, ItemStack stack, Hand hand, @NotNull BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
 		final BlockPos blockPos = hitResult.getBlockPos();
 		final BlockState blockState = world.getBlockState(blockPos);
 		final Block block = blockState.getBlock();
 
 		if (block instanceof SlabBlock || block instanceof StairsBlock) {
-			if (player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof BlockItem) return;
-			else if (player.getStackInHand(Hand.OFF_HAND).getItem() instanceof BlockItem) return;
-
 			final double x = blockPos.getX() + .5f, y = blockPos.getY() + .5f, z = blockPos.getZ() + .5f;
-			if (FSit.hasSeatAt(x, y, z)) return;
-
-			if (Math.abs(player.getBlockX() - blockPos.getX()) > 2) return;
-			else if (Math.abs(player.getBlockZ() - blockPos.getZ()) > 2) return;
-			else if (player.getY() < blockPos.getY() - .5f) return;
-			else if (player.getY() - blockPos.getY() > 2) return;
-			else if (!player.isOnGround() && !player.hasVehicle() || player.isSneaking()) return;
-
-			final BlockState blockAbove = world.getBlockState(blockPos.up());
-			if (!blockAbove.isAir()) return;
-
-			if (block instanceof SlabBlock) {
-				if (blockState.get(Properties.SLAB_TYPE) != SlabType.BOTTOM) return;
-			} else if (blockState.get(Properties.BLOCK_HALF) != BlockHalf.BOTTOM) return;
-
-			FSit.spawnSeat(player, world, x, y, z);
+			if (!FSit.hasSeatAt(x, y, z) && this.canSeatAt(player, world, block, blockState, blockPos))
+				FSit.spawnSeat(player, world, x, y, z);
 		}
+	}
+
+	private boolean canSeatAt(@NotNull ServerPlayerEntity player, World world, Block block, BlockState blockState, BlockPos blockPos) {
+		if (player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof BlockItem) return false;
+		else if (player.getStackInHand(Hand.OFF_HAND).getItem() instanceof BlockItem) return false;
+
+		if (Math.abs(player.getBlockX() - blockPos.getX()) > 2) return false;
+		else if (Math.abs(player.getBlockZ() - blockPos.getZ()) > 2) return false;
+		else if (player.getY() < blockPos.getY() - .5f) return false;
+		else if (player.getY() - blockPos.getY() > 2) return false;
+		else if (!player.isOnGround() && !player.hasVehicle() || player.isSneaking()) return false;
+
+		final BlockState blockAbove = world.getBlockState(blockPos.up());
+		if (!blockAbove.isAir()) return false;
+
+		if (block instanceof SlabBlock) return blockState.get(Properties.SLAB_TYPE) == SlabType.BOTTOM;
+		else if (block instanceof StairsBlock) return blockState.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM;
+
+		return false;
 	}
 }
