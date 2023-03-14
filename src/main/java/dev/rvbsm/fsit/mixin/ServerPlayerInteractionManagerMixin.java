@@ -27,7 +27,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(ServerPlayerInteractionManager.class)
 public class ServerPlayerInteractionManagerMixin {
 
-	private final FSitMod FSit = FSitMod.getInstance();
+	private static final FSitMod FSit = FSitMod.getInstance();
+	private static final int RADIUS = 2;
 
 	@Inject(at = @At(value = "HEAD"), method = "interactBlock", locals = LocalCapture.CAPTURE_FAILHARD)
 	public void interactBlock(ServerPlayerEntity player, @NotNull World world, ItemStack stack, Hand hand, @NotNull BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
@@ -46,10 +47,9 @@ public class ServerPlayerInteractionManagerMixin {
 		if (player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof BlockItem) return false;
 		else if (player.getStackInHand(Hand.OFF_HAND).getItem() instanceof BlockItem) return false;
 
-		if (Math.abs(player.getBlockX() - blockPos.getX()) > 2) return false;
-		else if (Math.abs(player.getBlockZ() - blockPos.getZ()) > 2) return false;
-		else if (player.getY() < blockPos.getY() - .5f) return false;
-		else if (player.getY() - blockPos.getY() > 2) return false;
+		if (Math.abs(player.getBlockPos().getX() - blockPos.getX()) > RADIUS) return false;
+		else if (Math.abs(player.getBlockPos().getZ() - blockPos.getZ()) > RADIUS) return false;
+		else if (Math.round(player.getY()) < blockPos.getY() || player.getY() - blockPos.getY() > RADIUS) return false;
 		else if (!player.isOnGround() && !player.hasVehicle() || player.isSneaking()) return false;
 
 		final BlockState blockAbove = world.getBlockState(blockPos.up());

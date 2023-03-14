@@ -27,12 +27,12 @@ public class FSitMod implements ModInitializer {
 	}
 
 	public boolean isNeedSeat(@NotNull PlayerEntity player) {
-		return sneakedPlayers.stream().filter(player.getUuid()::equals).count() >= 2 && player.getPitch() >= MIN_ANGLE;
+		return sneakedPlayers.stream().filter(player.getUuid()::equals).count() >= 2 && player.getPitch(1f) >= MIN_ANGLE;
 	}
 
 	public void addSneaked(@NotNull PlayerEntity player) {
 		final UUID playerUid = player.getUuid();
-		if (player.getPitch() >= MIN_ANGLE) {
+		if (player.getPitch(1f) >= MIN_ANGLE) {
 			sneakedPlayers.add(playerUid);
 			this.scheduledTasks.put(playerUid, scheduler.schedule(() -> removeSneaked(player), SHIFT_DELAY, TimeUnit.MILLISECONDS));
 		}
