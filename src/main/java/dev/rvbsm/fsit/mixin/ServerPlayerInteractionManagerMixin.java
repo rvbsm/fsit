@@ -56,8 +56,11 @@ public class ServerPlayerInteractionManagerMixin {
 	}
 
 	private boolean canSeatAt(@NotNull ServerPlayerEntity player, World world, Block block, BlockState blockState, BlockPos blockPos) {
-		if (player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof BlockItem) return false;
-		else if (player.getStackInHand(Hand.OFF_HAND).getItem() instanceof BlockItem) return false;
+		final Item mainItem = player.getMainHandStack().getItem();
+		final Item offItem = player.getOffHandStack().getItem();
+
+		if (mainItem instanceof BlockItem || offItem instanceof BlockItem) return false;
+		else if (mainItem instanceof FluidModificationItem || offItem instanceof FluidModificationItem) return false;
 
 		if (Math.abs(player.getBlockPos().getX() - blockPos.getX()) > RADIUS) return false;
 		else if (Math.abs(player.getBlockPos().getZ() - blockPos.getZ()) > RADIUS) return false;
