@@ -6,7 +6,7 @@ A server-side mod that allows players to sit anywhere.
 
 To sit down, look down and sneak twice.
 To get up, just sneak once.  
-Also, right-click on stairs or slabs works.
+Also, right-click with Shift on stairs, slabs or horizontal logs works.
 
 ## Contributing
 
