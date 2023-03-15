@@ -42,6 +42,6 @@ public class SeatEntity extends AreaEffectCloudEntity {
 
 	private void discardSeat() {
 		FSit.removeSeatAt(this.getX(), this.getY() + .5f, this.getZ());
-		super.kill();
+		super.discard();
 	}
 }
