@@ -6,8 +6,4 @@ pluginManagement {
 		}
 		gradlePluginPortal()
 	}
-
-	plugins {
-		id("fabric-loom") version "1.0-SNAPSHOT"
-	}
 }
