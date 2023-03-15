@@ -40,9 +40,17 @@ public class ServerPlayerInteractionManagerMixin {
 		if (block instanceof SlabBlock || block instanceof StairsBlock || block instanceof PillarBlock) {
 			if (!this.canSeatAt(player, world, block, blockState, blockPos)) return;
 
-			final double x = blockPos.getX() + .5f;
+			double x = blockPos.getX() + .5f;
 			final double y = blockPos.getY() + (blockState.isSolidBlock(world, blockPos) ? 1d : .5d);
-			final double z = blockPos.getZ() + .5f;
+			double z = blockPos.getZ() + .5f;
+
+			if (block instanceof StairsBlock) switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+				case NORTH -> z += .3d;
+				case SOUTH -> z -= .3d;
+				case WEST -> x += .3d;
+				case EAST -> x -= .3d;
+			}
+
 			if (!FSit.hasSeatAt(x, y, z)) FSit.spawnSeat(player, world, x, y, z);
 		}
 	}
