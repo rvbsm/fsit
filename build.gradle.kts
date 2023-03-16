@@ -13,6 +13,8 @@ dependencies {
 	mappings("net.fabricmc:yarn:${libs.versions.yarn.mappings.get()}:v2")
 
 	modImplementation(libs.fabric.loader)
+
+	implementation(libs.toml4j)
 }
 
 tasks {

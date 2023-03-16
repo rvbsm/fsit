@@ -14,27 +14,35 @@ import java.util.concurrent.TimeUnit;
 
 public class FSitMod implements ModInitializer {
 
-	private static final int SHIFT_DELAY = 600; // ms
-	private static final float MIN_ANGLE = 66.6f; // to sit down
+	private static final String MOD_ID = "fsit";
+	private static final FSitConfig CONFIG = new FSitConfig();
 	private static FSitMod instance;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-	private final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new HashMap<>();
-	private final Collection<UUID> sneakedPlayers = new LinkedList<>();
+	private final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new LinkedHashMap<>();
+	private final List<UUID> sneakedPlayers = new LinkedList<>();
 	private final Set<List<Double>> existingSeats = new LinkedHashSet<>();
 
 	public static FSitMod getInstance() {
 		return instance;
 	}
 
+	public static FSitConfig getConfig() {
+		return CONFIG;
+	}
+
+	public static String getModId() {
+		return MOD_ID;
+	}
+
 	public boolean isNeedSeat(@NotNull PlayerEntity player) {
-		return Collections.frequency(sneakedPlayers, player.getUuid()) == 2 && player.getPitch(1f) >= MIN_ANGLE;
+		return Collections.frequency(sneakedPlayers, player.getUuid()) == 2 && player.getPitch(1f) >= CONFIG.minAngle;
 	}
 
 	public void addSneaked(@NotNull PlayerEntity player) {
 		final UUID playerUid = player.getUuid();
-		if (player.getPitch(1f) >= MIN_ANGLE && Collections.frequency(sneakedPlayers, playerUid) < 2) {
+		if (Collections.frequency(sneakedPlayers, playerUid) < 2 && player.getPitch(1f) >= CONFIG.minAngle) {
 			sneakedPlayers.add(playerUid);
-			this.scheduledTasks.put(playerUid, scheduler.schedule(() -> removeSneaked(player), SHIFT_DELAY, TimeUnit.MILLISECONDS));
+			this.scheduledTasks.put(playerUid, scheduler.schedule(() -> this.removeSneaked(player), CONFIG.shiftDelay, TimeUnit.MILLISECONDS));
 		}
 	}
 

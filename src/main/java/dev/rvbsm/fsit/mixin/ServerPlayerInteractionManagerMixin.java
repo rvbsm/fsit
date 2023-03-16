@@ -2,12 +2,11 @@ package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.FSitMod;
 import net.minecraft.block.*;
-import net.minecraft.block.enums.BlockHalf;
-import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.FluidModificationItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.state.property.Properties;
@@ -62,13 +61,15 @@ public class ServerPlayerInteractionManagerMixin {
 		final BlockState blockAbove = world.getBlockState(blockPos.up());
 		if (!blockAbove.isAir()) return false;
 
-		if (block instanceof SlabBlock) return blockState.get(Properties.SLAB_TYPE) == SlabType.BOTTOM;
-		else if (block instanceof StairsBlock) return blockState.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM;
-		else if (block instanceof PillarBlock) {
-			final Material blockMaterial = blockState.getMaterial();
-			if (blockMaterial == Material.WOOD || blockMaterial == Material.NETHER_WOOD)
+		for (TagKey<Block> configTag : FSitMod.getConfig().sittableBlockTags)
+			if (blockState.isIn(configTag)) if (block instanceof PillarBlock) {
 				return blockState.get(Properties.AXIS) != Direction.Axis.Y;
-		}
+			} else return true;
+
+		for (Block configBlock : FSitMod.getConfig().sittableBlocks)
+			if (block.equals(configBlock)) if (block instanceof PillarBlock) {
+				return blockState.get(Properties.AXIS) != Direction.Axis.Y;
+			} else return true;
 
 		return false;
 	}
