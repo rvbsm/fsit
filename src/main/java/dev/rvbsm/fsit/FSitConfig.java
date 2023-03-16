@@ -42,10 +42,14 @@ public class FSitConfig {
 	FSitConfig() {
 		this.config = this.load();
 
-		minAngle = this.getMinAngle();
-		shiftDelay = this.getShiftDelay();
-		sittableBlocks = this.getSittableBlocks();
-		sittableBlockTags = this.getSittableBlockTags();
+		try {
+			minAngle = this.getMinAngle();
+			shiftDelay = this.getShiftDelay();
+			sittableBlocks = this.getSittableBlocks();
+			sittableBlockTags = this.getSittableBlockTags();
+		} catch (ClassCastException e) {
+			throw new ClassCastException("Illegal configuration values. Loading defaults");
+		}
 	}
 
 	private static @NotNull Path getConfigPath() {
@@ -53,7 +57,7 @@ public class FSitConfig {
 	}
 
 	private Toml load() {
-		if (Files.exists(configPath)) return new Toml().read(configPath.toFile());// ! doesn't load from file
+		if (Files.exists(configPath)) return new Toml().read(configPath.toFile());
 		else return this.create();
 	}
 
