@@ -1,7 +1,9 @@
 package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.FSitMod;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.PillarBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.FluidModificationItem;
 import net.minecraft.item.Item;
@@ -36,9 +38,7 @@ public class ServerPlayerInteractionManagerMixin {
 		final BlockState blockState = world.getBlockState(blockPos);
 		final Block block = blockState.getBlock();
 
-		if (block instanceof SlabBlock || block instanceof StairsBlock || block instanceof PillarBlock) {
-			if (!this.canSeatAt(player, world, block, blockState, blockPos)) return;
-
+		if (this.canSeatAt(player, world, block, blockState, blockPos)) {
 			final double x = blockPos.getX() + .5f;
 			final double y = blockPos.getY() + (blockState.isSolidBlock(world, blockPos) ? 1d : .5d);
 			final double z = blockPos.getZ() + .5f;
@@ -61,12 +61,13 @@ public class ServerPlayerInteractionManagerMixin {
 		final BlockState blockAbove = world.getBlockState(blockPos.up());
 		if (!blockAbove.isAir()) return false;
 
-		for (TagKey<Block> configTag : FSitMod.getConfig().sittableBlockTags)
+		// ! calls every time players click!
+		for (TagKey<Block> configTag : FSit.getConfig().sittableTags.getTagKeySet())
 			if (blockState.isIn(configTag)) if (block instanceof PillarBlock) {
 				return blockState.get(Properties.AXIS) != Direction.Axis.Y;
 			} else return true;
 
-		for (Block configBlock : FSitMod.getConfig().sittableBlocks)
+		for (Block configBlock : FSit.getConfig().sittableBlocks.getBlocks())
 			if (block.equals(configBlock)) if (block instanceof PillarBlock) {
 				return blockState.get(Properties.AXIS) != Direction.Axis.Y;
 			} else return true;
