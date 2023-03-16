@@ -23,7 +23,6 @@ public class FSitMod implements ModInitializer {
 	private final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new LinkedHashMap<>();
 	private final List<UUID> sneakedPlayers = new LinkedList<>();
 	private final Set<List<Double>> existingSeats = new LinkedHashSet<>();
-	private FSitConfig config;
 
 	public static FSitMod getInstance() {
 		return instance;
@@ -42,18 +41,18 @@ public class FSitMod implements ModInitializer {
 	}
 
 	public FSitConfig getConfig() {
-		return this.config;
+		return configManager.load();
 	}
 
 	public boolean isNeedSeat(@NotNull PlayerEntity player) {
-		return Collections.frequency(this.sneakedPlayers, player.getUuid()) == 2 && player.getPitch(1f) >= this.config.minAngle.getValue();
+		return Collections.frequency(this.sneakedPlayers, player.getUuid()) == 2 && player.getPitch(1f) >= this.getConfig().minAngle.getValue();
 	}
 
 	public void addSneaked(@NotNull PlayerEntity player) {
 		final UUID playerUid = player.getUuid();
-		if (Collections.frequency(this.sneakedPlayers, playerUid) < 2 && player.getPitch(1f) >= this.config.minAngle.getValue()) {
+		if (Collections.frequency(this.sneakedPlayers, playerUid) < 2 && player.getPitch(1f) >= this.getConfig().minAngle.getValue()) {
 			this.sneakedPlayers.add(playerUid);
-			this.scheduledTasks.put(playerUid, this.scheduler.schedule(() -> this.removeSneaked(player), this.config.shiftDelay.getValue(), TimeUnit.MILLISECONDS));
+			this.scheduledTasks.put(playerUid, this.scheduler.schedule(() -> this.removeSneaked(player), this.getConfig().shiftDelay.getValue(), TimeUnit.MILLISECONDS));
 		}
 	}
 
@@ -94,7 +93,5 @@ public class FSitMod implements ModInitializer {
 
 	@Override public void onInitialize() {
 		instance = this;
-
-		this.config = configManager.load();
 	}
 }
