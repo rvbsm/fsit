@@ -15,21 +15,12 @@ public class FSitConfigManager {
 	private static final Path configDir = FabricLoader.getInstance().getConfigDir();
 	private static final Path configPath = FSitConfigManager.getConfigPath();
 	private static final TomlWriter writer = new TomlWriter();
-	private final FSitConfig config;
-
-	public FSitConfigManager() {
-		this.config = this.load();
-	}
 
 	private static @NotNull Path getConfigPath() {
 		return configDir.resolve(FSitMod.getModId() + ".toml");
 	}
 
-	public FSitConfig getConfig() {
-		return this.config;
-	}
-
-	private FSitConfig load() {
+	public FSitConfig load() {
 		if (Files.exists(configPath)) return new Toml().read(configPath.toFile()).to(FSitConfigSimple.class).cast();
 		else return this.create();
 	}
@@ -43,10 +34,10 @@ public class FSitConfigManager {
 		}
 	}
 
-	public void save() {
+	public void save(FSitConfig config) {
 		if (Files.exists(configPath))
 			try {
-				writer.write(this.config.toSimple(), configPath.toFile());
+				writer.write(config.toSimple(), configPath.toFile());
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

@@ -17,12 +17,13 @@ import java.util.concurrent.TimeUnit;
 public class FSitMod implements ModInitializer {
 
 	private static final String MOD_ID = "fsit";
+	private static final FSitConfigManager configManager = new FSitConfigManager();
 	private static FSitMod instance;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new LinkedHashMap<>();
 	private final List<UUID> sneakedPlayers = new LinkedList<>();
 	private final Set<List<Double>> existingSeats = new LinkedHashSet<>();
-	private dev.rvbsm.fsit.config.FSitConfig config;
+	private FSitConfig config;
 
 	public static FSitMod getInstance() {
 		return instance;
@@ -34,6 +35,10 @@ public class FSitMod implements ModInitializer {
 
 	public static String getModId() {
 		return FSitMod.MOD_ID;
+	}
+
+	public static FSitConfigManager getConfigManager() {
+		return FSitMod.configManager;
 	}
 
 	public FSitConfig getConfig() {
@@ -90,7 +95,6 @@ public class FSitMod implements ModInitializer {
 	@Override public void onInitialize() {
 		instance = this;
 
-		final FSitConfigManager configManager = new FSitConfigManager();
-		this.config = configManager.getConfig();
+		this.config = configManager.load();
 	}
 }
