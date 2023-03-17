@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TagKeyBlockSetOption extends SimpleOption<Set<String>> {
+public class TagKeyBlockSetOption extends Option<Set<String>> {
 
 	public TagKeyBlockSetOption(String key, Set<String> value) {
 		super(key, value);

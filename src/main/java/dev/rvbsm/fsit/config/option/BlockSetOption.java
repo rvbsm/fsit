@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BlockSetOption extends SimpleOption<Set<String>> {
+public class BlockSetOption extends Option<Set<String>> {
 
 	public BlockSetOption(String key, Set<String> value) {
 		super(key, value);

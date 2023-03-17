@@ -2,11 +2,11 @@ package dev.rvbsm.fsit.config.option;
 
 import dev.rvbsm.fsit.FSitMod;
 
-public class SimpleOption<T> {
+public abstract class Option<T> {
 	private final String key, translationKey;
 	private T value;
 
-	public SimpleOption(String key, T value) {
+	public Option(String key, T value) {
 		this.key = key;
 		this.translationKey = FSitMod.getTranslationKey("option", key);
 		this.value = value;

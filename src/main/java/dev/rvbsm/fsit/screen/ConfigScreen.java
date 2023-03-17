@@ -20,14 +20,11 @@ import java.util.function.Consumer;
 
 public class ConfigScreen extends GameOptionsScreen {
 
-	private static final FSitConfigManager configManager = FSitMod.getConfigManager();
-	private final FSitConfig config;
 	private final Screen previous;
 
 	public ConfigScreen(Screen screen) {
 		super(screen, MinecraftClient.getInstance().options, Text.translatable("fsit.options"));
 		this.previous = screen;
-		this.config = ConfigScreen.configManager.load();
 	}
 
 	@Override protected void init() {
@@ -35,16 +32,16 @@ public class ConfigScreen extends GameOptionsScreen {
 		final GridWidget.Adder adder = gridWidget.createAdder(2);
 		gridWidget.getMainPositioner().marginX(5).marginBottom(4).alignHorizontalCenter();
 
-		final Integer minAngle = this.config.minAngle.getValue().intValue();
-		final Integer shiftDelay = this.config.shiftDelay.getValue().intValue();
-		final Set<String> sittableBlocks = this.config.sittableBlocks.getValue();
-		final Set<String> sittableTags = this.config.sittableTags.getValue();
+		final Integer minAngle = FSitConfig.minAngle.getValue().intValue();
+		final Integer shiftDelay = FSitConfig.shiftDelay.getValue().intValue();
+		final Set<String> sittableBlocks = FSitConfig.sittableBlocks.getValue();
+		final Set<String> sittableTags = FSitConfig.sittableTags.getValue();
 
-		final Consumer<Integer> setMinAngle = value -> this.config.minAngle.setValue(value.doubleValue());
-		final Consumer<Integer> setShiftDelay = value -> this.config.shiftDelay.setValue(value.longValue());
+		final Consumer<Integer> setMinAngle = value -> FSitConfig.minAngle.setValue(value.doubleValue());
+		final Consumer<Integer> setShiftDelay = value -> FSitConfig.shiftDelay.setValue(value.longValue());
 
-		final SimpleOption<Integer> minAngleOption = new SimpleOption<>(this.config.minAngle.getTranslationKey(), SimpleOption.emptyTooltip(), (prefix, value) -> GameOptions.getGenericValueText(prefix, Text.of(value + "°")), new SimpleOption.ValidatingIntSliderCallbacks(-90, 90), minAngle, setMinAngle);
-		final SimpleOption<Integer> shiftDelayOption = new SimpleOption<>(this.config.shiftDelay.getTranslationKey(), SimpleOption.emptyTooltip(), (prefix, value) -> GameOptions.getGenericValueText(prefix, Text.of(value + "ms")), new SimpleOption.ValidatingIntSliderCallbacks(100, 2000), shiftDelay, setShiftDelay);
+		final SimpleOption<Integer> minAngleOption = new SimpleOption<>(FSitConfig.minAngle.getTranslationKey(), SimpleOption.emptyTooltip(), (prefix, value) -> GameOptions.getGenericValueText(prefix, Text.of(value + "°")), new SimpleOption.ValidatingIntSliderCallbacks(-90, 90), minAngle, setMinAngle);
+		final SimpleOption<Integer> shiftDelayOption = new SimpleOption<>(FSitConfig.shiftDelay.getTranslationKey(), SimpleOption.emptyTooltip(), (prefix, value) -> GameOptions.getGenericValueText(prefix, Text.of(value + "ms")), new SimpleOption.ValidatingIntSliderCallbacks(100, 2000), shiftDelay, setShiftDelay);
 
 		adder.add(minAngleOption.createWidget(this.gameOptions, 0, 0, 150));
 		adder.add(shiftDelayOption.createWidget(this.gameOptions, 0, 0, 150));
@@ -58,7 +55,7 @@ public class ConfigScreen extends GameOptionsScreen {
 	}
 
 	@Override public void removed() {
-		configManager.save(this.config);
+		FSitConfigManager.save();
 	}
 
 	@Override public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {

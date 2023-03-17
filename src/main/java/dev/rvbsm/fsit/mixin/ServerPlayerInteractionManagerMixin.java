@@ -1,6 +1,7 @@
 package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.config.FSitConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PillarBlock;
@@ -62,12 +63,12 @@ public class ServerPlayerInteractionManagerMixin {
 		if (!blockAbove.isAir()) return false;
 
 		// ! calls every time players click!
-		for (TagKey<Block> configTag : FSit.getConfig().sittableTags.getTagKeySet())
+		for (TagKey<Block> configTag : FSitConfig.sittableTags.getTagKeySet())
 			if (blockState.isIn(configTag)) if (block instanceof PillarBlock) {
 				return blockState.get(Properties.AXIS) != Direction.Axis.Y;
 			} else return true;
 
-		for (Block configBlock : FSit.getConfig().sittableBlocks.getBlocks())
+		for (Block configBlock : FSitConfig.sittableBlocks.getBlocks())
 			if (block.equals(configBlock)) if (block instanceof PillarBlock) {
 				return blockState.get(Properties.AXIS) != Direction.Axis.Y;
 			} else return true;
