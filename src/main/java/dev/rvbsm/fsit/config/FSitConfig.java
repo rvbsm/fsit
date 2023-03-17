@@ -4,6 +4,8 @@ import dev.rvbsm.fsit.config.option.BlockSetOption;
 import dev.rvbsm.fsit.config.option.Option;
 import dev.rvbsm.fsit.config.option.TagKeyBlockSetOption;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 public class FSitConfig {
@@ -12,7 +14,28 @@ public class FSitConfig {
 	public static final BlockSetOption sittableBlocks = new BlockSetOption("sittable_blocks", List.of());
 	public static final TagKeyBlockSetOption sittableTags = new TagKeyBlockSetOption("sittable_tags", List.of("minecraft:slabs", "minecraft:stairs", "minecraft:logs"));
 
-	public static FSitConfigPrimitive toPrimitive() {
-		return new FSitConfigPrimitive(minAngle.getValue(), shiftDelay.getValue(), sittableBlocks.getValue(), sittableTags.getValue());
+	protected static void load() {
+		for (Field field : FSitConfig.class.getDeclaredFields())
+			if (Modifier.isStatic(field.getModifiers())) {
+				try {
+					final Option option = (Option) field.get(null);
+					final Object value = FSitConfigManager.config.getOrElse(option.getKey(), option.getValue());
+					option.setValue(value);
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+	}
+
+	protected static void save() {
+		for (Field field : FSitConfig.class.getDeclaredFields())
+			if (Modifier.isStatic(field.getModifiers())) {
+				try {
+					final Option option = (Option) field.get(null);
+					FSitConfigManager.config.set(option.getKey(), option.getValue());
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
 	}
 }

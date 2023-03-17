@@ -1,8 +1,8 @@
 import java.io.ByteArrayOutputStream
 
 plugins {
-	java
-	alias(libs.plugins.fabric.loom)
+	id("fabric-loom")
+	id("com.github.johnrengelman.shadow")
 }
 
 group = property("maven_group")!!
@@ -21,8 +21,8 @@ dependencies {
 	modApi(libs.modmenu)
 	modApi(libs.clothconfig)
 
-	implementation(libs.toml4j)
-	include(libs.toml4j)
+	implementation(libs.nightconfig.toml)
+	shadow(libs.nightconfig.toml)
 }
 
 tasks {
@@ -35,6 +35,17 @@ tasks {
 
 	jar {
 		from("LICENSE")
+	}
+
+	shadowJar {
+		configurations = listOf(project.configurations.shadow.get())
+		relocate("com.electronwill.night-config", "dev.rvbsm.shadow.com.electronwill.night-config")
+		exclude("META-INF/**")
+	}
+
+	remapJar {
+		dependsOn(shadowJar)
+		inputFile.set(shadowJar.get().archiveFile.get())
 	}
 
 	compileJava {

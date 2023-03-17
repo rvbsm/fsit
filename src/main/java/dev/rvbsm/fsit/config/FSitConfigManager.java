@@ -1,12 +1,10 @@
 package dev.rvbsm.fsit.config;
 
-import com.moandjiezana.toml.Toml;
-import com.moandjiezana.toml.TomlWriter;
+import com.electronwill.nightconfig.core.file.FileConfig;
 import dev.rvbsm.fsit.FSitMod;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -14,33 +12,20 @@ public class FSitConfigManager {
 
 	private static final Path configDir = FabricLoader.getInstance().getConfigDir();
 	private static final Path configPath = FSitConfigManager.getConfigPath();
-	private static final TomlWriter writer = new TomlWriter();
+	protected static final FileConfig config = FileConfig.of(FSitConfigManager.configPath);
 
 	private static @NotNull Path getConfigPath() {
 		return configDir.resolve(FSitMod.getModId() + ".toml");
 	}
 
 	public static void load() {
-		if (Files.exists(configPath)) new Toml().read(configPath.toFile()).to(FSitConfigPrimitive.class).fromPrimitive();
-		else FSitConfigManager.create();
-	}
-
-	private static void create() {
-		try {
-			writer.write(FSitConfig.toPrimitive(), configPath.toFile());
-			FSitConfigManager.load();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		if (!Files.exists(configPath)) FSitConfigManager.save();
+		config.load();
+		FSitConfig.load();
 	}
 
 	public static void save() {
-		if (Files.exists(configPath))
-			try {
-				writer.write(FSitConfig.toPrimitive(), configPath.toFile());
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		else FSitConfigManager.create();
+		FSitConfig.save();
+		config.save();
 	}
 }
