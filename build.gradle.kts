@@ -20,6 +20,7 @@ dependencies {
 	modApi(libs.modmenu)
 
 	implementation(libs.toml4j)
+	include(libs.toml4j)
 }
 
 tasks {
