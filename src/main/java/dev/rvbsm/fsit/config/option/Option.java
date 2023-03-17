@@ -4,12 +4,14 @@ import dev.rvbsm.fsit.FSitMod;
 
 public class Option<T> {
 	private final String key, translationKey;
+	private final T defaultValue;
 	private T value;
 
 	public Option(String key, T value) {
 		this.key = key;
 		this.translationKey = FSitMod.getTranslationKey("option", key);
 		this.value = value;
+		this.defaultValue = value;
 	}
 
 	public String getKey() {
@@ -26,5 +28,9 @@ public class Option<T> {
 
 	public void setValue(T value) {
 		this.value = value;
+	}
+
+	public T getDefaultValue() {
+		return this.defaultValue;
 	}
 }
