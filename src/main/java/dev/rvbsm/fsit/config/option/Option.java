@@ -2,7 +2,7 @@ package dev.rvbsm.fsit.config.option;
 
 import dev.rvbsm.fsit.FSitMod;
 
-public abstract class Option<T> {
+public class Option<T> {
 	private final String key, translationKey;
 	private T value;
 

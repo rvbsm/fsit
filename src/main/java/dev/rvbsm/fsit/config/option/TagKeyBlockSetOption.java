@@ -5,19 +5,18 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TagKeyBlockSetOption extends Option<Set<String>> {
+public class TagKeyBlockSetOption extends Option<List<String>> {
 
-	public TagKeyBlockSetOption(String key, Set<String> value) {
+	public TagKeyBlockSetOption(String key, List<String> value) {
 		super(key, value);
 	}
 
 	public Set<TagKey<Block>> getTagKeySet() {
-		final Set<String> tagNames = super.getValue();
-
-		return tagNames.stream()
+		return super.getValue().stream()
 						.map(id -> TagKey.of(RegistryKeys.BLOCK, new Identifier(id)))
 						.collect(Collectors.toSet());
 	}
