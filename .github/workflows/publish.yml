@@ -25,9 +25,13 @@ jobs:
             1.19.4
           dependencies:
             modmenu | suggests | *
+            cloth-config | recommends | *
 
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-id: J5NAzRqK
 
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           curseforge-id: 837056
+
+          files-primary: build/libs/!(*-@(sources|all)).jar
+          files-secondary: build/libs/*-sources.jar
