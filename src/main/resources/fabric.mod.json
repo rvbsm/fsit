@@ -3,7 +3,7 @@
 	"id": "fsit",
 	"version": "${version}",
 	"name": "FSit",
-	"description": "A server-side mod that allows players to sit anywhere.\n",
+	"description": "Sit anywhere!",
 	"authors": [
 		"rvbsm"
 	],
@@ -26,6 +26,6 @@
 		"fsit.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.12.0"
+		"fabricloader": ">=0.14.0"
 	}
 }
