@@ -1,4 +1,6 @@
 {
 	"option.fsit.min_angle": "Sit angle",
-	"option.fsit.shift_delay": "Sneak delay"
+	"option.fsit.shift_delay": "Sneak delay",
+	"option.fsit.sittable_blocks": "Sittable block ids",
+	"option.fsit.sittable_tags": "Sittable block tags"
 }

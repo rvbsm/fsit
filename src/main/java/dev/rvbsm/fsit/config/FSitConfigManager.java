@@ -20,27 +20,27 @@ public class FSitConfigManager {
 		return configDir.resolve(FSitMod.getModId() + ".toml");
 	}
 
-	public FSitConfig load() {
-		if (Files.exists(configPath)) return new Toml().read(configPath.toFile()).to(FSitConfigSimple.class).cast();
-		else return this.create();
+	public static void load() {
+		if (Files.exists(configPath)) new Toml().read(configPath.toFile()).to(FSitConfigPrimitive.class).fromPrimitive();
+		else FSitConfigManager.create();
 	}
 
-	private FSitConfig create() {
+	private static void create() {
 		try {
-			writer.write(new FSitConfig().toSimple(), configPath.toFile());
-			return this.load();
+			writer.write(FSitConfig.toPrimitive(), configPath.toFile());
+			FSitConfigManager.load();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void save(FSitConfig config) {
+	public static void save() {
 		if (Files.exists(configPath))
 			try {
-				writer.write(config.toSimple(), configPath.toFile());
+				writer.write(FSitConfig.toPrimitive(), configPath.toFile());
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-		else this.create();
+		else FSitConfigManager.create();
 	}
 }

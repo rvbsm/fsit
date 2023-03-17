@@ -10,6 +10,7 @@ version = "git --no-pager describe --tags --always".runCommand()
 
 repositories {
 	maven("https://maven.terraformersmc.com/")
+	maven("https://maven.shedaniel.me/")
 }
 
 dependencies {
@@ -18,8 +19,10 @@ dependencies {
 
 	modImplementation(libs.fabric.loader)
 	modApi(libs.modmenu)
+	modApi(libs.clothconfig)
 
 	implementation(libs.toml4j)
+	include(libs.toml4j)
 }
 
 tasks {
