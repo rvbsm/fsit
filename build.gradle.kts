@@ -8,11 +8,18 @@ plugins {
 group = property("maven_group")!!
 version = "git --no-pager describe --tags --always".runCommand()
 
+repositories {
+	maven("https://maven.terraformersmc.com/")
+}
+
 dependencies {
 	minecraft(libs.minecraft)
 	mappings("net.fabricmc:yarn:${libs.versions.yarn.mappings.get()}:v2")
 
 	modImplementation(libs.fabric.loader)
+	modApi(libs.modmenu)
+
+	implementation(libs.toml4j)
 }
 
 tasks {

@@ -17,6 +17,9 @@
 	"entrypoints": {
 		"main": [
 			"dev.rvbsm.fsit.FSitMod"
+		],
+		"modmenu": [
+			"dev.rvbsm.fsit.FSitModMenu"
 		]
 	},
 	"mixins": [
