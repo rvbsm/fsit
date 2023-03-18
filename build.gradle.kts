@@ -21,7 +21,6 @@ dependencies {
 	modApi(libs.modmenu)
 	modApi(libs.clothconfig)
 
-	implementation(libs.nightconfig.toml)
 	shadow(libs.nightconfig.toml)
 }
 
