@@ -30,9 +30,7 @@ public class PlayerEntityMixin {
 		final PlayerEntity player = (PlayerEntity) (Object) this;
 		if (player.isSpectator() || player.hasVehicle()) return;
 
-		if (entity instanceof PlayerEntity otherPlayer) {
-			if (otherPlayer.isSpectator() || otherPlayer.hasPassengers()) return;
-			player.startRiding(otherPlayer, true);
-		}
+		if (entity instanceof PlayerEntity otherPlayer)
+			if (!otherPlayer.isSpectator() && !otherPlayer.hasPassengers()) player.startRiding(otherPlayer, true);
 	}
 }
