@@ -38,9 +38,11 @@ tasks {
 	}
 
 	shadowJar {
+		dependsOn(jar)
 		configurations = listOf(project.configurations.shadow.get())
-		relocate("com.electronwill.night-config", "dev.rvbsm.shadow.com.electronwill.night-config")
 		exclude("META-INF/**")
+
+		relocate("com.electronwill.night-config", "dev.rvbsm.shadow.com.electronwill.night-config")
 	}
 
 	remapJar {
