@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin {
 
-	@Inject(at = @At(value = "HEAD"), method = "onDisconnect")
+	@Inject(method = "onDisconnect", at = @At(value = "HEAD"))
 	public void onDisconnect(CallbackInfo ci) {
 		final PlayerEntity player = (PlayerEntity) (Object) this;
 		final Entity vehicle = player.getVehicle();

@@ -24,7 +24,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ServerPlayerInteractionManager.class)
 public class ServerPlayerInteractionManagerMixin {
@@ -32,7 +31,7 @@ public class ServerPlayerInteractionManagerMixin {
 	private static final FSitMod FSit = FSitMod.getInstance();
 	private static final int RADIUS = 2;
 
-	@Inject(at = @At(value = "HEAD"), method = "interactBlock", locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(method = "interactBlock", at = @At(value = "HEAD"))
 	public void interactBlock(ServerPlayerEntity player, @NotNull World world, ItemStack stack, Hand hand, @NotNull BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
 		if (hand != Hand.MAIN_HAND) return;
 		final BlockPos blockPos = hitResult.getBlockPos();
@@ -67,7 +66,7 @@ public class ServerPlayerInteractionManagerMixin {
 			if (blockState.isIn(configTag)) return this.isBottom(block, blockState);
 
 		for (Block configBlock : FSitConfig.sittableBlocks.getBlocks())
-			if (block.equals(configBlock)) return this.isBottom(block, blockState);
+			if (blockState.isOf(configBlock)) return this.isBottom(block, blockState);
 
 		return false;
 	}

@@ -8,11 +8,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin {
+public class PlayerEntityMixin {
 
-	@Inject(at = @At(value = "RETURN"), method = "shouldDismount", cancellable = true)
+	@Inject(method = "shouldDismount", at = @At(value = "HEAD"), cancellable = true)
 	protected void shouldDismount(CallbackInfoReturnable<Boolean> cir) {
 		final PlayerEntity player = (PlayerEntity) (Object) this;
+		if (player.world.isClient) return;
 
 		// ! bruh
 		if (player.getVehicle() instanceof final SeatEntity seatEntity) if (seatEntity.age <= 10) cir.setReturnValue(false);

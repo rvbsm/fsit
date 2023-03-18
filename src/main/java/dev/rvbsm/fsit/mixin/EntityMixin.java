@@ -27,10 +27,12 @@ public abstract class EntityMixin {
 
 	@Shadow public abstract boolean hasVehicle();
 
-	@Inject(at = @At(value = "HEAD"), method = "setSneaking", locals = LocalCapture.CAPTURE_FAILHARD)
+	@Shadow public abstract boolean isSpectator();
+
+	@Inject(method = "setSneaking", at = @At(value = "HEAD"))
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
 		if (this.world.isClient) return;
-		if (!this.isOnGround() || this.hasVehicle()) return;
+		if (!this.isOnGround() || this.hasVehicle() || this.isSpectator()) return;
 
 		if ((Entity) (Object) this instanceof final PlayerEntity player) if (FSit.isNeedSeat(player) && !sneaking)
 			FSit.spawnSeat(player, this.world, this.getX(), this.getY(), this.getZ());
