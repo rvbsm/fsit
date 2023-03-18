@@ -9,8 +9,9 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 public class FSitConfig {
-	public static final Option<Double> minAngle = new Option<>("min_angle", 66.6D);
+	public static final Option<Double> minAngle = new Option<>("min_angle", 66.0D);
 	public static final Option<Integer> shiftDelay = new Option<>("shift_delay", 600);
+	public static final Option<Boolean> sitOnPlayers = new Option<>("sit_on_players", false);
 	public static final BlockSetOption sittableBlocks = new BlockSetOption("sittable_blocks", List.of());
 	public static final TagKeyBlockSetOption sittableTags = new TagKeyBlockSetOption("sittable_tags", List.of("minecraft:slabs", "minecraft:stairs", "minecraft:logs"));
 
@@ -25,6 +26,7 @@ public class FSitConfig {
 					e.printStackTrace();
 				}
 			}
+		FSitConfigManager.save(); // for empty fields
 	}
 
 	protected static void save() {
