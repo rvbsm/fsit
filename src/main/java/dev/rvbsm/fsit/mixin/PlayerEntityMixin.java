@@ -4,6 +4,8 @@ import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.entity.SeatEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,9 +30,14 @@ public class PlayerEntityMixin {
 		if (!FSitConfig.sitOnPlayers.getValue()) return;
 
 		final PlayerEntity player = (PlayerEntity) (Object) this;
-		if (player.isSpectator() || player.hasVehicle()) return;
+		if (player.world.isClient || player.isSpectator() || player.hasVehicle()) return;
 
-		if (entity instanceof PlayerEntity otherPlayer)
-			if (!otherPlayer.isSpectator() && !otherPlayer.hasPassengers()) player.startRiding(otherPlayer, true);
+		if (entity instanceof PlayerEntity) if (!entity.isSpectator() && !entity.hasPassengers()) {
+			final ServerPlayerEntity passenger = (ServerPlayerEntity) entity;
+
+			passenger.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(player));
+			player.startRiding(passenger, true);
+			passenger.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(passenger));
+		}
 	}
 }
