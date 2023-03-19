@@ -30,10 +30,6 @@ public class SeatEntity extends AreaEffectCloudEntity {
 		this.mounted = true;
 	}
 
-	@Override protected boolean canAddPassenger(Entity passenger) {
-		return true;
-	}
-
 	@Override public void tick() {
 		if (this.mounted && super.isAlive() && !super.hasPassengers()) this.discardSeat();
 
