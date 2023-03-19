@@ -1,10 +1,16 @@
 package dev.rvbsm.fsit;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.config.FSitConfigManager;
 import dev.rvbsm.fsit.entity.SeatEntity;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +19,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
 public class FSitMod implements ModInitializer {
 
@@ -85,5 +93,24 @@ public class FSitMod implements ModInitializer {
 	@Override public void onInitialize() {
 		instance = this;
 		FSitConfigManager.load();
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> this.registerCommand(dispatcher));
+	}
+
+	@SuppressWarnings("unchecked")
+	private void registerCommand(@NotNull CommandDispatcher dispatcher) {
+		dispatcher.register(literal("sit")
+						.executes(ctx -> this.sitCommand((ServerCommandSource) ctx.getSource())));
+	}
+
+	private int sitCommand(@NotNull ServerCommandSource source) throws CommandSyntaxException {
+		final PlayerEntity player = source.getPlayerOrThrow();
+		final Entity vehicle = player.getVehicle();
+		final World world = source.getWorld();
+		final double x = player.getX(), y = player.getY(), z = player.getZ();
+		if (player.isOnGround() && vehicle == null && !player.isSpectator()) this.spawnSeat(player, world, x, y, z);
+		else if (vehicle instanceof SeatEntity) player.setSneaking(true);
+
+		return Command.SINGLE_SUCCESS;
 	}
 }
