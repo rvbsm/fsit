@@ -109,7 +109,7 @@ public class FSitMod implements ModInitializer {
 		final World world = source.getWorld();
 		final double x = player.getX(), y = player.getY(), z = player.getZ();
 		if (player.isOnGround() && vehicle == null && !player.isSpectator()) this.spawnSeat(player, world, x, y, z);
-		else if (vehicle instanceof SeatEntity) player.setSneaking(true);
+		else if (vehicle instanceof SeatEntity) player.stopRiding();
 
 		return Command.SINGLE_SUCCESS;
 	}
