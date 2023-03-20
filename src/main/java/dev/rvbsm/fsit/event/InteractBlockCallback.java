@@ -35,14 +35,13 @@ public class InteractBlockCallback {
 			final double x = blockPos.getX() + .5d;
 			final double y = blockPos.getY() + (blockState.isSolidBlock(world, blockPos) ? 1d : .5d);
 			final double z = blockPos.getZ() + .5d;
-			final Vec3d pos =
-							blockState.isIn(BlockTags.STAIRS) ? new Vec3d(x, y, z) : switch (blockState.get(StairsBlock.FACING)) {
-								case NORTH -> new Vec3d(x, y, z + .1f);
-								case SOUTH -> new Vec3d(x, y, z - .1f);
-								case WEST -> new Vec3d(x + .1f, y, z);
-								case EAST -> new Vec3d(x - .1f, y, z);
-								default -> throw new IllegalStateException(blockState.get(StairsBlock.FACING).asString());
-							};
+			final Vec3d pos = blockState.isIn(BlockTags.STAIRS) ? switch (blockState.get(StairsBlock.FACING)) {
+				case NORTH -> new Vec3d(x, y, z + .1f);
+				case SOUTH -> new Vec3d(x, y, z - .1f);
+				case WEST -> new Vec3d(x + .1f, y, z);
+				case EAST -> new Vec3d(x - .1f, y, z);
+				default -> throw new IllegalStateException(blockState.get(StairsBlock.FACING).asString());
+			} : new Vec3d(x, y, z);
 			if (!SeatEntity.hasSeatAt(world, pos)) FSitMod.spawnSeat(player, world, pos);
 		}
 		return ActionResult.PASS;
