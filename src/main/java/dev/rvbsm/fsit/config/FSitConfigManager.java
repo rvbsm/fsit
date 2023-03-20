@@ -5,7 +5,6 @@ import dev.rvbsm.fsit.FSitMod;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class FSitConfigManager {
@@ -19,7 +18,6 @@ public class FSitConfigManager {
 	}
 
 	public static void load() {
-		if (!Files.exists(configPath)) FSitConfigManager.save();
 		config.load();
 		FSitConfig.load();
 	}

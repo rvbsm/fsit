@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 public class BlockSetOption extends Option<List<String>> {
 
-	public BlockSetOption(String key, List<String> value) {
-		super(key, value);
+	public BlockSetOption(String key, List<String> defaultValue) {
+		super(key, defaultValue);
 	}
 
 	public Set<Block> getBlocks() {

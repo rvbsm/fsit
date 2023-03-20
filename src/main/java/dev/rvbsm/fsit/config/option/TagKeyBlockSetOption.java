@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 public class TagKeyBlockSetOption extends Option<List<String>> {
 
-	public TagKeyBlockSetOption(String key, List<String> value) {
-		super(key, value);
+	public TagKeyBlockSetOption(String key, List<String> defaultValue) {
+		super(key, defaultValue);
 	}
 
 	public Set<TagKey<Block>> getTagKeySet() {

@@ -7,11 +7,11 @@ public class Option<T> {
 	private final T defaultValue;
 	private T value;
 
-	public Option(String key, T value) {
+	public Option(String key, T defaultValue) {
 		this.key = key;
 		this.translationKey = FSitMod.getTranslationKey("option", key);
-		this.value = value;
-		this.defaultValue = value;
+		this.value = defaultValue;
+		this.defaultValue = defaultValue;
 	}
 
 	public String getKey() {
