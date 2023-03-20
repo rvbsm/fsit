@@ -1,19 +1,28 @@
 package dev.rvbsm.fsit.entity;
 
-import dev.rvbsm.fsit.FSitMod;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class SeatEntity extends AreaEffectCloudEntity {
 
-	private static final FSitMod FSit = FSitMod.getInstance();
+	private static final Map<Identifier, Set<Vec3d>> existingSeats = new LinkedHashMap<>();
+	private static final double offset = .5d;
 	private boolean mounted = false;
 
-	public SeatEntity(World world, double x, double y, double z) {
-		super(world, x, y - .5f, z);
+	public SeatEntity(World world, @NotNull Vec3d pos) {
+		super(world, pos.x, pos.y - offset, pos.z);
+		this.addSeatAt(world, pos.add(0, -offset, 0));
 
 		super.setNoGravity(true);
 		super.setInvulnerable(true);
@@ -25,21 +34,42 @@ public class SeatEntity extends AreaEffectCloudEntity {
 		super.setWaitTime(0);
 	}
 
-	@Override protected void addPassenger(Entity passenger) {
+	public static boolean hasSeatAt(@NotNull World world, Vec3d pos) {
+		final Identifier worldId = world.getRegistryKey().getValue();
+		final Set<Vec3d> worldSeats = SeatEntity.existingSeats.getOrDefault(worldId, new LinkedHashSet<>());
+		return worldSeats.contains(pos);
+	}
+
+	@Override
+	protected void addPassenger(Entity passenger) {
 		super.addPassenger(passenger);
 		this.mounted = true;
 	}
 
-	@Override public void tick() {
-		if (this.mounted && super.isAlive() && !super.hasPassengers()) this.discardSeat();
-
-		// ! is there a better way to check if the block was broken?
-		final BlockPos blockPos = this.getBlockPos();
-		if (this.world.getBlockState(blockPos).isAir()) this.discardSeat();
+	@Override
+	public void tick() {
+		if (this.mounted) {
+			final BlockPos blockPos = this.getBlockPos();
+			if (!this.hasPassengers() || this.world.getBlockState(blockPos).isAir()) this.discardSeat();
+		}
 	}
 
 	private void discardSeat() {
-		FSit.removeSeatAt(this.getX(), this.getY() + .5f, this.getZ());
+		this.removeSeatAt(super.world, super.getPos());
 		super.discard();
+	}
+
+	private void addSeatAt(@NotNull World world, Vec3d pos) {
+		final Identifier worldId = world.getRegistryKey().getValue();
+		final Set<Vec3d> worldSeats = SeatEntity.existingSeats.getOrDefault(worldId, new LinkedHashSet<>());
+		worldSeats.add(pos);
+		SeatEntity.existingSeats.put(worldId, worldSeats);
+	}
+
+	private void removeSeatAt(@NotNull World world, Vec3d pos) {
+		final Identifier worldId = world.getRegistryKey().getValue();
+		final Set<Vec3d> worldSeats = SeatEntity.existingSeats.getOrDefault(worldId, new LinkedHashSet<>());
+		worldSeats.remove(pos);
+		SeatEntity.existingSeats.put(worldId, worldSeats);
 	}
 }

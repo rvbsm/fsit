@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class FSitModMenu implements ModMenuApi {
-	@Override public ConfigScreenFactory<?> getModConfigScreenFactory() {
+	@Override
+	public ConfigScreenFactory<?> getModConfigScreenFactory() {
 		return screen -> {
 			final ConfigBuilder configBuilder = ConfigBuilder.create()
 							.setParentScreen(screen)
