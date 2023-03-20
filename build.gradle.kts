@@ -5,6 +5,9 @@ plugins {
 	id("com.github.johnrengelman.shadow")
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
+
 group = property("maven_group")!!
 version = "git --no-pager describe --tags --always".runCommand()
 
@@ -18,6 +21,7 @@ dependencies {
 	mappings("net.fabricmc:yarn:${libs.versions.yarn.mappings.get()}:v2")
 
 	modImplementation(libs.fabric.loader)
+	include(fabricApi.module("fabric-command-api-v2", libs.versions.fabric.api.get()))
 	modApi(libs.modmenu)
 	modApi(libs.clothconfig)
 

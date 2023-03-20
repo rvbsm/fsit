@@ -2,6 +2,7 @@
 minecraft = "1.19.4"
 yarn_mappings = "1.19.4+build.1"
 fabric_loader = "0.14.17"
+fabric_api = "0.76.0+1.19.4"
 
 modmenu = "6.1.0-rc.4"
 clothconfig = "10.0.96"
