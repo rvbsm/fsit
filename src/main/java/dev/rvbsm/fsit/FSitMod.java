@@ -6,8 +6,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.config.FSitConfigManager;
 import dev.rvbsm.fsit.entity.SeatEntity;
+import dev.rvbsm.fsit.event.InteractBlockCallback;
+import dev.rvbsm.fsit.event.InteractPlayerCallback;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
@@ -95,6 +99,9 @@ public class FSitMod implements ModInitializer {
 		FSitConfigManager.load();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> this.registerCommand(dispatcher));
+
+		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
+		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
 	}
 
 	@SuppressWarnings("unchecked")
