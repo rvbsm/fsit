@@ -1,22 +1,14 @@
 package dev.rvbsm.fsit;
 
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.config.FSitConfigManager;
 import dev.rvbsm.fsit.entity.SeatEntity;
 import dev.rvbsm.fsit.event.InteractBlockCallback;
 import dev.rvbsm.fsit.event.InteractPlayerCallback;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
@@ -77,33 +69,7 @@ public class FSitMod implements ModInitializer {
 	public void onInitialize() {
 		FSitConfigManager.load();
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> this.registerCommand(dispatcher));
-
 		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
 		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
-	}
-
-	@SuppressWarnings("unchecked")
-	private void registerCommand(@NotNull CommandDispatcher dispatcher) {
-		dispatcher.register(LiteralArgumentBuilder.literal("sit")
-						.executes(ctx -> this.sitCommand((ServerCommandSource) ctx.getSource())));
-	}
-
-	private int sitCommand(@NotNull ServerCommandSource source) {
-		final PlayerEntity player;
-		try {
-			player = source.getPlayerOrThrow();
-		} catch (CommandSyntaxException e) {
-			source.sendError(Text.literal("Operation not permitted from console"));
-			return -1;
-		}
-
-		final Entity vehicle = player.getVehicle();
-		final World world = source.getWorld();
-		final Vec3d playerPos = player.getPos();
-		if (player.isOnGround() && vehicle == null && !player.isSpectator()) FSitMod.spawnSeat(player, world, playerPos);
-		else if (vehicle instanceof SeatEntity) player.stopRiding();
-
-		return Command.SINGLE_SUCCESS;
 	}
 }

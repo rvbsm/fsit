@@ -18,6 +18,9 @@
 		"main": [
 			"dev.rvbsm.fsit.FSitMod"
 		],
+		"server": [
+			"dev.rvbsm.fsit.FSitServerMod"
+		],
 		"modmenu": [
 			"dev.rvbsm.fsit.FSitModMenu"
 		]
