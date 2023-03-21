@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public class FSitConfig {
+public abstract class FSitConfig {
 	public static final Option<Double> minAngle = new Option<>("min_angle", 66.0D);
 	public static final Option<Integer> shiftDelay = new Option<>("shift_delay", 600);
 	public static final Option<Boolean> sitOnPlayers = new Option<>("sit_on_players", false);

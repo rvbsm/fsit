@@ -10,7 +10,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
-public class InteractPlayerCallback {
+public abstract class InteractPlayerCallback {
 
 	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, HitResult hitResult) {
 		if (!FSitConfig.sitOnPlayers.getValue()) return ActionResult.PASS;

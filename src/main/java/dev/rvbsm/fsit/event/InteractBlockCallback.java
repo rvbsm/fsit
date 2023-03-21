@@ -22,7 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
-public class InteractBlockCallback {
+public abstract class InteractBlockCallback {
 
 	private static final int RADIUS = 2;
 

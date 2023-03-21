@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
-public class FSitConfigManager {
+public abstract class FSitConfigManager {
 
 	private static final Path configDir = FabricLoader.getInstance().getConfigDir();
 	private static final Path configPath = FSitConfigManager.getConfigPath();
