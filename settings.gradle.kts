@@ -1,4 +1,3 @@
-rootProject.name = "fsit"
 pluginManagement {
 	repositories {
 		maven("https://maven.fabricmc.net/") {
@@ -11,3 +10,6 @@ pluginManagement {
 		id("com.github.johnrengelman.shadow") version "8.1.0"
 	}
 }
+rootProject.name = "fsit"
+
+include("fsit-client")

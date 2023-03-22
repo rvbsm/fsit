@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "fsit-client",
+	"version": "${version}",
+	"name": "FSit (Client)",
+	"description": "Adjusts the player's height when sitting on another",
+	"authors": [
+		"rvbsm"
+	],
+	"contact": {
+		"sources": "https://github.com/rvbsm/fsit",
+		"issues": "https://github.com/rvbsm/fsit/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/fsit-client/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"dev.rvbsm.fsit.client.FSitClientMod"
+		]
+	},
+	"mixins": [
+		"fsit-client.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.0"
+	},
+	"custom": {
+		"modmenu": {
+			"parent": "fsit"
+		}
+	}
+}
