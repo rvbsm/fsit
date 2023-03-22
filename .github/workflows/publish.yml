@@ -23,7 +23,7 @@ jobs:
           game-versions: |
             1.19.3
             1.19.4
-          dependencies:
+          dependencies: |
             modmenu | suggests | *
             cloth-config | recommends | *
 
