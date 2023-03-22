@@ -5,9 +5,11 @@ import dev.rvbsm.fsit.config.FSitConfigManager;
 import dev.rvbsm.fsit.entity.SeatEntity;
 import dev.rvbsm.fsit.event.InteractBlockCallback;
 import dev.rvbsm.fsit.event.InteractPlayerCallback;
+import dev.rvbsm.fsit.event.PlayerConnectionCallbacks;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -71,5 +73,6 @@ public class FSitMod implements ModInitializer {
 
 		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
 		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
+		ServerPlayConnectionEvents.DISCONNECT.register(PlayerConnectionCallbacks::onDisconnect);
 	}
 }

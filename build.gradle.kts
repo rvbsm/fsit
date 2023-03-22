@@ -23,6 +23,8 @@ dependencies {
 	modImplementation(libs.fabric.loader)
 	include(fabricApi.module("fabric-command-api-v2", libs.versions.fabric.api.get()))
 	include(fabricApi.module("fabric-events-interaction-v0", libs.versions.fabric.api.get()))
+	include(fabricApi.module("fabric-networking-api-v1", rootProject.libs.versions.fabric.api.get()))
+
 	modApi(libs.modmenu)
 	modApi(libs.clothconfig)
 
