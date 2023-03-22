@@ -35,16 +35,16 @@ public abstract class EntityMixin {
 		if (this.world.isClient) return;
 		if (!this.isOnGround() || this.hasVehicle() || this.isSpectator()) return;
 
-		if ((Entity) (Object) this instanceof final PlayerEntity player) if (FSitMod.isNeedSeat(player) && !sneaking)
-			FSitMod.spawnSeat(player, this.world, this.getPos());
-		else if (!sneaking) FSitMod.addSneaked(player);
+		if ((Entity) (Object) this instanceof final PlayerEntity player)
+			if (FSitMod.isNeedSeat(player) && !sneaking) FSitMod.spawnSeat(player, this.world, this.getPos());
+			else if (!sneaking) FSitMod.addSneaked(player);
 	}
 
 	// https://github.com/ForwarD-NerN/PlayerLadder/blob/fc475d62fda188e09e3835cef4ba53b671931739/src/main/java/ru/nern/pladder/mixin/EntityMixin.java#L24-L33
 	@Inject(method = "removePassenger", at = @At(value = "TAIL"))
 	protected void removePassenger(Entity passenger, CallbackInfo ci) {
 		if (this.world.isClient) return;
-		if ((Entity) (Object) this instanceof final PlayerEntity player && passenger instanceof PlayerEntity)
-			((ServerPlayerEntity) player).networkHandler.sendPacket(new EntityPassengersSetS2CPacket(player));
+		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && passenger instanceof PlayerEntity)
+			player.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(player));
 	}
 }
