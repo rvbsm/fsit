@@ -15,7 +15,7 @@ public abstract class FSitConfig {
 	public static final BlockSetOption sittableBlocks = new BlockSetOption("sittable_blocks", List.of());
 	public static final TagKeyBlockSetOption sittableTags = new TagKeyBlockSetOption("sittable_tags", List.of("minecraft:slabs", "minecraft:stairs", "minecraft:logs"));
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	protected static void load() {
 		for (Field field : FSitConfig.class.getDeclaredFields())
 			if (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()) && Option.class.isAssignableFrom(field.getType())) {
@@ -30,12 +30,13 @@ public abstract class FSitConfig {
 		FSitConfigManager.save(); // for empty fields
 	}
 
+	@SuppressWarnings("rawtypes")
 	protected static void save() {
 		for (Field field : FSitConfig.class.getDeclaredFields())
 			if (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()) && Option.class.isAssignableFrom(field.getType())) {
 				try {
 					final Option option = (Option) field.get(null);
-					FSitConfigManager.config.set(option.getKey(), option.getDefaultValue());
+					FSitConfigManager.config.set(option.getKey(), option.getValue());
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				}
