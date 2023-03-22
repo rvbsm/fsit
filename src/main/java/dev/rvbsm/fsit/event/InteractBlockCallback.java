@@ -26,7 +26,7 @@ public abstract class InteractBlockCallback {
 
 	private static final int RADIUS = 2;
 
-	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+	public static ActionResult interactBlock(PlayerEntity player, @NotNull World world, Hand hand, BlockHitResult hitResult) {
 		if (world.isClient || hand != Hand.MAIN_HAND) return ActionResult.PASS;
 		final BlockPos blockPos = hitResult.getBlockPos();
 		final BlockState blockState = world.getBlockState(blockPos);
@@ -58,7 +58,7 @@ public abstract class InteractBlockCallback {
 		if (Math.abs(player.getBlockPos().getX() - blockPos.getX()) > RADIUS) return false;
 		else if (Math.abs(player.getBlockPos().getZ() - blockPos.getZ()) > RADIUS) return false;
 		else if (hitResult.getSide() != Direction.UP || player.getY() - blockPos.getY() > RADIUS) return false;
-		else if (!player.isOnGround() && !player.hasVehicle() || !player.isSneaking()) return false;
+		else if (!player.isOnGround() || !player.isSneaking()) return false;
 
 		final BlockState blockAbove = world.getBlockState(blockPos.up());
 		if (!blockAbove.isAir()) return false;

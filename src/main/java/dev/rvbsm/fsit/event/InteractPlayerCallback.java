@@ -12,9 +12,10 @@ import net.minecraft.world.World;
 
 public abstract class InteractPlayerCallback {
 
-	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, HitResult hitResult) {
+	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, HitResult ignored) {
 		if (!FSitConfig.sitOnPlayers.getValue()) return ActionResult.PASS;
-		else if (world.isClient || player.isSpectator() || player.hasVehicle()) return ActionResult.PASS;
+		else if (world.isClient || player.isSpectator()) return ActionResult.PASS;
+		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 		else if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
 
 		if (entity instanceof PlayerEntity) if (!entity.isSpectator() && !entity.hasPassengers()) {
