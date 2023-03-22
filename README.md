@@ -2,6 +2,9 @@
 
 A server-side mod that allows players to sit anywhere.
 
+___NOTE: so that the players do not block your view install client-side mod__ (check additional files; bundled in full
+version)_
+
 ## Usage
 
 To sit down, look down and sneak twice.
