@@ -10,9 +10,6 @@ allprojects {
 	apply(plugin = "java")
 	apply(plugin = "fabric-loom")
 
-	java.sourceCompatibility = JavaVersion.VERSION_17
-	java.targetCompatibility = JavaVersion.VERSION_17
-
 	group = property("maven_group")!!
 	version = "git --no-pager describe --tags --always".runCommand()
 
@@ -45,13 +42,16 @@ allprojects {
 			options.release.set(17)
 		}
 	}
+
+	java {
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
+	}
 }
 
 subprojects {
-	tasks {
-		remapJar {
-			destinationDirectory.set(rootProject.tasks.remapJar.get().destinationDirectory)
-		}
+	tasks.remapJar {
+		destinationDirectory.set(rootProject.tasks.remapJar.get().destinationDirectory)
 	}
 }
 
@@ -60,18 +60,22 @@ repositories {
 	maven("https://maven.shedaniel.me/")
 }
 
+configurations {
+	modApi {
+		extendsFrom(shadow.get())
+	}
+}
+
 dependencies {
 	include(fabricApi.module("fabric-command-api-v2", libs.versions.fabric.api.get()))
 	include(fabricApi.module("fabric-events-interaction-v0", libs.versions.fabric.api.get()))
 	include(fabricApi.module("fabric-networking-api-v1", rootProject.libs.versions.fabric.api.get()))
 
-	implementation(project(":fsit-client", configuration = "namedElements"))
-	include(project(":fsit-client"))
+	include(project(":fsit-client", configuration = "namedElements"))
 
 	modApi(libs.modmenu)
 	modApi(libs.clothconfig)
 
-	implementation(libs.nightconfig.toml)
 	shadow(libs.nightconfig.toml)
 }
 
@@ -79,14 +83,11 @@ tasks {
 	shadowJar {
 		dependsOn(jar)
 		configurations = listOf(project.configurations.shadow.get())
-		exclude("META-INF/**")
-
-		relocate("com.electronwill.night-config", "dev.rvbsm.shadow.com.electronwill.night-config")
 	}
 
 	remapJar {
 		dependsOn(shadowJar)
-		inputFile.set(shadowJar.get().archiveFile.get())
+		inputFile.set(shadowJar.get().archiveFile)
 	}
 }
 
