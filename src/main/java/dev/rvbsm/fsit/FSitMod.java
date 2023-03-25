@@ -28,6 +28,7 @@ public class FSitMod implements ModInitializer {
 	private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private static final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new LinkedHashMap<>();
 	private static final Set<UUID> sneakedPlayers = new LinkedHashSet<>();
+	private static boolean sneakDetect = false;
 
 	@Contract(pure = true)
 	public static @NotNull String getTranslationKey(String type, String id) {
@@ -39,14 +40,22 @@ public class FSitMod implements ModInitializer {
 	}
 
 	public static boolean isNeedSeat(@NotNull PlayerEntity player) {
-		return sneakedPlayers.contains(player.getUuid()) && player.getPitch(1f) >= FSitConfig.minAngle.getValue();
+		return sneakedPlayers.contains(player.getUuid()) && player.getPitch() >= FSitConfig.minAngle.getValue();
+	}
+
+	public static void setSneakDetect() {
+		FSitMod.sneakDetect = true;
+		FSitMod.scheduledTasks.put(UUID.randomUUID(), scheduler.schedule(() -> FSitMod.sneakDetect = false,
+						FSitConfig.shiftDelay.getValue(), TimeUnit.MILLISECONDS));
 	}
 
 	public static void addSneaked(@NotNull PlayerEntity player) {
+		if (!FSitMod.sneakDetect) return;
 		final UUID playerUid = player.getUuid();
-		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch(1f) >= FSitConfig.minAngle.getValue()) {
+		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch() >= FSitConfig.minAngle.getValue()) {
 			FSitMod.sneakedPlayers.add(playerUid);
-			FSitMod.scheduledTasks.put(playerUid, scheduler.schedule(() -> FSitMod.sneakedPlayers.remove(playerUid), FSitConfig.shiftDelay.getValue(), TimeUnit.MILLISECONDS));
+			FSitMod.scheduledTasks.put(playerUid, scheduler.schedule(() -> FSitMod.sneakedPlayers.remove(playerUid),
+							FSitConfig.shiftDelay.getValue(), TimeUnit.MILLISECONDS));
 		}
 	}
 

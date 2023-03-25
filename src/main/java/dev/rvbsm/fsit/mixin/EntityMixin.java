@@ -38,6 +38,7 @@ public abstract class EntityMixin {
 		if ((Entity) (Object) this instanceof final PlayerEntity player)
 			if (FSitMod.isNeedSeat(player) && !sneaking) FSitMod.spawnSeat(player, this.world, this.getPos());
 			else if (!sneaking) FSitMod.addSneaked(player);
+			else FSitMod.setSneakDetect();
 	}
 
 	// https://github.com/ForwarD-NerN/PlayerLadder/blob/fc475d62fda188e09e3835cef4ba53b671931739/src/main/java/ru/nern/pladder/mixin/EntityMixin.java#L24-L33
