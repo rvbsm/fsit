@@ -1,6 +1,6 @@
 {
 	"package": "dev.rvbsm.fsit.client.mixin",
-	"mixins": [
+	"client": [
 		"EntityMixin"
 	]
 }

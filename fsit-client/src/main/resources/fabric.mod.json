@@ -14,11 +14,6 @@
 	"license": "MIT",
 	"icon": "assets/fsit-client/icon.png",
 	"environment": "client",
-	"entrypoints": {
-		"client": [
-			"dev.rvbsm.fsit.client.FSitClientMod"
-		]
-	},
 	"mixins": [
 		"fsit-client.mixins.json"
 	],
