@@ -15,7 +15,7 @@ public class TagKeyBlockSetOption extends Option<List<String>> {
 		super(key, defaultValue);
 	}
 
-	public Set<TagKey<Block>> getTagKeySet() {
+	public Set<TagKey<Block>> getTagKeys() {
 		return super.getValue().stream()
 						.map(id -> TagKey.of(RegistryKeys.BLOCK, new Identifier(id)))
 						.collect(Collectors.toSet());

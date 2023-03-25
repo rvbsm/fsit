@@ -44,6 +44,7 @@ public abstract class InteractBlockCallback {
 			} : new Vec3d(x, y, z);
 			if (!SeatEntity.hasSeatAt(world, pos)) FSitMod.spawnSeat(player, world, pos);
 		}
+
 		return ActionResult.PASS;
 	}
 
@@ -64,7 +65,7 @@ public abstract class InteractBlockCallback {
 		if (!blockAbove.isAir()) return false;
 
 		// ! calls every time players click!
-		for (TagKey<Block> configTag : FSitConfig.sittableTags.getTagKeySet())
+		for (TagKey<Block> configTag : FSitConfig.sittableTags.getTagKeys())
 			if (blockState.isIn(configTag)) return InteractBlockCallback.isBottom(block, blockState);
 
 		for (Block configBlock : FSitConfig.sittableBlocks.getBlocks())
