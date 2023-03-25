@@ -44,7 +44,7 @@ public abstract class EntityMixin {
 	@Inject(method = "removePassenger", at = @At(value = "TAIL"))
 	protected void removePassenger(Entity passenger, CallbackInfo ci) {
 		if (this.world.isClient) return;
-		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && passenger instanceof PlayerEntity)
+		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && passenger.isPlayer())
 			player.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(player));
 	}
 }
