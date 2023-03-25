@@ -22,7 +22,12 @@
 	},
 	"custom": {
 		"modmenu": {
-			"parent": "fsit"
+			"parent": {
+				"id": "fsit",
+				"name": "FSit",
+				"description": "Sit anywhere!",
+				"icon": "assets/fsit-client/icon.png"
+			}
 		}
 	}
 }
