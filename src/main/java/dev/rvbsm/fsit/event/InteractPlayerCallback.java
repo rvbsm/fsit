@@ -17,6 +17,7 @@ public abstract class InteractPlayerCallback {
 		else if (world.isClient || player.isSpectator()) return ActionResult.PASS;
 		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 		else if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
+		else if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
 
 		if (entity instanceof PlayerEntity) if (!entity.isSpectator() && !entity.hasPassengers()) {
 			final ServerPlayerEntity passenger = (ServerPlayerEntity) entity;
