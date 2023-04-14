@@ -50,6 +50,7 @@ public class FSitMod implements ModInitializer {
 	}
 
 	public static void addSneaked(@NotNull PlayerEntity player) {
+		if (!FSitConfig.sneakSit.getValue()) return;
 		if (!FSitMod.sneakDetect) return;
 		final UUID playerUid = player.getUuid();
 		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch() >= FSitConfig.minAngle.getValue()) {
