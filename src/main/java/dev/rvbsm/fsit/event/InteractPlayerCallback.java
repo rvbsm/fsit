@@ -25,6 +25,6 @@ public abstract class InteractPlayerCallback {
 			vehicle.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(vehicle));
 		}
 
-		return ActionResult.PASS;
+		return ActionResult.SUCCESS;
 	}
 }

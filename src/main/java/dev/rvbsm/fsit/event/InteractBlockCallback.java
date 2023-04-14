@@ -45,7 +45,7 @@ public abstract class InteractBlockCallback {
 			if (!SeatEntity.hasSeatAt(world, pos)) FSitMod.spawnSeat(player, world, pos);
 		}
 
-		return ActionResult.PASS;
+		return ActionResult.SUCCESS;
 	}
 
 	private static boolean canSeatAt(@NotNull PlayerEntity player, World world, BlockHitResult hitResult, @NotNull BlockState blockState, BlockPos blockPos) {
