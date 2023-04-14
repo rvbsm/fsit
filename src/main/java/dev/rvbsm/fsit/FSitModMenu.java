@@ -22,6 +22,10 @@ public class FSitModMenu implements ModMenuApi {
 							.setSavingRunnable(FSitConfigManager::save);
 			final ConfigEntryBuilder entryBuilder = configBuilder.entryBuilder();
 
+			final Text sneakSitText = Text.translatable(FSitConfig.sneakSit.getTranslationKey());
+			final boolean sneakSit = FSitConfig.sneakSit.getValue();
+			final boolean sneakSitDefault = FSitConfig.sneakSit.getDefaultValue();
+
 			final Text minAngleText = Text.translatable(FSitConfig.minAngle.getTranslationKey());
 			final int minAngle = FSitConfig.minAngle.getValue().intValue();
 			final Consumer<Integer> minAngleSave = value -> FSitConfig.minAngle.setValue(value.doubleValue());
@@ -37,6 +41,10 @@ public class FSitModMenu implements ModMenuApi {
 
 
 			final ConfigCategory main = configBuilder.getOrCreateCategory(Text.literal("Main"));
+			main.addEntry(entryBuilder.startBooleanToggle(sneakSitText, sneakSit)
+							.setDefaultValue(sneakSitDefault)
+							.setSaveConsumer(FSitConfig.sneakSit::setValue)
+							.build());
 			main.addEntry(entryBuilder.startIntSlider(minAngleText, minAngle, -90, 90)
 							.setDefaultValue(FSitConfig.minAngle.getDefaultValue().intValue())
 							.setSaveConsumer(minAngleSave)
