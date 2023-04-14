@@ -31,9 +31,9 @@ public class FSitModMenu implements ModMenuApi {
 			final int minAngleDefault = FSitConfig.minAngle.getDefaultValue().intValue();
 			final Consumer<Integer> minAngleSave = value -> FSitConfig.minAngle.setValue(value.doubleValue());
 
-			final Text shiftDelayText = Text.translatable(FSitConfig.shiftDelay.getTranslationKey());
-			final int shiftDelay = FSitConfig.shiftDelay.getValue();
-			final int shiftDelayDefault = FSitConfig.shiftDelay.getDefaultValue();
+			final Text shiftDelayText = Text.translatable(FSitConfig.sneakDelay.getTranslationKey());
+			final int shiftDelay = FSitConfig.sneakDelay.getValue();
+			final int shiftDelayDefault = FSitConfig.sneakDelay.getDefaultValue();
 
 			final Text sittableBlocksText = Text.translatable(FSitConfig.sittableBlocks.getTranslationKey());
 			final List<String> sittableBlocks = FSitConfig.sittableBlocks.getValue();
@@ -55,7 +55,7 @@ public class FSitModMenu implements ModMenuApi {
 							.build());
 			main.addEntry(entryBuilder.startIntSlider(shiftDelayText, shiftDelay, 100, 2000)
 							.setDefaultValue(shiftDelayDefault)
-							.setSaveConsumer(FSitConfig.shiftDelay::setValue)
+							.setSaveConsumer(FSitConfig.sneakDelay::setValue)
 							.build());
 			main.addEntry(entryBuilder.startStrList(sittableBlocksText, sittableBlocks)
 							.setDefaultValue(sittableBlocksDefault)
