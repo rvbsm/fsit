@@ -16,17 +16,19 @@ __NOTE:__
 ### Configuration (stored in `config/fsit.toml`)
 
 ```toml
+config_version = 2 # Do not change
+
 [sittable]
-sittable_blocks = [] # List of block ids (e.g. "oak_log") available to sit.
-sittable_tags = ["minecraft:slabs", "stairs", "logs"] # List of block tags.
+blocks = [] # List of block ids (e.g. "oak_log") available to sit.
+tags = ["minecraft:slabs", "stairs", "logs"] # List of block tags.
 
 [sneak]
 sneak_sit = true # Toggles sit by sneak feature.
 min_angle = 66.0 # degrees. Minimal pitch to sitting down.
-shift_delay = 600 # milliseconds. Time between sneaks for sitting down.
+sneak_delay = 600 # milliseconds. Time between sneaks for sitting down.
 
 [misc]
-sit_on_players = true # Toggles sitting on other players
+sit_players = false # Toggles sitting on other players
 ```
 
 ## Contributing
