@@ -32,6 +32,8 @@ public abstract class FSitConfigManager {
 	protected static void recreate() {
 		final File configFile = configPath.toFile();
 		if (configFile.exists()) configFile.delete();
-		FSitConfigManager.load();
+		config.clear();
+		config.set(FSitConfig.configVersion.getKey(), FSitConfig.configVersion.getDefaultValue());
+		config.load();
 	}
 }
