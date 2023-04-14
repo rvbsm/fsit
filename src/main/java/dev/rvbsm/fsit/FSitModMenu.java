@@ -28,16 +28,20 @@ public class FSitModMenu implements ModMenuApi {
 
 			final Text minAngleText = Text.translatable(FSitConfig.minAngle.getTranslationKey());
 			final int minAngle = FSitConfig.minAngle.getValue().intValue();
+			final int minAngleDefault = FSitConfig.minAngle.getDefaultValue().intValue();
 			final Consumer<Integer> minAngleSave = value -> FSitConfig.minAngle.setValue(value.doubleValue());
 
 			final Text shiftDelayText = Text.translatable(FSitConfig.shiftDelay.getTranslationKey());
 			final int shiftDelay = FSitConfig.shiftDelay.getValue();
+			final int shiftDelayDefault = FSitConfig.shiftDelay.getDefaultValue();
 
 			final Text sittableBlocksText = Text.translatable(FSitConfig.sittableBlocks.getTranslationKey());
-			final List<String> sittableBlocks = FSitConfig.sittableBlocks.getValue().stream().toList();
+			final List<String> sittableBlocks = FSitConfig.sittableBlocks.getValue();
+			final List<String> sittableBlocksDefault = FSitConfig.sittableBlocks.getDefaultValue();
 
 			final Text sittableTagsText = Text.translatable(FSitConfig.sittableTags.getTranslationKey());
-			final List<String> sittableTags = FSitConfig.sittableTags.getValue().stream().toList();
+			final List<String> sittableTags = FSitConfig.sittableTags.getValue();
+			final List<String> sittableTagsDefault = FSitConfig.sittableTags.getDefaultValue();
 
 
 			final ConfigCategory main = configBuilder.getOrCreateCategory(Text.literal("Main"));
@@ -46,19 +50,19 @@ public class FSitModMenu implements ModMenuApi {
 							.setSaveConsumer(FSitConfig.sneakSit::setValue)
 							.build());
 			main.addEntry(entryBuilder.startIntSlider(minAngleText, minAngle, -90, 90)
-							.setDefaultValue(FSitConfig.minAngle.getDefaultValue().intValue())
+							.setDefaultValue(minAngleDefault)
 							.setSaveConsumer(minAngleSave)
 							.build());
 			main.addEntry(entryBuilder.startIntSlider(shiftDelayText, shiftDelay, 100, 2000)
-							.setDefaultValue(FSitConfig.shiftDelay.getDefaultValue())
+							.setDefaultValue(shiftDelayDefault)
 							.setSaveConsumer(FSitConfig.shiftDelay::setValue)
 							.build());
 			main.addEntry(entryBuilder.startStrList(sittableBlocksText, sittableBlocks)
-							.setDefaultValue(FSitConfig.sittableBlocks.getDefaultValue())
+							.setDefaultValue(sittableBlocksDefault)
 							.setSaveConsumer(FSitConfig.sittableBlocks::setValue)
 							.build());
 			main.addEntry(entryBuilder.startStrList(sittableTagsText, sittableTags)
-							.setDefaultValue(FSitConfig.sittableTags.getDefaultValue())
+							.setDefaultValue(sittableTagsDefault)
 							.setSaveConsumer(FSitConfig.sittableTags::setValue)
 							.build());
 
