@@ -27,13 +27,4 @@ public abstract class FSitConfigManager {
 		FSitConfig.save();
 		config.save();
 	}
-
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	protected static void recreate() {
-		final File configFile = configPath.toFile();
-		if (configFile.exists()) configFile.delete();
-		config.clear();
-		config.set(FSitConfig.configVersion.getKey(), FSitConfig.configVersion.getDefaultValue());
-		config.load();
-	}
 }

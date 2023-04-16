@@ -15,12 +15,15 @@ public abstract class FSitConfig {
 	public static final BlockSetOption sittableBlocks = new BlockSetOption("sittable.blocks", List.of());
 	public static final TagKeyBlockSetOption sittableTags = new TagKeyBlockSetOption("sittable.tags", List.of("minecraft:slabs", "minecraft:stairs", "minecraft:logs"));
 	public static final Option<Boolean> sitPlayers = new Option<>("misc.sit_players", false);
-	protected static final Option<Integer> configVersion = new Option<>("config_version", 2);
+	private static final Option<Integer> configVersion = new Option<>("config_version", 2);
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	protected static void load() {
 		final Integer version = FSitConfigManager.config.getOrElse(configVersion.getKey(), 0);
-		if (!version.equals(configVersion.getValue())) FSitConfigManager.recreate();
+		if (!version.equals(configVersion.getValue())) {
+			FSitConfigManager.config.clear();
+			FSitConfigManager.config.set(FSitConfig.configVersion.getKey(), FSitConfig.configVersion.getDefaultValue());
+		}
 
 		for (Field field : FSitConfig.class.getDeclaredFields()) {
 			if (!Option.class.isAssignableFrom(field.getType())) continue;
@@ -37,6 +40,7 @@ public abstract class FSitConfig {
 				e.printStackTrace();
 			}
 		}
+
 		FSitConfigManager.save(); // for empty fields
 	}
 
