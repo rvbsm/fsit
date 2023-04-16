@@ -46,14 +46,18 @@ public abstract class FSitConfig {
 
 	@SuppressWarnings("rawtypes")
 	protected static void save() {
-		for (Field field : FSitConfig.class.getDeclaredFields())
-			if (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()) && Option.class.isAssignableFrom(field.getType())) {
-				try {
-					final Option option = (Option) field.get(null);
-					FSitConfigManager.config.set(option.getKey(), option.getValue());
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
+		for (Field field : FSitConfig.class.getDeclaredFields()) {
+			if (!Option.class.isAssignableFrom(field.getType())) continue;
+
+			final int modifiers = field.getModifiers();
+			if (!Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) continue;
+
+			try {
+				final Option option = (Option) field.get(null);
+				if (Modifier.isPublic(modifiers)) FSitConfigManager.config.set(option.getKey(), option.getValue());
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
 			}
+		}
 	}
 }
