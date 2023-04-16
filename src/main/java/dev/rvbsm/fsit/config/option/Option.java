@@ -10,7 +10,7 @@ public class Option<T> {
 
 	public Option(@NotNull String key, T defaultValue) {
 		this.key = key;
-		this.translationKey = FSitMod.getTranslationKey("option", key.substring(key.lastIndexOf("\\.") + 1));
+		this.translationKey = FSitMod.getTranslationKey("option", key.substring(key.lastIndexOf(".") + 1));
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
