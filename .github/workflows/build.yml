@@ -2,12 +2,7 @@ name: Build
 on:
   push:
     branches:
-      - 'next/**'
-      - 'feat/**'
-      - 'fix/**'
-  pull_request:
-    branches:
-      - 'next/**'
+      - '**'
 
 jobs:
   build:
