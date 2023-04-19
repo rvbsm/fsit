@@ -46,16 +46,17 @@ public class FSitMod implements ModInitializer {
 	public static void setSneakDetect() {
 		FSitMod.sneakDetect = true;
 		FSitMod.scheduledTasks.put(UUID.randomUUID(), scheduler.schedule(() -> FSitMod.sneakDetect = false,
-						FSitConfig.shiftDelay.getValue(), TimeUnit.MILLISECONDS));
+						FSitConfig.sneakDelay.getValue(), TimeUnit.MILLISECONDS));
 	}
 
 	public static void addSneaked(@NotNull PlayerEntity player) {
+		if (!FSitConfig.sneakSit.getValue()) return;
 		if (!FSitMod.sneakDetect) return;
 		final UUID playerUid = player.getUuid();
 		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch() >= FSitConfig.minAngle.getValue()) {
 			FSitMod.sneakedPlayers.add(playerUid);
 			FSitMod.scheduledTasks.put(playerUid, scheduler.schedule(() -> FSitMod.sneakedPlayers.remove(playerUid),
-							FSitConfig.shiftDelay.getValue(), TimeUnit.MILLISECONDS));
+							FSitConfig.sneakDelay.getValue(), TimeUnit.MILLISECONDS));
 		}
 	}
 

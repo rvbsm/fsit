@@ -10,17 +10,22 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.FluidModificationItem;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class InteractBlockCallback {
 
@@ -45,7 +50,7 @@ public abstract class InteractBlockCallback {
 			if (!SeatEntity.hasSeatAt(world, pos)) FSitMod.spawnSeat(player, world, pos);
 		}
 
-		return ActionResult.PASS;
+		return ActionResult.SUCCESS;
 	}
 
 	private static boolean canSeatAt(@NotNull PlayerEntity player, World world, BlockHitResult hitResult, @NotNull BlockState blockState, BlockPos blockPos) {
@@ -64,12 +69,12 @@ public abstract class InteractBlockCallback {
 		final BlockState blockAbove = world.getBlockState(blockPos.up());
 		if (!blockAbove.isAir()) return false;
 
-		// ! calls every time players click!
-		for (TagKey<Block> configTag : FSitConfig.sittableTags.getTagKeys())
-			if (blockState.isIn(configTag)) return InteractBlockCallback.isBottom(block, blockState);
+		final Set<Identifier> blockTags = blockState.streamTags().map(TagKey::id).collect(Collectors.toUnmodifiableSet());
+		for (Identifier blockTag : blockTags)
+			if (FSitConfig.sittableTags.getIds().contains(blockTag)) return InteractBlockCallback.isBottom(block, blockState);
 
-		for (Block configBlock : FSitConfig.sittableBlocks.getBlocks())
-			if (blockState.isOf(configBlock)) return InteractBlockCallback.isBottom(block, blockState);
+		final Identifier blockId = Registries.BLOCK.getId(block);
+		if (FSitConfig.sittableBlocks.getIds().contains(blockId)) return InteractBlockCallback.isBottom(block, blockState);
 
 		return false;
 	}
