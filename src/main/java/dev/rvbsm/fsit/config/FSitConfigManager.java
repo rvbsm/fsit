@@ -5,13 +5,14 @@ import dev.rvbsm.fsit.FSitMod;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.nio.file.Path;
 
 public abstract class FSitConfigManager {
 
 	private static final Path configDir = FabricLoader.getInstance().getConfigDir();
-	private static final Path configPath = FSitConfigManager.getConfigPath();
-	protected static final FileConfig config = FileConfig.of(FSitConfigManager.configPath);
+	protected static final Path configPath = FSitConfigManager.getConfigPath();
+	protected static final FileConfig config = FileConfig.of(configPath);
 
 	private static @NotNull Path getConfigPath() {
 		return configDir.resolve(FSitMod.getModId() + ".toml");

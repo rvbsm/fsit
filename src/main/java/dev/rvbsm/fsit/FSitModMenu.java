@@ -22,35 +22,47 @@ public class FSitModMenu implements ModMenuApi {
 							.setSavingRunnable(FSitConfigManager::save);
 			final ConfigEntryBuilder entryBuilder = configBuilder.entryBuilder();
 
+			final Text sneakSitText = Text.translatable(FSitConfig.sneakSit.getTranslationKey());
+			final boolean sneakSit = FSitConfig.sneakSit.getValue();
+			final boolean sneakSitDefault = FSitConfig.sneakSit.getDefaultValue();
+
 			final Text minAngleText = Text.translatable(FSitConfig.minAngle.getTranslationKey());
 			final int minAngle = FSitConfig.minAngle.getValue().intValue();
+			final int minAngleDefault = FSitConfig.minAngle.getDefaultValue().intValue();
 			final Consumer<Integer> minAngleSave = value -> FSitConfig.minAngle.setValue(value.doubleValue());
 
-			final Text shiftDelayText = Text.translatable(FSitConfig.shiftDelay.getTranslationKey());
-			final int shiftDelay = FSitConfig.shiftDelay.getValue();
+			final Text shiftDelayText = Text.translatable(FSitConfig.sneakDelay.getTranslationKey());
+			final int shiftDelay = FSitConfig.sneakDelay.getValue();
+			final int shiftDelayDefault = FSitConfig.sneakDelay.getDefaultValue();
 
 			final Text sittableBlocksText = Text.translatable(FSitConfig.sittableBlocks.getTranslationKey());
-			final List<String> sittableBlocks = FSitConfig.sittableBlocks.getValue().stream().toList();
+			final List<String> sittableBlocks = FSitConfig.sittableBlocks.getValue();
+			final List<String> sittableBlocksDefault = FSitConfig.sittableBlocks.getDefaultValue();
 
 			final Text sittableTagsText = Text.translatable(FSitConfig.sittableTags.getTranslationKey());
-			final List<String> sittableTags = FSitConfig.sittableTags.getValue().stream().toList();
+			final List<String> sittableTags = FSitConfig.sittableTags.getValue();
+			final List<String> sittableTagsDefault = FSitConfig.sittableTags.getDefaultValue();
 
 
 			final ConfigCategory main = configBuilder.getOrCreateCategory(Text.literal("Main"));
+			main.addEntry(entryBuilder.startBooleanToggle(sneakSitText, sneakSit)
+							.setDefaultValue(sneakSitDefault)
+							.setSaveConsumer(FSitConfig.sneakSit::setValue)
+							.build());
 			main.addEntry(entryBuilder.startIntSlider(minAngleText, minAngle, -90, 90)
-							.setDefaultValue(FSitConfig.minAngle.getDefaultValue().intValue())
+							.setDefaultValue(minAngleDefault)
 							.setSaveConsumer(minAngleSave)
 							.build());
 			main.addEntry(entryBuilder.startIntSlider(shiftDelayText, shiftDelay, 100, 2000)
-							.setDefaultValue(FSitConfig.shiftDelay.getDefaultValue())
-							.setSaveConsumer(FSitConfig.shiftDelay::setValue)
+							.setDefaultValue(shiftDelayDefault)
+							.setSaveConsumer(FSitConfig.sneakDelay::setValue)
 							.build());
 			main.addEntry(entryBuilder.startStrList(sittableBlocksText, sittableBlocks)
-							.setDefaultValue(FSitConfig.sittableBlocks.getDefaultValue())
+							.setDefaultValue(sittableBlocksDefault)
 							.setSaveConsumer(FSitConfig.sittableBlocks::setValue)
 							.build());
 			main.addEntry(entryBuilder.startStrList(sittableTagsText, sittableTags)
-							.setDefaultValue(FSitConfig.sittableTags.getDefaultValue())
+							.setDefaultValue(sittableTagsDefault)
 							.setSaveConsumer(FSitConfig.sittableTags::setValue)
 							.build());
 

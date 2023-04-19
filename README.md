@@ -2,24 +2,33 @@
 
 A server-side mod that allows players to sit anywhere.
 
-___NOTE: so that the players do not block your view install client-side mod__ (check additional files; bundled in full
-version)_
+__NOTE:__
+- `sit_on_players`: ___by default, when a player sits on a player, it blocks the field of view. To prevent this, install client-side mod__
+  (check additional files; bundled in full
+  version)._
 
 ## Usage
 
-To sit down, look down and sneak twice.
-To get up, just sneak once.  
-The `/sit` command to toggle.  
-Also, right-click when sneaking on stairs, slabs or horizontal logs (configurable) works.
+- Sneak twice to sit down;  
+- `/sit` command;  
+- Right-click on stairs, slabs or horizontal logs (configurable).
 
 ### Configuration (stored in `config/fsit.toml`)
 
 ```toml
+config_version = 2 # Do not change
+
+[sittable]
+blocks = [] # List of block ids (e.g. "oak_log") available to sit.
+tags = ["minecraft:slabs", "stairs", "logs"] # List of block tags.
+
+[sneak]
+sneak_sit = true # Toggles sit by sneak feature.
 min_angle = 66.0 # degrees. Minimal pitch to sitting down.
-shift_delay = 600 # milliseconds. Time between sneaks for sitting down.
-sittable_blocks = [] # List of block ids (e.g. "oak_log") available to sit.
-sittable_tags = ["minecraft:slabs", "stairs", "logs"] # List of block tags.
-sit_on_players = false # Ability to sit on other players
+sneak_delay = 600 # milliseconds. Time between sneaks for sitting down.
+
+[misc]
+sit_players = false # Toggles sitting on other players
 ```
 
 ## Contributing
