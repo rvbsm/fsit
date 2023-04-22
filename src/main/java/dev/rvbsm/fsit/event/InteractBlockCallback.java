@@ -48,7 +48,7 @@ public abstract class InteractBlockCallback {
 				default -> throw new IllegalStateException(blockState.get(StairsBlock.FACING).asString());
 			} : new Vec3d(x, y, z);
 			if (!SeatEntity.hasSeatAt(world, pos)) FSitMod.spawnSeat(player, world, pos);
-		}
+		} else return ActionResult.PASS;
 
 		return ActionResult.SUCCESS;
 	}
