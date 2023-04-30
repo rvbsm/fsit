@@ -23,8 +23,10 @@ public abstract class InteractPlayerCallback {
 			vehicle.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(player));
 			player.startRiding(vehicle, true);
 			vehicle.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(vehicle));
+
+			return ActionResult.SUCCESS;
 		}
 
-		return ActionResult.SUCCESS;
+		return ActionResult.PASS;
 	}
 }
