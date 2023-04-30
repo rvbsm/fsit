@@ -38,7 +38,7 @@ public abstract class InteractBlockCallback {
 
 		if (InteractBlockCallback.canSeatAt(player, world, hitResult, blockState, blockPos)) {
 			final double x = blockPos.getX() + .5d;
-			final double y = blockPos.getY() + (blockState.isSolidBlock(world, blockPos) ? 1d : .5d);
+			final double y = blockPos.getY() + (blockState.isFullCube(world, blockPos) ? 1d : .5d);
 			final double z = blockPos.getZ() + .5d;
 			final Vec3d pos = blockState.isIn(BlockTags.STAIRS) ? switch (blockState.get(StairsBlock.FACING)) {
 				case NORTH -> new Vec3d(x, y, z + .1f);
