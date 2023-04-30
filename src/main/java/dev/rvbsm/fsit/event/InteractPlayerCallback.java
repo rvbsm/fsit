@@ -19,11 +19,13 @@ public abstract class InteractPlayerCallback {
 		else if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
 		else if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
 
-		if (entity instanceof ServerPlayerEntity vehicle) if (!entity.isSpectator() && !entity.hasPassengers()) {
-			vehicle.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(player));
-			player.startRiding(vehicle, true);
-			vehicle.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(vehicle));
-		}
+		if (entity instanceof ServerPlayerEntity vehicle) {
+			if (!entity.isSpectator() && !entity.hasPassengers()) {
+				vehicle.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(player));
+				player.startRiding(vehicle, true);
+				vehicle.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(vehicle));
+			}
+		} else return ActionResult.PASS;
 
 		return ActionResult.SUCCESS;
 	}
