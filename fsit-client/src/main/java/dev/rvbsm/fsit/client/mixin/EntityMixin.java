@@ -1,5 +1,7 @@
 package dev.rvbsm.fsit.client.mixin;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -17,8 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
-	@Shadow private EntityDimensions dimensions;
-	@Shadow private Vec3d pos;
+	@Shadow
+	private Vec3d pos;
 
 	@Shadow
 	public abstract void calculateDimensions();
@@ -26,18 +28,18 @@ public abstract class EntityMixin {
 	@Shadow
 	public abstract boolean isPlayer();
 
-	// https://github.com/ForwarD-NerN/PlayerLadder/blob/fc475d62fda188e09e3835cef4ba53b671931739/src/main/java/ru/nern/pladder/mixin/EntityMixin.java#L35-L41
-	@Redirect(method = "updatePassengerPosition(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/Entity$PositionUpdater;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getMountedHeightOffset()D"))
-	private double getMountedHeightOffset(@NotNull Entity entity) {
-		return entity instanceof PlayerEntity && (entity.getFirstPassenger() instanceof PlayerEntity || entity.getVehicle() instanceof PlayerEntity)
-		       ? dimensions.height * .93d : entity.getMountedHeightOffset();
-	}
-
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At(value = "TAIL"))
 	public void startRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		if (this.isPlayer() && entity.isPlayer()) this.calculateDimensions();
 	}
 
+	@Environment(EnvType.CLIENT)
+	@Redirect(method = "updatePassengerPosition(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/Entity$PositionUpdater;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getHeightOffset()D"))
+	private double getHeightOffset(@NotNull Entity passenger) {
+		return passenger.getVehicle() instanceof PlayerEntity ? 0d : passenger.getHeightOffset();
+	}
+
+	@Environment(EnvType.CLIENT)
 	@Redirect(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;"))
 	public EntityDimensions getDimensions(@NotNull Entity entity, EntityPose pose) {
 		final EntityDimensions dimensions = entity.getDimensions(pose);
