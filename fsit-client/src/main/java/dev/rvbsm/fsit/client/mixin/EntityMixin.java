@@ -28,6 +28,7 @@ public abstract class EntityMixin {
 	@Shadow
 	public abstract boolean isPlayer();
 
+	@Environment(EnvType.CLIENT)
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At(value = "TAIL"))
 	public void startRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		if (this.isPlayer() && entity.isPlayer()) this.calculateDimensions();
@@ -43,14 +44,13 @@ public abstract class EntityMixin {
 	@Redirect(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;"))
 	public EntityDimensions getDimensions(@NotNull Entity entity, EntityPose pose) {
 		final EntityDimensions dimensions = entity.getDimensions(pose);
-		return entity.isPlayer() && entity.getVehicle() instanceof PlayerEntity
-		       ? dimensions.scaled(1f, .75f)
-		       : dimensions;
+		return entity.isPlayer() && entity.getVehicle() instanceof PlayerEntity ? dimensions.scaled(1f, .75f) : dimensions;
 	}
 
+	@Environment(EnvType.CLIENT)
 	@Redirect(method = "calculateBoundingBox", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;pos:Lnet/minecraft/util/math/Vec3d;", opcode = Opcodes.GETFIELD))
 	protected Vec3d calculateBoundingBox(@NotNull Entity entity) {
-		if (entity.isPlayer() && entity.getVehicle() instanceof PlayerEntity) return this.pos.add(0d, .48d, 0d);
+		if (entity.isPlayer() && entity.getVehicle() instanceof PlayerEntity) return this.pos.add(0d, .47d, 0d);
 		else return this.pos;
 	}
 }
