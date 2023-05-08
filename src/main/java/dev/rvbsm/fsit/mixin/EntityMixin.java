@@ -1,6 +1,8 @@
 package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.FSitMod;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
@@ -12,11 +14,13 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
-	@Shadow public World world;
+	@Shadow
+	public World world;
 
 	@Shadow
 	public abstract boolean isOnGround();
@@ -41,10 +45,17 @@ public abstract class EntityMixin {
 			else FSitMod.setSneakDetect();
 	}
 
+	@Environment(EnvType.SERVER)
+	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At(value = "TAIL"))
+	public void startRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
+		if (entity instanceof ServerPlayerEntity player)
+			player.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(entity));
+	}
+
+	@Environment(EnvType.SERVER)
 	// https://github.com/ForwarD-NerN/PlayerLadder/blob/fc475d62fda188e09e3835cef4ba53b671931739/src/main/java/ru/nern/pladder/mixin/EntityMixin.java#L24-L33
 	@Inject(method = "removePassenger", at = @At(value = "TAIL"))
 	protected void removePassenger(Entity passenger, CallbackInfo ci) {
-		if (this.world.isClient) return;
 		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && passenger.isPlayer())
 			player.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(player));
 	}

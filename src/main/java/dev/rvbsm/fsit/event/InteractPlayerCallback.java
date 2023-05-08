@@ -3,7 +3,6 @@ package dev.rvbsm.fsit.event;
 import dev.rvbsm.fsit.config.FSitConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -20,9 +19,7 @@ public abstract class InteractPlayerCallback {
 		else if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
 
 		if (entity instanceof ServerPlayerEntity vehicle) if (!entity.isSpectator() && !entity.hasPassengers()) {
-			vehicle.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(player));
 			player.startRiding(vehicle, true);
-			vehicle.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(vehicle));
 
 			return ActionResult.SUCCESS;
 		}
