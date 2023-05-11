@@ -42,7 +42,7 @@ public abstract class EntityMixin {
 		if ((Entity) (Object) this instanceof final PlayerEntity player)
 			if (FSitMod.isNeedSeat(player) && !sneaking) FSitMod.spawnSeat(player, this.world, this.getPos());
 			else if (!sneaking) FSitMod.addSneaked(player);
-			else FSitMod.setSneakDetect();
+			else FSitMod.setSneakDetect(player.getUuid());
 	}
 
 	@Environment(EnvType.SERVER)
