@@ -27,7 +27,6 @@ public class FSitMod implements ModInitializer {
 	private static final String MOD_ID = "fsit";
 	private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private static final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new LinkedHashMap<>();
-	private static final Set<UUID> sneakDetect = new LinkedHashSet<>();
 	private static final Set<UUID> sneakedPlayers = new LinkedHashSet<>();
 
 	@Contract(pure = true)
@@ -43,15 +42,9 @@ public class FSitMod implements ModInitializer {
 		return sneakedPlayers.contains(player.getUuid()) && player.getPitch() >= FSitConfig.minAngle.getValue();
 	}
 
-	public static void setSneakDetect(UUID uuid) {
-		FSitMod.sneakDetect.add(uuid);
-		FSitMod.scheduledTasks.put(UUID.randomUUID(), scheduler.schedule(() -> FSitMod.sneakDetect.remove(uuid),
-						FSitConfig.sneakDelay.getValue(), TimeUnit.MILLISECONDS));
-	}
-
 	public static void addSneaked(@NotNull PlayerEntity player) {
 		if (!FSitConfig.sneakSit.getValue()) return;
-		if (!FSitMod.sneakDetect.contains(player.getUuid())) return;
+
 		final UUID playerUid = player.getUuid();
 		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch() >= FSitConfig.minAngle.getValue()) {
 			FSitMod.sneakedPlayers.add(playerUid);

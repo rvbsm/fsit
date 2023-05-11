@@ -34,15 +34,14 @@ public abstract class EntityMixin {
 	@Shadow
 	public abstract Vec3d getPos();
 
+	@Environment(EnvType.SERVER)
 	@Inject(method = "setSneaking", at = @At(value = "HEAD"))
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
-		if (this.world.isClient) return;
 		if (!this.isOnGround() || this.hasVehicle() || this.isSpectator()) return;
 
-		if ((Entity) (Object) this instanceof final PlayerEntity player)
-			if (FSitMod.isNeedSeat(player) && !sneaking) FSitMod.spawnSeat(player, this.world, this.getPos());
-			else if (!sneaking) FSitMod.addSneaked(player);
-			else FSitMod.setSneakDetect(player.getUuid());
+		if ((Entity) (Object) this instanceof final PlayerEntity player && !sneaking)
+			if (FSitMod.isNeedSeat(player)) FSitMod.spawnSeat(player, this.world, this.getPos());
+			else FSitMod.addSneaked(player);
 	}
 
 	@Environment(EnvType.SERVER)
