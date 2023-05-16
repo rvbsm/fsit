@@ -15,7 +15,7 @@ allprojects {
 
 	dependencies {
 		minecraft(rootProject.libs.minecraft)
-		mappings("net.fabricmc:yarn:${rootProject.libs.versions.yarn.mappings.get()}:v2")
+		mappings(rootProject.libs.yarn.mappings)
 
 		modImplementation(rootProject.libs.fabric.loader)
 	}
