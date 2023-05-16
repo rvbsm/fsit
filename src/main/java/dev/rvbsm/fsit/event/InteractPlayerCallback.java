@@ -22,10 +22,6 @@ public abstract class InteractPlayerCallback {
 			player.startRiding(entity, true);
 
 			return ActionResult.SUCCESS;
-		} else if (player.hasPassenger(entity)) {
-			entity.stopRiding();
-
-			return ActionResult.SUCCESS;
 		}
 
 		return ActionResult.PASS;
