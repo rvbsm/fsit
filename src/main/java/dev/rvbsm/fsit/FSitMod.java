@@ -53,13 +53,12 @@ public class FSitMod implements ModInitializer {
 		}
 	}
 
-	private static void clearSneaked(@NotNull PlayerEntity player) {
-		final UUID playerUid = player.getUuid();
-		final ScheduledFuture<Boolean> task = FSitMod.scheduledTasks.get(playerUid);
+	private static void clearSneaked(UUID uuid) {
+		final ScheduledFuture<Boolean> task = FSitMod.scheduledTasks.get(uuid);
 		if (task != null) task.cancel(true);
 
-		FSitMod.sneakedPlayers.remove(playerUid);
-		FSitMod.scheduledTasks.remove(playerUid);
+		FSitMod.sneakedPlayers.remove(uuid);
+		FSitMod.scheduledTasks.remove(uuid);
 	}
 
 	public static void spawnSeat(@NotNull PlayerEntity player, @NotNull World world, Vec3d pos) {
@@ -67,7 +66,7 @@ public class FSitMod implements ModInitializer {
 
 		world.spawnEntity(seatEntity);
 		player.startRiding(seatEntity, true);
-		FSitMod.clearSneaked(player);
+		FSitMod.clearSneaked(player.getUuid());
 	}
 
 	@Override
