@@ -51,8 +51,11 @@ public abstract class EntityMixin {
 			player.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(entity));
 	}
 
+	/**
+	 * @author <a href="https://github.com/ForwarD-NerN">ForwarD-NerN</a>
+	 * @see <a href="https://github.com/ForwarD-NerN/PlayerLadder/blob/fc475d62fda188e09e3835cef4ba53b671931739/src/main/java/ru/nern/pladder/mixin/EntityMixin.java#L24-L33">source</a>
+	 */
 	@Environment(EnvType.SERVER)
-	// https://github.com/ForwarD-NerN/PlayerLadder/blob/fc475d62fda188e09e3835cef4ba53b671931739/src/main/java/ru/nern/pladder/mixin/EntityMixin.java#L24-L33
 	@Inject(method = "removePassenger", at = @At(value = "TAIL"))
 	protected void removePassenger(Entity passenger, CallbackInfo ci) {
 		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && passenger.isPlayer())
