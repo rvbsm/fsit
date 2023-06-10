@@ -3,7 +3,7 @@
 	"id": "fsit-client",
 	"version": "${version}",
 	"name": "FSit (Client)",
-	"description": "Adjusts the player's height when sitting on another",
+	"description": "FSit client add-on",
 	"authors": [
 		"rvbsm"
 	],
