@@ -2,7 +2,7 @@
 minecraft = "1.19.4"
 yarn_mappings = "1.19.4+build.2"
 fabric_loader = "0.14.19"
-fabric_api = "0.80.0+1.19.4"
+fabric_api = "0.81.1+1.19.4"
 
 modmenu = "6.1.0-rc.4"
 clothconfig = "10.0.96"
@@ -13,6 +13,7 @@ nightconfig = "3.6.0"
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 yarn_mappings = { module = "net.fabricmc:yarn", version.ref = "yarn_mappings" }
 fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
 
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 clothconfig = { module = "me.shedaniel.cloth:cloth-config-fabric", version.ref = "clothconfig" }

@@ -18,6 +18,7 @@ allprojects {
 		mappings(rootProject.libs.yarn.mappings)
 
 		modImplementation(rootProject.libs.fabric.loader)
+		modImplementation(rootProject.libs.fabric.api)
 	}
 
 	loom {
