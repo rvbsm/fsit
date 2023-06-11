@@ -20,7 +20,9 @@ jobs:
           loaders: |
             fabric
             quilt
-          game-versions: 1.19.4
+          game-versions: |
+            1.19.4
+            1.20
           dependencies: |
             modmenu | suggests | *
             cloth-config | recommends | *
