@@ -68,7 +68,7 @@ public abstract class InteractBlockCallback {
 		if (Math.abs(player.getBlockPos().getX() - blockPos.getX()) > RADIUS) return false;
 		else if (Math.abs(player.getBlockPos().getZ() - blockPos.getZ()) > RADIUS) return false;
 		else if (hitResult.getSide() != Direction.UP || player.getY() - blockPos.getY() > RADIUS) return false;
-		else if (!player.isOnGround() || !player.isSneaking()) return false;
+		else if (!player.isOnGround() || player.shouldCancelInteraction()) return false;
 
 		final BlockState blockAbove = world.getBlockState(blockPos.up());
 		if (!blockAbove.isAir()) return false;
