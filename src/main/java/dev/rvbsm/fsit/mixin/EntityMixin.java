@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EntityMixin {
 
 	@Shadow
-	public World world;
+	private World world;
 
 	@Shadow
 	public abstract boolean isOnGround();

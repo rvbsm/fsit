@@ -49,13 +49,13 @@ public class SeatEntity extends AreaEffectCloudEntity {
 	@Override
 	public void tick() {
 		if (this.mounted) {
-			final BlockPos blockPos = this.getBlockPos();
-			if (!this.hasPassengers() || this.world.getBlockState(blockPos).isAir()) this.discardSeat();
+			final BlockPos blockPos = super.getBlockPos();
+			if (!super.hasPassengers() || super.getWorld().getBlockState(blockPos).isAir()) this.discardSeat();
 		}
 	}
 
 	private void discardSeat() {
-		this.removeSeatAt(super.world, super.getPos());
+		this.removeSeatAt(super.getWorld(), super.getPos());
 		super.discard();
 	}
 
