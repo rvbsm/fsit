@@ -31,8 +31,10 @@ public abstract class InteractBlockCallback {
 
 	private static final int RADIUS = 2;
 
-	public static ActionResult interactBlock(PlayerEntity player, @NotNull World world, Hand hand, BlockHitResult hitResult) {
-		if (world.isClient || hand != Hand.MAIN_HAND) return ActionResult.PASS;
+	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+		if (world.isClient) return ActionResult.PASS;
+		else if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
+
 		final BlockPos blockPos = hitResult.getBlockPos();
 		final BlockState blockState = world.getBlockState(blockPos);
 
