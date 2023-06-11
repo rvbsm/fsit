@@ -38,12 +38,11 @@ public abstract class EntityMixin {
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
 		if (!this.isOnGround() || this.hasVehicle() || this.isSpectator()) return;
 
-		if ((Entity) (Object) this instanceof final PlayerEntity player && !sneaking)
+		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking)
 			if (FSitMod.isNeedSeat(player)) FSitMod.spawnSeat(player, this.world, this.getPos());
 			else FSitMod.addSneaked(player);
 	}
 
-	@Environment(EnvType.SERVER)
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At(value = "TAIL"))
 	public void startRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		if (entity instanceof ServerPlayerEntity player)
@@ -54,7 +53,6 @@ public abstract class EntityMixin {
 	 * @author <a href="https://github.com/ForwarD-NerN">ForwarD-NerN</a>
 	 * @see <a href="https://github.com/ForwarD-NerN/PlayerLadder/blob/fc475d62fda188e09e3835cef4ba53b671931739/src/main/java/ru/nern/pladder/mixin/EntityMixin.java#L24-L33">source</a>
 	 */
-	@Environment(EnvType.SERVER)
 	@Inject(method = "removePassenger", at = @At(value = "TAIL"))
 	protected void removePassenger(Entity passenger, CallbackInfo ci) {
 		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && passenger.isPlayer())
