@@ -16,17 +16,16 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 public class FSitMod implements ModInitializer {
 
 	private static final String MOD_ID = "fsit";
-	private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-	private static final Map<UUID, ScheduledFuture<Boolean>> scheduledTasks = new LinkedHashMap<>();
 	private static final Set<UUID> sneakedPlayers = new LinkedHashSet<>();
 
 	@Contract(pure = true)
@@ -47,18 +46,11 @@ public class FSitMod implements ModInitializer {
 
 		final UUID playerUid = player.getUuid();
 		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch() >= FSitConfig.minAngle.getValue()) {
+			final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitConfig.sneakDelay.getValue(), TimeUnit.MILLISECONDS);
+
 			FSitMod.sneakedPlayers.add(playerUid);
-			FSitMod.scheduledTasks.put(playerUid, scheduler.schedule(() -> FSitMod.sneakedPlayers.remove(playerUid),
-							FSitConfig.sneakDelay.getValue(), TimeUnit.MILLISECONDS));
+			CompletableFuture.supplyAsync(() -> FSitMod.sneakedPlayers.remove(playerUid), delayedExecutor);
 		}
-	}
-
-	private static void clearSneaked(UUID uuid) {
-		final ScheduledFuture<Boolean> task = FSitMod.scheduledTasks.get(uuid);
-		if (task != null) task.cancel(true);
-
-		FSitMod.sneakedPlayers.remove(uuid);
-		FSitMod.scheduledTasks.remove(uuid);
 	}
 
 	public static void spawnSeat(@NotNull PlayerEntity player, @NotNull World world, Vec3d pos) {
@@ -66,7 +58,7 @@ public class FSitMod implements ModInitializer {
 
 		world.spawnEntity(seatEntity);
 		player.startRiding(seatEntity, true);
-		FSitMod.clearSneaked(player.getUuid());
+		FSitMod.sneakedPlayers.remove(player.getUuid());
 	}
 
 	@Override
