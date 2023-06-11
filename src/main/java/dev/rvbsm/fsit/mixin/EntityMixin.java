@@ -34,7 +34,6 @@ public abstract class EntityMixin {
 	@Shadow
 	public abstract Vec3d getPos();
 
-	@Environment(EnvType.SERVER)
 	@Inject(method = "setSneaking", at = @At(value = "HEAD"))
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
 		if (!this.isOnGround() || this.hasVehicle() || this.isSpectator()) return;
