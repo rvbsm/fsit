@@ -22,7 +22,7 @@ public class SeatEntity extends AreaEffectCloudEntity {
 
 	public SeatEntity(World world, @NotNull Vec3d pos) {
 		super(world, pos.x, pos.y - offset, pos.z);
-		this.addSeatAt(world, pos.add(0, -offset, 0));
+		SeatEntity.addSeatAt(world, pos.add(0, -offset, 0));
 
 		super.setNoGravity(true);
 		super.setInvulnerable(true);
@@ -32,6 +32,13 @@ public class SeatEntity extends AreaEffectCloudEntity {
 		super.setRadius(.0f);
 		super.setDuration(Integer.MAX_VALUE);
 		super.setWaitTime(0);
+	}
+
+	private static void addSeatAt(@NotNull World world, Vec3d pos) {
+		final Identifier worldId = world.getRegistryKey().getValue();
+		final Set<Vec3d> worldSeats = SeatEntity.existingSeats.getOrDefault(worldId, new LinkedHashSet<>());
+		worldSeats.add(pos);
+		SeatEntity.existingSeats.put(worldId, worldSeats);
 	}
 
 	public static boolean hasSeatAt(@NotNull World world, Vec3d pos) {
@@ -57,13 +64,6 @@ public class SeatEntity extends AreaEffectCloudEntity {
 	private void discardSeat() {
 		this.removeSeatAt(super.getWorld(), super.getPos());
 		super.discard();
-	}
-
-	private void addSeatAt(@NotNull World world, Vec3d pos) {
-		final Identifier worldId = world.getRegistryKey().getValue();
-		final Set<Vec3d> worldSeats = SeatEntity.existingSeats.getOrDefault(worldId, new LinkedHashSet<>());
-		worldSeats.add(pos);
-		SeatEntity.existingSeats.put(worldId, worldSeats);
 	}
 
 	private void removeSeatAt(@NotNull World world, Vec3d pos) {
