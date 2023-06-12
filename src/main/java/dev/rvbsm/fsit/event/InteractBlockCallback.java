@@ -75,10 +75,10 @@ public abstract class InteractBlockCallback {
 
 		final Set<Identifier> blockTags = blockState.streamTags().map(TagKey::id).collect(Collectors.toUnmodifiableSet());
 		for (Identifier blockTag : blockTags)
-			if (FSitConfig.sittableTags.getIds().contains(blockTag)) return InteractBlockCallback.isBottom(block, blockState);
+			if (FSitConfig.data.sittableTags.contains(blockTag)) return InteractBlockCallback.isBottom(block, blockState);
 
 		final Identifier blockId = Registries.BLOCK.getId(block);
-		if (FSitConfig.sittableBlocks.getIds().contains(blockId)) return InteractBlockCallback.isBottom(block, blockState);
+		if (FSitConfig.data.sittableBlocks.contains(blockId)) return InteractBlockCallback.isBottom(block, blockState);
 
 		return false;
 	}

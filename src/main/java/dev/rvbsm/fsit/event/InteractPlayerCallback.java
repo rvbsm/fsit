@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 public abstract class InteractPlayerCallback {
 
 	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, HitResult ignored) {
-		if (!FSitConfig.sitPlayers.getValue()) return ActionResult.PASS;
+		if (!FSitConfig.data.sitPlayers) return ActionResult.PASS;
 		else if (world.isClient) return ActionResult.PASS;
 		else if (player.isSpectator() || entity.isSpectator()) return ActionResult.PASS;
 		else if (player.isSneaking() || entity.isSneaking()) return ActionResult.PASS;
