@@ -27,26 +27,26 @@ public abstract class FSitConfig {
 	private static UnmodifiableCommentedConfig getDefaultConfig() {
 		final CommentedConfig defaultConfig = CommentedConfig.inMemory();
 
-		defaultConfig.set(FSitConfigFields.CONFIG_VERSION, FSitConfigFields.ConfigEntry.CONFIG_VERSION.defaultValue());
-		defaultConfig.setComment(FSitConfigFields.CONFIG_VERSION, FSitConfigFields.ConfigEntry.CONFIG_VERSION.comment());
+		defaultConfig.set(FSitConfigEntry.Fields.CONFIG_VERSION, FSitConfigEntry.CONFIG_VERSION.defaultValue());
+		defaultConfig.setComment(FSitConfigEntry.Fields.CONFIG_VERSION, FSitConfigEntry.CONFIG_VERSION.comment());
 
-		defaultConfig.set(FSitConfigFields.SNEAK_SIT, FSitConfigFields.ConfigEntry.SNEAK_SIT.defaultValue());
-		defaultConfig.setComment(FSitConfigFields.SNEAK_SIT, FSitConfigFields.ConfigEntry.SNEAK_SIT.comment());
+		defaultConfig.set(FSitConfigEntry.Fields.SNEAK_SIT, FSitConfigEntry.SNEAK_SIT.defaultValue());
+		defaultConfig.setComment(FSitConfigEntry.Fields.SNEAK_SIT, FSitConfigEntry.SNEAK_SIT.comment());
 
-		defaultConfig.set(FSitConfigFields.MIN_ANGLE, FSitConfigFields.ConfigEntry.MIN_ANGLE.defaultValue());
-		defaultConfig.setComment(FSitConfigFields.MIN_ANGLE, FSitConfigFields.ConfigEntry.MIN_ANGLE.comment());
+		defaultConfig.set(FSitConfigEntry.Fields.MIN_ANGLE, FSitConfigEntry.MIN_ANGLE.defaultValue());
+		defaultConfig.setComment(FSitConfigEntry.Fields.MIN_ANGLE, FSitConfigEntry.MIN_ANGLE.comment());
 
-		defaultConfig.set(FSitConfigFields.SNEAK_DELAY, FSitConfigFields.ConfigEntry.SNEAK_DELAY.defaultValue());
-		defaultConfig.setComment(FSitConfigFields.SNEAK_DELAY, FSitConfigFields.ConfigEntry.SNEAK_DELAY.comment());
+		defaultConfig.set(FSitConfigEntry.Fields.SNEAK_DELAY, FSitConfigEntry.SNEAK_DELAY.defaultValue());
+		defaultConfig.setComment(FSitConfigEntry.Fields.SNEAK_DELAY, FSitConfigEntry.SNEAK_DELAY.comment());
 
-		defaultConfig.set(FSitConfigFields.SITTABLE_BLOCKS, FSitConfigFields.ConfigEntry.SITTABLE_BLOCKS.defaultValue());
-		defaultConfig.setComment(FSitConfigFields.SITTABLE_BLOCKS, FSitConfigFields.ConfigEntry.SITTABLE_BLOCKS.comment());
+		defaultConfig.set(FSitConfigEntry.Fields.SITTABLE_BLOCKS, FSitConfigEntry.SITTABLE_BLOCKS.defaultValue());
+		defaultConfig.setComment(FSitConfigEntry.Fields.SITTABLE_BLOCKS, FSitConfigEntry.SITTABLE_BLOCKS.comment());
 
-		defaultConfig.set(FSitConfigFields.SITTABLE_TAGS, FSitConfigFields.ConfigEntry.SITTABLE_TAGS.defaultValue());
-		defaultConfig.setComment(FSitConfigFields.SITTABLE_TAGS, FSitConfigFields.ConfigEntry.SITTABLE_TAGS.comment());
+		defaultConfig.set(FSitConfigEntry.Fields.SITTABLE_TAGS, FSitConfigEntry.SITTABLE_TAGS.defaultValue());
+		defaultConfig.setComment(FSitConfigEntry.Fields.SITTABLE_TAGS, FSitConfigEntry.SITTABLE_TAGS.comment());
 
-		defaultConfig.set(FSitConfigFields.SIT_PLAYERS, FSitConfigFields.ConfigEntry.SIT_PLAYERS.defaultValue());
-		defaultConfig.setComment(FSitConfigFields.SIT_PLAYERS, FSitConfigFields.ConfigEntry.SIT_PLAYERS.comment());
+		defaultConfig.set(FSitConfigEntry.Fields.SIT_PLAYERS, FSitConfigEntry.SIT_PLAYERS.defaultValue());
+		defaultConfig.setComment(FSitConfigEntry.Fields.SIT_PLAYERS, FSitConfigEntry.SIT_PLAYERS.comment());
 
 		return defaultConfig.unmodifiable();
 	}
@@ -54,7 +54,7 @@ public abstract class FSitConfig {
 	public static void load() {
 		config.load();
 
-		if (config.get(FSitConfigFields.CONFIG_VERSION) != FSitConfigFields.ConfigEntry.CONFIG_VERSION.defaultValue()) {
+		if (config.get(FSitConfigEntry.Fields.CONFIG_VERSION) != FSitConfigEntry.CONFIG_VERSION.defaultValue()) {
 			config.clear();
 			config.clearComments();
 		}
@@ -73,29 +73,29 @@ public abstract class FSitConfig {
 	}
 
 	public static class ConfigData {
-		@Path(FSitConfigFields.CONFIG_VERSION)
+		@Path(FSitConfigEntry.Fields.CONFIG_VERSION)
 		public int configVersion;
 
-		@Path(FSitConfigFields.SNEAK_SIT)
+		@Path(FSitConfigEntry.Fields.SNEAK_SIT)
 		public boolean sneakSit;
 
-		@Path(FSitConfigFields.MIN_ANGLE)
+		@Path(FSitConfigEntry.Fields.MIN_ANGLE)
 		@SpecDoubleInRange(min = -90, max = 90)
 		public double minAngle;
 
-		@Path(FSitConfigFields.SNEAK_DELAY)
+		@Path(FSitConfigEntry.Fields.SNEAK_DELAY)
 		@SpecIntInRange(min = 100, max = 2000)
 		public int sneakDelay;
 
-		@Path(FSitConfigFields.SITTABLE_BLOCKS)
+		@Path(FSitConfigEntry.Fields.SITTABLE_BLOCKS)
 		@Conversion(Identifier2StringConverter.class)
 		public List<Identifier> sittableBlocks;
 
-		@Path(FSitConfigFields.SITTABLE_TAGS)
+		@Path(FSitConfigEntry.Fields.SITTABLE_TAGS)
 		@Conversion(Identifier2StringConverter.class)
 		public List<Identifier> sittableTags;
 
-		@Path(FSitConfigFields.SIT_PLAYERS)
+		@Path(FSitConfigEntry.Fields.SIT_PLAYERS)
 		public boolean sitPlayers;
 
 		private static class Identifier2StringConverter implements Converter<List<Identifier>, List<String>> {
