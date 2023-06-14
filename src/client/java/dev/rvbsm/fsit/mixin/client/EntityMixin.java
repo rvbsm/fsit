@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.client.mixin;
+package dev.rvbsm.fsit.mixin.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

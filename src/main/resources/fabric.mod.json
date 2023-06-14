@@ -18,6 +18,9 @@
 		"main": [
 			"dev.rvbsm.fsit.FSitMod"
 		],
+		"client": [
+			"dev.rvbsm.fsit.FSitClientMod"
+		],
 		"server": [
 			"dev.rvbsm.fsit.FSitServerMod"
 		],
@@ -26,7 +29,11 @@
 		]
 	},
 	"mixins": [
-		"fsit.mixins.json"
+		"fsit.mixins.json",
+		{
+			"config": "fsit.client.mixins.json",
+			"environment": "client"
+		}
 	],
 	"depends": {
 		"fabricloader": ">=0.14.0"

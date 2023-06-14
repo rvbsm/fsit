@@ -1,6 +1,0 @@
-{
-	"package": "dev.rvbsm.fsit.client.mixin",
-	"client": [
-		"EntityMixin"
-	]
-}
