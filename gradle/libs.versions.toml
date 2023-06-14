@@ -1,13 +1,14 @@
 [versions]
-minecraft = "1.19.4"
-yarn_mappings = "1.19.4+build.2"
-fabric_loader = "0.14.19"
-fabric_api = "0.81.1+1.19.4"
+minecraft = "1.20"
+yarn_mappings = "1.20+build.1"
+fabric_loader = "0.14.21"
+fabric_api = "0.83.0+1.20"
+fabric_loom = "1.2-SNAPSHOT"
 
-modmenu = "6.1.0-rc.4"
-clothconfig = "10.0.96"
+modmenu = "7.0.1"
+clothconfig = "11.0.99"
 
-nightconfig = "3.6.0"
+nightconfig = "3.6.6"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
