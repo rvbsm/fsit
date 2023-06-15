@@ -6,10 +6,13 @@ import dev.rvbsm.fsit.entity.SeatEntity;
 import dev.rvbsm.fsit.event.InteractBlockCallback;
 import dev.rvbsm.fsit.event.InteractPlayerCallback;
 import dev.rvbsm.fsit.event.PlayerConnectionCallbacks;
+import dev.rvbsm.fsit.packet.PongC2SPacket;
+import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
@@ -28,6 +31,7 @@ public class FSitMod implements ModInitializer {
 
 	private static final String MOD_ID = "fsit";
 	private static final Set<UUID> sneakedPlayers = new HashSet<>();
+	private static final Set<UUID> moddedPlayers = new HashSet<>();
 	public static ConfigData config;
 
 	@Contract(pure = true)
@@ -38,6 +42,18 @@ public class FSitMod implements ModInitializer {
 
 	public static String getModId() {
 		return FSitMod.MOD_ID;
+	}
+
+	public static void addModdedPlayer(UUID playerUid) {
+		moddedPlayers.add(playerUid);
+	}
+
+	public static void removeModdedPlayer(UUID playerUid) {
+		moddedPlayers.remove(playerUid);
+	}
+
+	public static boolean isModdedPlayer(UUID playerUid) {
+		return moddedPlayers.contains(playerUid);
 	}
 
 	public static boolean isNeedSeat(@NotNull PlayerEntity player) {
@@ -74,6 +90,10 @@ public class FSitMod implements ModInitializer {
 
 		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
 		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
+		ServerPlayConnectionEvents.JOIN.register(PlayerConnectionCallbacks::onConnect);
 		ServerPlayConnectionEvents.DISCONNECT.register(PlayerConnectionCallbacks::onDisconnect);
+
+		ServerPlayNetworking.registerGlobalReceiver(PongC2SPacket.PONG_PACKET, PongC2SPacket::receive);
+		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.SPAWN_SEAT_PACKET, SpawnSeatC2SPacket::receive);
 	}
 }
