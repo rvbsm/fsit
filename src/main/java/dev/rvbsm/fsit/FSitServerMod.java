@@ -5,7 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.entity.SeatEntity;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -57,9 +56,8 @@ public class FSitServerMod implements DedicatedServerModInitializer {
 	}
 
 	private int reloadCommand(@NotNull CommandContext<ServerCommandSource> ctx) {
-		FSitConfig.load();
+		FSitMod.loadConfig();
 		ctx.getSource().sendMessage(Text.literal("Config reloaded"));
-		System.out.println(FSitConfig.data.sitPlayers);
 		return Command.SINGLE_SUCCESS;
 	}
 }

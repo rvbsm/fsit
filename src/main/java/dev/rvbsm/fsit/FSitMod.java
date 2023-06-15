@@ -1,5 +1,6 @@
 package dev.rvbsm.fsit;
 
+import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.entity.SeatEntity;
 import dev.rvbsm.fsit.event.InteractBlockCallback;
@@ -16,7 +17,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -26,7 +27,8 @@ import java.util.concurrent.TimeUnit;
 public class FSitMod implements ModInitializer {
 
 	private static final String MOD_ID = "fsit";
-	private static final Set<UUID> sneakedPlayers = new LinkedHashSet<>();
+	private static final Set<UUID> sneakedPlayers = new HashSet<>();
+	public static ConfigData config;
 
 	@Contract(pure = true)
 	public static @NotNull Text getTranslation(String type, String id) {
@@ -39,15 +41,15 @@ public class FSitMod implements ModInitializer {
 	}
 
 	public static boolean isNeedSeat(@NotNull PlayerEntity player) {
-		return sneakedPlayers.contains(player.getUuid()) && player.getPitch() >= FSitConfig.data.minAngle;
+		return sneakedPlayers.contains(player.getUuid()) && player.getPitch() >= FSitMod.config.minAngle;
 	}
 
 	public static void addSneaked(@NotNull PlayerEntity player) {
-		if (!FSitConfig.data.sneakSit) return;
+		if (!FSitMod.config.sneakSit) return;
 
 		final UUID playerUid = player.getUuid();
-		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch() >= FSitConfig.data.minAngle) {
-			final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitConfig.data.sneakDelay, TimeUnit.MILLISECONDS);
+		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch() >= FSitMod.config.minAngle) {
+			final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);
 
 			FSitMod.sneakedPlayers.add(playerUid);
 			CompletableFuture.supplyAsync(() -> FSitMod.sneakedPlayers.remove(playerUid), delayedExecutor);
@@ -62,9 +64,13 @@ public class FSitMod implements ModInitializer {
 		FSitMod.sneakedPlayers.remove(player.getUuid());
 	}
 
+	public static void loadConfig() {
+		FSitMod.config = FSitConfig.load(ConfigData::new, ConfigData.getDefaultConfig());
+	}
+
 	@Override
 	public void onInitialize() {
-		FSitConfig.load();
+		FSitMod.loadConfig();
 
 		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
 		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);

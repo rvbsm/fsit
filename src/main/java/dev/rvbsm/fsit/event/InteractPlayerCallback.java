@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.event;
 
-import dev.rvbsm.fsit.config.FSitConfig;
+import dev.rvbsm.fsit.FSitMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 public abstract class InteractPlayerCallback {
 
 	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, HitResult ignored) {
-		if (!FSitConfig.data.sitPlayers) return ActionResult.PASS;
+		if (!FSitMod.config.sitPlayers) return ActionResult.PASS;
 		else if (world.isClient) return ActionResult.PASS;
 		else if (player.isSpectator() || entity.isSpectator()) return ActionResult.PASS;
 		else if (player.isSneaking() || entity.isSneaking()) return ActionResult.PASS;
