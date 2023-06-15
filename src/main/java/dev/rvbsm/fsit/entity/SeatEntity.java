@@ -9,14 +9,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class SeatEntity extends AreaEffectCloudEntity {
 
-	private static final Map<Identifier, Set<Vec3d>> existingSeats = new LinkedHashMap<>();
+	private static final Map<Identifier, Set<Vec3d>> existingSeats = new HashMap<>();
 	private static final double offset = .5d;
 	private boolean mounted = false;
 
