@@ -3,5 +3,17 @@
 	"option.fsit.sneak.min_angle": "Sit angle",
 	"option.fsit.sneak.sneak_delay": "Sneak delay",
 	"option.fsit.sittable.blocks": "Sittable block ids",
-	"option.fsit.sittable.tags": "Sittable block tags"
+	"option.fsit.sittable.tags": "Sittable block tags",
+	"option.fsit.misc.sit_players": "Sit on players",
+
+	"comment.fsit.sneak.sneak_sit": "Toggles sit on double sneak feature",
+	"comment.fsit.sneak.min_angle": "Minimal pitch to sitting down",
+	"comment.fsit.sneak.sneak_delay": "Time in ms between sneaks for sitting down",
+	"comment.fsit.sittable.blocks": "List of block tags (e.g. \"logs\") available to sit",
+	"comment.fsit.sittable.tags": "List of block ids (e.g. \"oak_log\") available to sit",
+	"comment.fsit.misc.sit_players": "Toggles sitting on other players",
+
+	"category.fsit.sneak": "Sneak",
+	"category.fsit.sittable": "Sittable",
+	"category.fsit.misc": "Misc"
 }

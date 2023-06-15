@@ -2,11 +2,12 @@ package dev.rvbsm.fsit;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
+import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.config.FSitConfig;
-import dev.rvbsm.fsit.config.FSitConfigEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -14,46 +15,60 @@ import java.util.List;
 
 public class FSitModMenu implements ModMenuApi {
 
-	private static final Text SNEAK_SIT_TEXT = FSitMod.getTranslation("option", FSitConfigEntry.Fields.SNEAK_SIT);
-	private static final Text MIN_ANGLE_TEXT = FSitMod.getTranslation("option", FSitConfigEntry.Fields.MIN_ANGLE);
-	private static final Text SNEAK_DELAY_TEXT = FSitMod.getTranslation("option", FSitConfigEntry.Fields.SNEAK_DELAY);
-	private static final Text SITTABLE_BLOCKS_TEXT = FSitMod.getTranslation("option", FSitConfigEntry.Fields.SITTABLE_BLOCKS);
-	private static final Text SITTABLE_TAGS_TEXT = FSitMod.getTranslation("option", FSitConfigEntry.Fields.SITTABLE_TAGS);
-
-
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
 		return screen -> {
 			final ConfigBuilder configBuilder = ConfigBuilder.create()
 							.setParentScreen(screen)
 							.setTitle(Text.literal("FSit"))
+							.setDefaultBackgroundTexture(new Identifier("minecraft:textures/block/deepslate_bricks.png"))
 							.setSavingRunnable(FSitConfig::save);
 			final ConfigEntryBuilder entryBuilder = configBuilder.entryBuilder();
 
-			final List<String> sittableBlocks = FSitConfig.data.sittableBlocks.stream().map(Identifier::toString).toList();
-			final List<String> sittableTags = FSitConfig.data.sittableTags.stream().map(Identifier::toString).toList();
+			final List<String> sittableTags = FSitMod.config.sittableTags.stream().map(Identifier::toString).toList();
+			final List<String> sittableBlocks = FSitMod.config.sittableBlocks.stream().map(Identifier::toString).toList();
 
-			final ConfigCategory main = configBuilder.getOrCreateCategory(Text.literal("Main"));
-			main.addEntry(entryBuilder.startBooleanToggle(SNEAK_SIT_TEXT, FSitConfig.data.sneakSit)
-							.setDefaultValue(FSitConfigEntry.SNEAK_SIT::defaultValue)
-							.setSaveConsumer(FSitConfigEntry.SNEAK_SIT::save)
+			final ConfigCategory main = configBuilder.getOrCreateCategory(Text.literal("main"));
+
+			final SubCategoryBuilder sneakCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "sneak"));
+			sneakCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entry.SNEAK_SIT.keyAsText(), FSitMod.config.sneakSit)
+							.setDefaultValue(ConfigData.Entry.SNEAK_SIT::defaultValue)
+							.setSaveConsumer(ConfigData.Entry.SNEAK_SIT::save)
+							.setTooltip(ConfigData.Entry.SNEAK_SIT.commentAsText())
 							.build());
-			main.addEntry(entryBuilder.startIntSlider(MIN_ANGLE_TEXT, (int) FSitConfig.data.minAngle, -90, 90)
-							.setDefaultValue(FSitConfigEntry.MIN_ANGLE.defaultValue()::intValue)
-							.setSaveConsumer((value) -> FSitConfigEntry.MIN_ANGLE.save(value.doubleValue()))
+			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entry.MIN_ANGLE.keyAsText(), (int) FSitMod.config.minAngle, -90, 90)
+							.setDefaultValue(ConfigData.Entry.MIN_ANGLE.defaultValue()::intValue)
+							.setSaveConsumer((value) -> ConfigData.Entry.MIN_ANGLE.save(value.doubleValue()))
+							.setTooltip(ConfigData.Entry.MIN_ANGLE.commentAsText())
 							.build());
-			main.addEntry(entryBuilder.startIntSlider(SNEAK_DELAY_TEXT, FSitConfig.data.sneakDelay, 100, 2000)
-							.setDefaultValue(FSitConfigEntry.SNEAK_DELAY::defaultValue)
-							.setSaveConsumer(FSitConfigEntry.SNEAK_DELAY::save)
+			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entry.SNEAK_SIT.keyAsText(), FSitMod.config.sneakDelay, 100, 2000)
+							.setDefaultValue(ConfigData.Entry.SNEAK_DELAY::defaultValue)
+							.setSaveConsumer(ConfigData.Entry.SNEAK_DELAY::save)
+							.setTooltip(ConfigData.Entry.SNEAK_DELAY.commentAsText())
 							.build());
-			main.addEntry(entryBuilder.startStrList(SITTABLE_BLOCKS_TEXT, sittableBlocks)
-							.setDefaultValue(FSitConfigEntry.SITTABLE_BLOCKS::defaultValue)
-							.setSaveConsumer(FSitConfigEntry.SITTABLE_BLOCKS::save)
+
+			final SubCategoryBuilder sittableCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "sittable"));
+			sittableCategory.add(entryBuilder.startStrList(ConfigData.Entry.SITTABLE_TAGS.keyAsText(), sittableTags)
+							.setDefaultValue(ConfigData.Entry.SITTABLE_TAGS::defaultValue)
+							.setSaveConsumer(ConfigData.Entry.SITTABLE_TAGS::save)
+							.setTooltip(ConfigData.Entry.SITTABLE_TAGS.commentAsText())
 							.build());
-			main.addEntry(entryBuilder.startStrList(SITTABLE_TAGS_TEXT, sittableTags)
-							.setDefaultValue(FSitConfigEntry.SITTABLE_TAGS::defaultValue)
-							.setSaveConsumer(FSitConfigEntry.SITTABLE_TAGS::save)
+			sittableCategory.add(entryBuilder.startStrList(ConfigData.Entry.SITTABLE_BLOCKS.keyAsText(), sittableBlocks)
+							.setDefaultValue(ConfigData.Entry.SITTABLE_BLOCKS::defaultValue)
+							.setSaveConsumer(ConfigData.Entry.SITTABLE_BLOCKS::save)
+							.setTooltip(ConfigData.Entry.SITTABLE_BLOCKS.commentAsText())
 							.build());
+
+			final SubCategoryBuilder miscCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "misc"));
+			miscCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entry.SIT_PLAYERS.keyAsText(), FSitMod.config.sitPlayers)
+							.setDefaultValue(ConfigData.Entry.SIT_PLAYERS::defaultValue)
+							.setSaveConsumer(ConfigData.Entry.SIT_PLAYERS::save)
+							.setTooltip(ConfigData.Entry.SIT_PLAYERS.commentAsText())
+							.build());
+
+			main.addEntry(sneakCategory.setExpanded(true).build());
+			main.addEntry(sittableCategory.setExpanded(true).build());
+			main.addEntry(miscCategory.setExpanded(true).build());
 
 			return configBuilder.build();
 		};
