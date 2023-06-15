@@ -95,12 +95,12 @@ public class ConfigData {
 
 		@Override
 		public List<Identifier> convertToField(List<String> value) {
-			return value.stream().map(Identifier::new).toList();
+			return value.stream().filter(Identifier::isValid).distinct().map(Identifier::new).toList();
 		}
 
 		@Override
 		public List<String> convertFromField(List<Identifier> value) {
-			return value.stream().map(Identifier::toString).toList();
+			return value.stream().map(Identifier::toString).distinct().toList();
 		}
 	}
 }
