@@ -12,47 +12,42 @@ import java.util.List;
 public class ConfigData {
 
 	@Path(Fields.CONFIG_VERSION)
-	public int configVersion = Entry.CONFIG_VERSION.defaultValue();
+	public int configVersion = Entry.CONFIG_VERSION.defaultValue;
+
 	@Path(Fields.SNEAK_SIT)
-	public boolean sneakSit = Entry.SNEAK_SIT.defaultValue();
+	public boolean sneakSit = Entry.SNEAK_SIT.defaultValue;
+
 	@Path(Fields.MIN_ANGLE)
 	@SpecDoubleInRange(min = -90, max = 90)
-	public double minAngle = Entry.MIN_ANGLE.defaultValue();
+	public double minAngle = Entry.MIN_ANGLE.defaultValue;
+
 	@Path(Fields.SNEAK_DELAY)
 	@SpecIntInRange(min = 100, max = 2000)
-	public int sneakDelay = Entry.SNEAK_DELAY.defaultValue();
+	public int sneakDelay = Entry.SNEAK_DELAY.defaultValue;
+
 	@Path(Fields.SITTABLE_BLOCKS)
 	@Conversion(Identifier2StringConverter.class)
-	public List<Identifier> sittableBlocks = Entry.SITTABLE_BLOCKS.defaultValue().stream().map(Identifier::new).toList();
+	public List<Identifier> sittableBlocks = Entry.SITTABLE_BLOCKS.defaultValue.stream().map(Identifier::new).toList();
+
 	@Path(Fields.SITTABLE_TAGS)
 	@Conversion(Identifier2StringConverter.class)
-	public List<Identifier> sittableTags = Entry.SITTABLE_TAGS.defaultValue().stream().map(Identifier::new).toList();
+	public List<Identifier> sittableTags = Entry.SITTABLE_TAGS.defaultValue.stream().map(Identifier::new).toList();
+
 	@Path(Fields.SIT_PLAYERS)
-	public boolean sitPlayers = Entry.SIT_PLAYERS.defaultValue();
+	public boolean sitPlayers = Entry.SIT_PLAYERS.defaultValue;
 
 	public static UnmodifiableCommentedConfig getDefaultConfig() {
 		final CommentedConfig defaultConfig = CommentedConfig.inMemory();
 
-		defaultConfig.set(Fields.CONFIG_VERSION, Entry.CONFIG_VERSION.defaultValue());
-		defaultConfig.setComment(Fields.CONFIG_VERSION, Entry.CONFIG_VERSION.comment());
+		new ObjectConverter().toConfig(ConfigData.class, defaultConfig);
 
-		defaultConfig.set(Fields.SNEAK_SIT, Entry.SNEAK_SIT.defaultValue());
-		defaultConfig.setComment(Fields.SNEAK_SIT, Entry.SNEAK_SIT.comment());
-
-		defaultConfig.set(Fields.MIN_ANGLE, Entry.MIN_ANGLE.defaultValue());
-		defaultConfig.setComment(Fields.MIN_ANGLE, Entry.MIN_ANGLE.comment());
-
-		defaultConfig.set(Fields.SNEAK_DELAY, Entry.SNEAK_DELAY.defaultValue());
-		defaultConfig.setComment(Fields.SNEAK_DELAY, Entry.SNEAK_DELAY.comment());
-
-		defaultConfig.set(Fields.SITTABLE_BLOCKS, Entry.SITTABLE_BLOCKS.defaultValue());
-		defaultConfig.setComment(Fields.SITTABLE_BLOCKS, Entry.SITTABLE_BLOCKS.comment());
-
-		defaultConfig.set(Fields.SITTABLE_TAGS, Entry.SITTABLE_TAGS.defaultValue());
-		defaultConfig.setComment(Fields.SITTABLE_TAGS, Entry.SITTABLE_TAGS.comment());
-
-		defaultConfig.set(Fields.SIT_PLAYERS, Entry.SIT_PLAYERS.defaultValue());
-		defaultConfig.setComment(Fields.SIT_PLAYERS, Entry.SIT_PLAYERS.comment());
+		defaultConfig.setComment(Fields.CONFIG_VERSION, Entry.CONFIG_VERSION.comment);
+		defaultConfig.setComment(Fields.SNEAK_SIT, Entry.SNEAK_SIT.comment);
+		defaultConfig.setComment(Fields.MIN_ANGLE, Entry.MIN_ANGLE.comment);
+		defaultConfig.setComment(Fields.SNEAK_DELAY, Entry.SNEAK_DELAY.comment);
+		defaultConfig.setComment(Fields.SITTABLE_BLOCKS, Entry.SITTABLE_BLOCKS.comment);
+		defaultConfig.setComment(Fields.SITTABLE_TAGS, Entry.SITTABLE_TAGS.comment);
+		defaultConfig.setComment(Fields.SIT_PLAYERS, Entry.SIT_PLAYERS.comment);
 
 		return defaultConfig.unmodifiable();
 	}
