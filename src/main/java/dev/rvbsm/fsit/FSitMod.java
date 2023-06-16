@@ -61,8 +61,6 @@ public class FSitMod implements ModInitializer {
 	}
 
 	public static void addSneaked(@NotNull PlayerEntity player) {
-		if (!FSitMod.config.sneakSit) return;
-
 		final UUID playerUid = player.getUuid();
 		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch() >= FSitMod.config.minAngle) {
 			final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);

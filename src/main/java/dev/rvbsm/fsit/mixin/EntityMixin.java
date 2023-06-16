@@ -40,7 +40,7 @@ public abstract class EntityMixin {
 
 		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking)
 			if (FSitMod.isNeedSeat(player)) FSitMod.spawnSeat(player, this.world, this.getPos());
-			else FSitMod.addSneaked(player);
+			else if (FSitMod.config.sneakSit) FSitMod.addSneaked(player);
 	}
 
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At(value = "TAIL"))
