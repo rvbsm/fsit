@@ -31,39 +31,39 @@ public class FSitModMenu implements ModMenuApi {
 			final ConfigCategory main = configBuilder.getOrCreateCategory(Text.literal("main"));
 
 			final SubCategoryBuilder sneakCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "sneak"));
-			sneakCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entry.SNEAK_SIT.keyAsText(), FSitMod.config.sneakSit)
-							.setDefaultValue(ConfigData.Entry.SNEAK_SIT::defaultValue)
-							.setSaveConsumer(ConfigData.Entry.SNEAK_SIT::save)
-							.setTooltip(ConfigData.Entry.SNEAK_SIT.commentAsText())
+			sneakCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.SNEAK_SIT.keyText(), FSitMod.config.sneakSit)
+							.setDefaultValue(ConfigData.Entries.SNEAK_SIT::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.SNEAK_SIT::save)
+							.setTooltip(ConfigData.Entries.SNEAK_SIT.commentText())
 							.build());
-			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entry.MIN_ANGLE.keyAsText(), (int) FSitMod.config.minAngle, -90, 90)
-							.setDefaultValue(ConfigData.Entry.MIN_ANGLE.defaultValue()::intValue)
-							.setSaveConsumer((value) -> ConfigData.Entry.MIN_ANGLE.save(value.doubleValue()))
-							.setTooltip(ConfigData.Entry.MIN_ANGLE.commentAsText())
+			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.MIN_ANGLE.keyText(), (int) FSitMod.config.minAngle, -90, 90)
+							.setDefaultValue(ConfigData.Entries.MIN_ANGLE.defaultValue()::intValue)
+							.setSaveConsumer((value) -> ConfigData.Entries.MIN_ANGLE.save(value.doubleValue()))
+							.setTooltip(ConfigData.Entries.MIN_ANGLE.commentText())
 							.build());
-			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entry.SNEAK_SIT.keyAsText(), FSitMod.config.sneakDelay, 100, 2000)
-							.setDefaultValue(ConfigData.Entry.SNEAK_DELAY::defaultValue)
-							.setSaveConsumer(ConfigData.Entry.SNEAK_DELAY::save)
-							.setTooltip(ConfigData.Entry.SNEAK_DELAY.commentAsText())
+			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SNEAK_SIT.keyText(), FSitMod.config.sneakDelay, 100, 2000)
+							.setDefaultValue(ConfigData.Entries.SNEAK_DELAY::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.SNEAK_DELAY::save)
+							.setTooltip(ConfigData.Entries.SNEAK_DELAY.commentText())
 							.build());
 
 			final SubCategoryBuilder sittableCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "sittable"));
-			sittableCategory.add(entryBuilder.startStrList(ConfigData.Entry.SITTABLE_TAGS.keyAsText(), sittableTags)
-							.setDefaultValue(ConfigData.Entry.SITTABLE_TAGS::defaultValue)
-							.setSaveConsumer(ConfigData.Entry.SITTABLE_TAGS::save)
-							.setTooltip(ConfigData.Entry.SITTABLE_TAGS.commentAsText())
+			sittableCategory.add(entryBuilder.startStrList(ConfigData.Entries.SITTABLE_TAGS.keyText(), sittableTags)
+							.setDefaultValue(ConfigData.Entries.SITTABLE_TAGS::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.SITTABLE_TAGS::save)
+							.setTooltip(ConfigData.Entries.SITTABLE_TAGS.commentText())
 							.build());
-			sittableCategory.add(entryBuilder.startStrList(ConfigData.Entry.SITTABLE_BLOCKS.keyAsText(), sittableBlocks)
-							.setDefaultValue(ConfigData.Entry.SITTABLE_BLOCKS::defaultValue)
-							.setSaveConsumer(ConfigData.Entry.SITTABLE_BLOCKS::save)
-							.setTooltip(ConfigData.Entry.SITTABLE_BLOCKS.commentAsText())
+			sittableCategory.add(entryBuilder.startStrList(ConfigData.Entries.SITTABLE_BLOCKS.keyText(), sittableBlocks)
+							.setDefaultValue(ConfigData.Entries.SITTABLE_BLOCKS::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.SITTABLE_BLOCKS::save)
+							.setTooltip(ConfigData.Entries.SITTABLE_BLOCKS.commentText())
 							.build());
 
 			final SubCategoryBuilder miscCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "misc"));
-			miscCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entry.SIT_PLAYERS.keyAsText(), FSitMod.config.sitPlayers)
-							.setDefaultValue(ConfigData.Entry.SIT_PLAYERS::defaultValue)
-							.setSaveConsumer(ConfigData.Entry.SIT_PLAYERS::save)
-							.setTooltip(ConfigData.Entry.SIT_PLAYERS.commentAsText())
+			miscCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.SIT_PLAYERS.keyText(), FSitMod.config.sitPlayers)
+							.setDefaultValue(ConfigData.Entries.SIT_PLAYERS::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.SIT_PLAYERS::save)
+							.setTooltip(ConfigData.Entries.SIT_PLAYERS.commentText())
 							.build());
 
 			main.addEntry(sneakCategory.setExpanded(true).build());

@@ -20,9 +20,10 @@ public abstract class FSitConfig {
 		return CommentedFileConfig.of(configPath, TomlFormat.instance());
 	}
 
-	public static <TConfig> TConfig load(Supplier<TConfig> destination, UnmodifiableCommentedConfig defaultConfig) {
+	public static <TConfig> TConfig load(Supplier<TConfig> destination, Supplier<UnmodifiableCommentedConfig> defaultConfigSupplier) {
 		config.load();
 
+		final UnmodifiableCommentedConfig defaultConfig = defaultConfigSupplier.get();
 		config.addAll(defaultConfig);
 		config.putAllComments(defaultConfig);
 		config.save();

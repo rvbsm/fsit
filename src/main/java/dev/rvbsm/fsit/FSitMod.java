@@ -79,7 +79,7 @@ public class FSitMod implements ModInitializer {
 	}
 
 	public static void loadConfig() {
-		FSitMod.config = FSitConfig.load(ConfigData::new, ConfigData.getDefaultConfig());
+		FSitMod.config = FSitConfig.load(ConfigData::new, ConfigData::defaultConfig);
 	}
 
 	@Override
