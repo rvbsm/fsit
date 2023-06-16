@@ -68,7 +68,7 @@ public class FSitModMenu implements ModMenuApi {
 
 			main.addEntry(sneakCategory.setExpanded(true).build());
 			main.addEntry(sittableCategory.setExpanded(true).build());
-			main.addEntry(miscCategory.setExpanded(true).build());
+			main.addEntry(miscCategory.build());
 
 			return configBuilder.build();
 		};
