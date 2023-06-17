@@ -7,6 +7,7 @@ import dev.rvbsm.fsit.event.InteractBlockCallback;
 import dev.rvbsm.fsit.event.InteractPlayerCallback;
 import dev.rvbsm.fsit.event.PlayerConnectionCallbacks;
 import dev.rvbsm.fsit.packet.PongC2SPacket;
+import dev.rvbsm.fsit.packet.RidePlayerC2SPacket;
 import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -93,5 +94,7 @@ public class FSitMod implements ModInitializer {
 
 		ServerPlayNetworking.registerGlobalReceiver(PongC2SPacket.PONG_PACKET, PongC2SPacket::receive);
 		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.SPAWN_SEAT_PACKET, SpawnSeatC2SPacket::receive);
+		ServerPlayNetworking.registerGlobalReceiver(RidePlayerC2SPacket.RIDE_PLAYER_PACKET, RidePlayerC2SPacket::receiveRequest);
+		ServerPlayNetworking.registerGlobalReceiver(RidePlayerC2SPacket.RIDE_ACCEPT_PACKET, RidePlayerC2SPacket::receiveAccept);
 	}
 }

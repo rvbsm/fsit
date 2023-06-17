@@ -3,7 +3,8 @@
 	"package": "dev.rvbsm.fsit.mixin.client",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"EntityMixin"
+		"EntityMixin",
+		"SocialInteractionsPlayerListEntryMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
