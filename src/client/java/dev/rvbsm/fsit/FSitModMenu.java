@@ -48,6 +48,11 @@ public class FSitModMenu implements ModMenuApi {
 							.build());
 
 			final SubCategoryBuilder sittableCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "sittable"));
+			sittableCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.SITTABLE_SIT.keyText(), FSitMod.config.sittableSit)
+							.setDefaultValue(ConfigData.Entries.SITTABLE_SIT::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.SITTABLE_SIT::save)
+							.setTooltip(ConfigData.Entries.SITTABLE_SIT.commentText())
+							.build());
 			sittableCategory.add(entryBuilder.startStrList(ConfigData.Entries.SITTABLE_TAGS.keyText(), sittableTags)
 							.setDefaultValue(ConfigData.Entries.SITTABLE_TAGS::defaultValue)
 							.setSaveConsumer(ConfigData.Entries.SITTABLE_TAGS::save)

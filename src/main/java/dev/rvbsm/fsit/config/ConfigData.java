@@ -31,6 +31,10 @@ public class ConfigData {
 	@SpecIntInRange(min = 100, max = 2000)
 	public int sneakDelay = Entries.SNEAK_DELAY.defaultValue;
 
+	@Path(Fields.SITTABLE_SIT)
+	@Comment(Comments.SITTABLE_SIT)
+	public boolean sittableSit = Entries.SITTABLE_SIT.defaultValue;
+
 	@Path(Fields.SITTABLE_BLOCKS)
 	@Comment(Comments.SITTABLE_BLOCKS)
 	@Conversion(Identifier2StringConverter.class)
@@ -60,6 +64,7 @@ public class ConfigData {
 		String SNEAK_SIT = "sneak.sneak_sit";
 		String MIN_ANGLE = "sneak.min_angle";
 		String SNEAK_DELAY = "sneak.sneak_delay";
+		String SITTABLE_SIT = "sittable.sit";
 		String SITTABLE_BLOCKS = "sittable.blocks";
 		String SITTABLE_TAGS = "sittable.tags";
 		String SIT_PLAYERS = "misc.sit_players";
@@ -70,6 +75,7 @@ public class ConfigData {
 		String SNEAK_SIT = "Toggles sit-on-sneak feature";
 		String MIN_ANGLE = "Minimal pitch to sitting down";
 		String SNEAK_DELAY = "Time in ms between sneaks for sitting down";
+		String SITTABLE_SIT = "Toggles sitting on specified blocks";
 		String SITTABLE_BLOCKS = "List of block ids (e.g. \"oak_log\") available to sit";
 		String SITTABLE_TAGS = "List of block tags";
 		String SIT_PLAYERS = "Toggles sitting on other players";
@@ -80,6 +86,7 @@ public class ConfigData {
 		ConfigEntry<Boolean> SNEAK_SIT = new ConfigEntry<>(Fields.SNEAK_SIT, true);
 		ConfigEntry<Double> MIN_ANGLE = new ConfigEntry<>(Fields.MIN_ANGLE, 66d);
 		ConfigEntry<Integer> SNEAK_DELAY = new ConfigEntry<>(Fields.SNEAK_DELAY, 600);
+		ConfigEntry<Boolean> SITTABLE_SIT = new ConfigEntry<>(Fields.SITTABLE_SIT, true);
 		ConfigEntry<List<String>> SITTABLE_BLOCKS = new ConfigEntry<>(Fields.SITTABLE_BLOCKS, List.of());
 		ConfigEntry<List<String>> SITTABLE_TAGS = new ConfigEntry<>(Fields.SITTABLE_TAGS, List.of("minecraft:slabs", "minecraft:stairs", "minecraft:logs"));
 		ConfigEntry<Boolean> SIT_PLAYERS = new ConfigEntry<>(Fields.SIT_PLAYERS, false);
@@ -103,6 +110,7 @@ public class ConfigData {
 
 		@Override
 		public List<Identifier> convertToField(List<String> value) {
+			if (value == null) return List.of();
 			return value.stream().filter(Identifier::isValid).distinct().map(Identifier::new).toList();
 		}
 

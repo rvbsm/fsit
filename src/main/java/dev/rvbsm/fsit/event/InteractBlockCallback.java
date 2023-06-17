@@ -48,7 +48,8 @@ public abstract class InteractBlockCallback {
 	}
 
 	public static boolean isSittable(World world, BlockHitResult hitResult) {
-		if (hitResult.getSide() == Direction.UP) return false;
+		if (!FSitMod.config.sittableSit) return false;
+		else if (hitResult.getSide() == Direction.UP) return false;
 
 		final BlockPos blockPos = hitResult.getBlockPos();
 		if (!world.isAir(blockPos.up())) return false;
