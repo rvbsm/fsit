@@ -1,6 +1,8 @@
 package dev.rvbsm.fsit.event.client;
 
 import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.FluidModificationItem;
@@ -10,6 +12,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
+@Environment(EnvType.CLIENT)
 public abstract class InteractBlockCallback {
 
 	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
