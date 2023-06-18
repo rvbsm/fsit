@@ -20,7 +20,7 @@ public abstract class PlayerConnectionCallbacks {
 		final Entity vehicle = serverPlayNetworkHandler.player.getVehicle();
 		if (vehicle instanceof SeatEntity || vehicle instanceof PlayerEntity) serverPlayNetworkHandler.player.stopRiding();
 
-		FSitMod.removeModdedPlayer(serverPlayNetworkHandler.player.getUuid());
+		FSitMod.removeModded(serverPlayNetworkHandler.player.getUuid());
 	}
 
 }

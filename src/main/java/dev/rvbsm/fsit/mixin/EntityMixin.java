@@ -1,10 +1,7 @@
 package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.FSitMod;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -15,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
@@ -38,9 +36,9 @@ public abstract class EntityMixin {
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
 		if (!this.isOnGround() || this.hasVehicle() || this.isSpectator()) return;
 
-		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking)
-			if (FSitMod.isNeedSeat(player)) FSitMod.spawnSeat(player, this.world, this.getPos());
-			else if (FSitMod.config.sneakSit) FSitMod.addSneaked(player);
+		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking && player.getPitch() >= FSitMod.config.minAngle)
+			if (FSitMod.isSneaked(player.getUuid())) FSitMod.spawnSeat(player, this.world, this.getPos());
+			else if (FSitMod.config.sneakSit) FSitMod.addSneaked(player.getUuid());
 	}
 
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At(value = "TAIL"))

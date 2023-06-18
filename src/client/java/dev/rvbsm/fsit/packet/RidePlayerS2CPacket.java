@@ -21,7 +21,7 @@ public abstract class RidePlayerS2CPacket {
 		if (!FSitMod.config.sitPlayers) return;
 
 		final UUID issuerUid = new UUID(buf.readLong(), buf.readLong());
-		if (FSitClientMod.blocklist.contains(issuerUid)) return;
+		if (FSitClientMod.blockedPlayers.contains(issuerUid)) return;
 
 		final PacketByteBuf responseBuf = PacketByteBufs.create();
 		responseBuf.writeLong(issuerUid.getMostSignificantBits());

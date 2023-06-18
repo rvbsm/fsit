@@ -43,7 +43,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
 	public void init(MinecraftClient client, SocialInteractionsScreen parent, UUID uuid, String name, Supplier<Identifier> skinTexture, boolean reportable, CallbackInfo ci) {
 		this.blockButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, BLOCKLIST_TEXTURE, 64, 64, button -> {
-			FSitClientMod.blocklist.add(uuid);
+			FSitClientMod.blockedPlayers.add(uuid);
 			setBlockButtonVisible(false);
 		}, BLOCK_BUTTON_TEXT) {
 
@@ -54,11 +54,11 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 		};
 		this.blockButton.setTooltip(Tooltip.of(BLOCK_BUTTON_TEXT));
 		this.blockButton.setTooltipDelay(10);
-		this.blockButton.visible = !FSitClientMod.blocklist.contains(uuid);
+		this.blockButton.visible = !FSitClientMod.blockedPlayers.contains(uuid);
 		this.blockButton.active = FSitMod.config.sitPlayers;
 
 		this.unblockButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, BLOCKLIST_TEXTURE, 64, 64, button -> {
-			FSitClientMod.blocklist.remove(uuid);
+			FSitClientMod.blockedPlayers.remove(uuid);
 			setBlockButtonVisible(true);
 		}, UNBLOCK_BUTTON_TEXT) {
 
@@ -69,7 +69,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 		};
 		this.unblockButton.setTooltip(Tooltip.of(UNBLOCK_BUTTON_TEXT));
 		this.unblockButton.setTooltipDelay(10);
-		this.unblockButton.visible = FSitClientMod.blocklist.contains(uuid);
+		this.unblockButton.visible = FSitClientMod.blockedPlayers.contains(uuid);
 		this.unblockButton.active = FSitMod.config.sitPlayers;
 
 		this.buttons.add(this.blockButton);

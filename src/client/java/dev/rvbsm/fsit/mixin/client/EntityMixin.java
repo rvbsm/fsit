@@ -35,18 +35,18 @@ public abstract class EntityMixin {
 	}
 
 	@Redirect(method = "updatePassengerPosition(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/Entity$PositionUpdater;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getHeightOffset()D"))
-	private double getHeightOffset(@NotNull Entity passenger) {
+	private double updatePasengerPosition$getHeightOffset(@NotNull Entity passenger) {
 		return passenger.getVehicle() instanceof PlayerEntity ? 0d : passenger.getHeightOffset();
 	}
 
 	@Redirect(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;"))
-	public EntityDimensions getDimensions(@NotNull Entity entity, EntityPose pose) {
+	public EntityDimensions calculateDimensions$getDimensions(@NotNull Entity entity, EntityPose pose) {
 		final EntityDimensions dimensions = entity.getDimensions(pose);
 		return entity.isPlayer() && entity.getVehicle() instanceof PlayerEntity ? dimensions.scaled(1f, .75f) : dimensions;
 	}
 
 	@Redirect(method = "calculateBoundingBox", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;pos:Lnet/minecraft/util/math/Vec3d;", opcode = Opcodes.GETFIELD))
-	protected Vec3d calculateBoundingBox(@NotNull Entity entity) {
+	protected Vec3d calculateBoundingBox$pos(@NotNull Entity entity) {
 		if (entity.isPlayer() && entity.getVehicle() instanceof PlayerEntity) return this.pos.add(0d, .47d, 0d);
 		else return this.pos;
 	}

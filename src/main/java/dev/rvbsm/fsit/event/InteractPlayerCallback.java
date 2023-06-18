@@ -14,11 +14,11 @@ public abstract class InteractPlayerCallback {
 
 	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, HitResult hitResult) {
 		if (world.isClient) return ActionResult.PASS;
-		else if (FSitMod.isModdedPlayer(player.getUuid())) return ActionResult.PASS;
+		else if (FSitMod.isModded(player.getUuid())) return ActionResult.PASS;
 		else if (player.isSpectator() || entity.isSpectator()) return ActionResult.PASS;
 		else if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
 
-		if (entity.isPlayer() && FSitMod.isModdedPlayer(entity.getUuid())) {
+		if (entity.isPlayer() && FSitMod.isModded(entity.getUuid())) {
 			RidePlayerC2SPacket.sendRequest((ServerPlayerEntity) entity, player);
 
 			return ActionResult.SUCCESS;

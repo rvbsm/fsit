@@ -14,6 +14,6 @@ public abstract class PongC2SPacket {
 	public static final Identifier PONG_PACKET = new Identifier(FSitMod.getModId(), "pong");
 
 	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		FSitMod.addModdedPlayer(player.getUuid());
+		FSitMod.addModded(player.getUuid());
 	}
 }

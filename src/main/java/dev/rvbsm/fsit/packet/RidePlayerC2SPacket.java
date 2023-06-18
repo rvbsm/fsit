@@ -10,8 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -22,7 +20,7 @@ public abstract class RidePlayerC2SPacket {
 
 	public static void receiveRequest(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
 		final UUID targetUid = new UUID(buf.readLong(), buf.readLong());
-		if (!FSitMod.isModdedPlayer(targetUid)) return;
+		if (!FSitMod.isModded(targetUid)) return;
 
 		final ServerPlayerEntity target = server.getPlayerManager().getPlayer(targetUid);
 		if (target == null) return;

@@ -14,11 +14,11 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 public class FSitClientMod implements ClientModInitializer {
 
-	public static final PlayerBlockList blocklist = new PlayerBlockList(FSitMod.getModId() + "-blocklist");
+	public static final PlayerBlockList blockedPlayers = new PlayerBlockList(FSitMod.getModId() + "-blocklist");
 
 	@Override
 	public void onInitializeClient() {
-		blocklist.load();
+		blockedPlayers.load();
 
 		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
 		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);

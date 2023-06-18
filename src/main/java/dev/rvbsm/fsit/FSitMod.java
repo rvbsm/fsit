@@ -31,11 +31,11 @@ import java.util.concurrent.TimeUnit;
 public class FSitMod implements ModInitializer {
 
 	private static final String MOD_ID = "fsit";
-	private static final Set<UUID> sneakedPlayers = new HashSet<>();
 	private static final Set<UUID> moddedPlayers = new HashSet<>();
+	private static final Set<UUID> sneakedPlayers = new HashSet<>();
 	public static ConfigData config;
 
-	@Contract(pure = true)
+	@Contract("!null, !null -> _")
 	public static @NotNull Text getTranslation(String type, String id) {
 		final String translationKey = String.join(".", type, FSitMod.MOD_ID, id);
 		return Text.translatable(translationKey);
@@ -45,25 +45,20 @@ public class FSitMod implements ModInitializer {
 		return FSitMod.MOD_ID;
 	}
 
-	public static void addModdedPlayer(UUID playerUid) {
+	public static void addModded(UUID playerUid) {
 		moddedPlayers.add(playerUid);
 	}
 
-	public static void removeModdedPlayer(UUID playerUid) {
+	public static void removeModded(UUID playerUid) {
 		moddedPlayers.remove(playerUid);
 	}
 
-	public static boolean isModdedPlayer(UUID playerUid) {
+	public static boolean isModded(UUID playerUid) {
 		return moddedPlayers.contains(playerUid);
 	}
 
-	public static boolean isNeedSeat(@NotNull PlayerEntity player) {
-		return sneakedPlayers.contains(player.getUuid()) && player.getPitch() >= FSitMod.config.minAngle;
-	}
-
-	public static void addSneaked(@NotNull PlayerEntity player) {
-		final UUID playerUid = player.getUuid();
-		if (!FSitMod.sneakedPlayers.contains(playerUid) && player.getPitch() >= FSitMod.config.minAngle) {
+	public static void addSneaked(UUID playerUid) {
+		if (!FSitMod.sneakedPlayers.contains(playerUid)) {
 			final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);
 
 			FSitMod.sneakedPlayers.add(playerUid);
@@ -71,7 +66,11 @@ public class FSitMod implements ModInitializer {
 		}
 	}
 
-	public static void spawnSeat(@NotNull PlayerEntity player, @NotNull World world, Vec3d pos) {
+	public static boolean isSneaked(UUID playerUid) {
+		return sneakedPlayers.contains(playerUid);
+	}
+
+	public static void spawnSeat(PlayerEntity player, World world, Vec3d pos) {
 		final SeatEntity seatEntity = new SeatEntity(world, pos);
 
 		world.spawnEntity(seatEntity);
