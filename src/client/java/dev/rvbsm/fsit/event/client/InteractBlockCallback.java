@@ -1,8 +1,10 @@
 package dev.rvbsm.fsit.event.client;
 
+import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.FluidModificationItem;
@@ -16,6 +18,9 @@ import net.minecraft.world.World;
 public abstract class InteractBlockCallback {
 
 	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+		if (!MinecraftClient.getInstance().player.equals(player)) return ActionResult.PASS;
+		else if (!FSitMod.config.sittableSit) return ActionResult.PASS;
+
 		final Item handItem = player.getStackInHand(hand).getItem();
 		if (handItem instanceof BlockItem) return ActionResult.PASS;
 		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;

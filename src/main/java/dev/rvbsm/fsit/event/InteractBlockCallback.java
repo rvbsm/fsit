@@ -28,7 +28,8 @@ public abstract class InteractBlockCallback {
 
 	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
 		if (world.isClient) return ActionResult.PASS;
-		else if (FSitMod.isModdedPlayer(player.getUuid())) return ActionResult.PASS;
+		else if (FSitMod.isModded(player.getUuid())) return ActionResult.PASS;
+		else if (!FSitMod.config.sittableSit) return ActionResult.PASS;
 
 		final Item handItem = player.getStackInHand(hand).getItem();
 		if (handItem instanceof BlockItem) return ActionResult.PASS;
@@ -48,8 +49,7 @@ public abstract class InteractBlockCallback {
 	}
 
 	public static boolean isSittable(World world, BlockHitResult hitResult) {
-		if (!FSitMod.config.sittableSit) return false;
-		else if (hitResult.getSide() == Direction.UP) return false;
+		if (hitResult.getSide() == Direction.UP) return false;
 
 		final BlockPos blockPos = hitResult.getBlockPos();
 		if (!world.isAir(blockPos.up())) return false;
