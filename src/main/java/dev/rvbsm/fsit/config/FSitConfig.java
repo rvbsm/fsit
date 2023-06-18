@@ -24,6 +24,10 @@ public abstract class FSitConfig {
 		config.load();
 
 		final UnmodifiableCommentedConfig defaultConfig = defaultConfigSupplier.get();
+		config.valueMap().keySet().stream()
+						.filter(path -> !defaultConfig.contains(path))
+						.forEach(config::remove);
+
 		config.addAll(defaultConfig);
 		config.putAllComments(defaultConfig);
 		config.save();
