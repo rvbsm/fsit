@@ -27,15 +27,16 @@ val modInclude: Configuration by configurations.creating {
 }
 
 dependencies {
-	minecraft(rootProject.libs.minecraft)
+	minecraft(libs.minecraft)
 	mappings("net.fabricmc:yarn:${libs.versions.yarn.mappings.get()}:v2")
 
-	modImplementation(rootProject.libs.fabric.loader)
-//	modImplementation(rootProject.libs.fabric.api)
+	modImplementation(libs.fabric.loader)
+//	modImplementation(libs.fabric.api)
 
-	modInclude(fabricApi.module("fabric-command-api-v2", libs.versions.fabric.api.get()))
-	modInclude(fabricApi.module("fabric-events-interaction-v0", libs.versions.fabric.api.get()))
-	modInclude(fabricApi.module("fabric-networking-api-v1", rootProject.libs.versions.fabric.api.get()))
+	listOf("fabric-events-interaction-v0", "fabric-networking-api-v1", "fabric-command-api-v2").forEach {
+		modInclude(fabricApi.module(it, libs.versions.fabric.api.get()))
+	}
+
 	modInclude(libs.nightconfig.core)
 	modInclude(libs.nightconfig.toml)
 
