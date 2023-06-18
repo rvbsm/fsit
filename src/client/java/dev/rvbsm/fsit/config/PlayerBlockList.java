@@ -20,7 +20,7 @@ import java.util.UUID;
 @Environment(EnvType.CLIENT)
 public class PlayerBlockList {
 
-	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private final File file;
 	private final Set<UUID> blocklist = new HashSet<>();
 
@@ -48,7 +48,7 @@ public class PlayerBlockList {
 		final JsonArray jsonArray = new JsonArray();
 		blocklist.stream().map(UUID::toString).forEach(jsonArray::add);
 		try (BufferedWriter writer = Files.newBufferedWriter(this.file.toPath(), StandardCharsets.UTF_8)) {
-			gson.toJson(jsonArray, writer);
+			GSON.toJson(jsonArray, writer);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -58,7 +58,7 @@ public class PlayerBlockList {
 		if (!this.file.exists()) return;
 
 		try (BufferedReader reader = Files.newBufferedReader(this.file.toPath(), StandardCharsets.UTF_8)) {
-			final JsonArray jsonArray = gson.fromJson(reader, JsonArray.class);
+			final JsonArray jsonArray = GSON.fromJson(reader, JsonArray.class);
 			this.blocklist.clear();
 			jsonArray.asList().stream().map(JsonElement::getAsString).map(UUID::fromString).forEach(blocklist::add);
 		} catch (IOException e) {
