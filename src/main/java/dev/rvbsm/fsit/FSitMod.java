@@ -62,7 +62,7 @@ public class FSitMod implements ModInitializer {
 			final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);
 
 			FSitMod.sneakedPlayers.add(playerUid);
-			CompletableFuture.supplyAsync(() -> FSitMod.sneakedPlayers.remove(playerUid), delayedExecutor);
+			CompletableFuture.runAsync(() -> FSitMod.sneakedPlayers.remove(playerUid), delayedExecutor);
 		}
 	}
 
