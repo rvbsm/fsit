@@ -33,6 +33,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	private static final Identifier BLOCKLIST_TEXTURE = new Identifier(FSitMod.getModId(), "textures/gui/blocklist_button.png");
 	private static final Text BLOCK_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.block");
 	private static final Text UNBLOCK_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.unblock");
+	private static final Text DISABLED_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.disabled");
 
 	@Shadow
 	@Final
@@ -52,10 +53,10 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 				return getNarrationMessage(super.getNarrationMessage());
 			}
 		};
-		this.blockButton.setTooltip(Tooltip.of(BLOCK_BUTTON_TEXT));
+		this.blockButton.active = FSitMod.config.sitPlayers;
+		this.blockButton.setTooltip(Tooltip.of(this.blockButton.active ? BLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.blockButton.setTooltipDelay(10);
 		this.blockButton.visible = !FSitClientMod.blockedPlayers.contains(uuid);
-		this.blockButton.active = FSitMod.config.sitPlayers;
 
 		this.unblockButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, BLOCKLIST_TEXTURE, 64, 64, button -> {
 			FSitClientMod.blockedPlayers.remove(uuid);
@@ -67,10 +68,10 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 				return getNarrationMessage(super.getNarrationMessage());
 			}
 		};
-		this.unblockButton.setTooltip(Tooltip.of(UNBLOCK_BUTTON_TEXT));
+		this.unblockButton.active = FSitMod.config.sitPlayers;
+		this.unblockButton.setTooltip(Tooltip.of(this.unblockButton.active ? UNBLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.unblockButton.setTooltipDelay(10);
 		this.unblockButton.visible = FSitClientMod.blockedPlayers.contains(uuid);
-		this.unblockButton.active = FSitMod.config.sitPlayers;
 
 		this.buttons.add(this.blockButton);
 		this.buttons.add(this.unblockButton);

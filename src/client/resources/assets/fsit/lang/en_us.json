@@ -20,5 +20,6 @@
 	"category.fsit.misc": "Misc",
 
 	"gui.fsit.socialInteractions.block": "Disallow riding",
-	"gui.fsit.socialInteractions.unblock": "Allow riding"
+	"gui.fsit.socialInteractions.unblock": "Allow riding",
+	"gui.fsit.socialInteractions.disabled": "Player Riding is disabled"
 }
