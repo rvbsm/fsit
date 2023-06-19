@@ -1,7 +1,10 @@
 package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.packet.CrawlC2SPacket;
+import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -38,14 +41,20 @@ public abstract class EntityMixin {
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
 		if (!this.isOnGround() || this.hasVehicle() || this.isSpectator()) return;
 
-		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking) {
+		if ((Entity) (Object) this instanceof final PlayerEntity player && !sneaking) {
 			final UUID playerUid = player.getUuid();
 
 			if (FSitMod.isCrawled(playerUid)) FSitMod.removeCrawled(playerUid);
 			else if (player.getPitch() >= FSitMod.config.minAngle) {
 				if (FSitMod.isSneaked(playerUid)) {
-					if (player.isCrawling()) FSitMod.addCrawled(player);
-					else FSitMod.spawnSeat(player, this.world, this.getPos());
+					if (player.isCrawling()) {
+						if (player instanceof ServerPlayerEntity) FSitMod.addCrawled(player);
+						else CrawlC2SPacket.send();
+					}
+					else {
+						if (player instanceof ServerPlayerEntity) FSitMod.spawnSeat(player, this.world, this.getPos());
+						else SpawnSeatC2SPacket.send(player.getPos(), null, false);
+					}
 				} else if (FSitMod.config.sneakSit) FSitMod.addSneaked(playerUid);
 			}
 		}

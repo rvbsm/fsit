@@ -27,7 +27,7 @@ public abstract class InteractBlockCallback {
 		else if (!player.isOnGround() && player.shouldCancelInteraction()) return ActionResult.PASS;
 
 		if (dev.rvbsm.fsit.event.InteractBlockCallback.isSittable(world, hitResult)) {
-			SpawnSeatC2SPacket.send(player.getPos(), hitResult);
+			SpawnSeatC2SPacket.send(player.getPos(), hitResult, false);
 
 			return ActionResult.SUCCESS;
 		}
