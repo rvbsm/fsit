@@ -1,14 +1,14 @@
 package dev.rvbsm.fsit.config;
 
-import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
 import com.electronwill.nightconfig.core.conversion.ObjectConverter;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.toml.TomlFormat;
 import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.config.conversion.Comment;
 import net.fabricmc.loader.api.FabricLoader;
 
+import java.lang.reflect.Field;
 import java.nio.file.Path;
-import java.util.function.Supplier;
 
 public abstract class FSitConfig {
 
@@ -20,19 +20,16 @@ public abstract class FSitConfig {
 		return CommentedFileConfig.of(configPath, TomlFormat.instance());
 	}
 
-	public static <TConfig> TConfig load(Supplier<TConfig> destination, Supplier<UnmodifiableCommentedConfig> defaultConfigSupplier) {
+	public static <Config> void load(Config destination) {
 		config.load();
 
-		final UnmodifiableCommentedConfig defaultConfig = defaultConfigSupplier.get();
-		config.valueMap().keySet().stream()
-						.filter(path -> !defaultConfig.contains(path))
-						.forEach(config::remove);
-
-		config.addAll(defaultConfig);
-		config.putAllComments(defaultConfig);
+		for (Field field : destination.getClass().getDeclaredFields()) {
+			if (field.isAnnotationPresent(com.electronwill.nightconfig.core.conversion.Path.class) && field.isAnnotationPresent(Comment.class))
+				config.setComment(field.getAnnotation(com.electronwill.nightconfig.core.conversion.Path.class).value(), field.getAnnotation(Comment.class).value());
+		}
 		config.save();
 
-		return new ObjectConverter().toObject(config, destination);
+		new ObjectConverter().toObject(config, destination);
 	}
 
 	public static void save() {

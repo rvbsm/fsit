@@ -37,7 +37,7 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 	private static final String MOD_ID = "fsit";
 	private static final Set<UUID> moddedPlayers = new HashSet<>();
 	private static final Set<UUID> sneakedPlayers = new HashSet<>();
-	public static ConfigData config;
+	public static final ConfigData config = new ConfigData();
 
 	@Contract("!null, !null -> _")
 	public static @NotNull Text getTranslation(String type, String id) {
@@ -83,7 +83,7 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 	}
 
 	public static void loadConfig() {
-		FSitMod.config = FSitConfig.load(ConfigData::new, ConfigData::defaultConfig);
+		FSitConfig.load(FSitMod.config);
 	}
 
 	@Override

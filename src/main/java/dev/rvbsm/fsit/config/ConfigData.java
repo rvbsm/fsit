@@ -49,16 +49,6 @@ public class ConfigData {
 	@Comment(Comments.SIT_PLAYERS)
 	public boolean sitPlayers = Entries.SIT_PLAYERS.defaultValue;
 
-	public static UnmodifiableCommentedConfig defaultConfig() {
-		final CommentedConfig defaultConfig = new ObjectConverter().toConfig(new ConfigData(), CommentedConfig::inMemory);
-
-		for (Field field : ConfigData.class.getDeclaredFields())
-			if (field.isAnnotationPresent(Path.class) && field.isAnnotationPresent(Comment.class))
-				defaultConfig.setComment(field.getAnnotation(Path.class).value(), field.getAnnotation(Comment.class).value());
-
-		return defaultConfig.unmodifiable();
-	}
-
 	public interface Fields {
 		String CONFIG_VERSION = "config_version";
 		String SNEAK_SIT = "sneak.sneak_sit";
