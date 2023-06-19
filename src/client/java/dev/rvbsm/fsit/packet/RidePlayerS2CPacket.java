@@ -20,23 +20,17 @@ public abstract class RidePlayerS2CPacket {
 	public static void receiveRequest(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
 		if (!FSitMod.config.sitPlayers) return;
 
-		final UUID issuerUid = new UUID(buf.readLong(), buf.readLong());
+		final UUID issuerUid = buf.readUuid();
 		if (FSitClientMod.blockedPlayers.contains(issuerUid)) return;
 
 		final PacketByteBuf responseBuf = PacketByteBufs.create();
-		responseBuf.writeLong(issuerUid.getMostSignificantBits());
-		responseBuf.writeLong(issuerUid.getLeastSignificantBits());
-
+		responseBuf.writeUuid(issuerUid);
 		responseSender.sendPacket(RidePlayerC2SPacket.RIDE_ACCEPT_PACKET, responseBuf);
 	}
 
 	public static void sendRequest(PlayerEntity target) {
 		final PacketByteBuf buf = PacketByteBufs.create();
-
-		final UUID targetUid = target.getUuid();
-		buf.writeLong(targetUid.getMostSignificantBits());
-		buf.writeLong(targetUid.getLeastSignificantBits());
-
+		buf.writeUuid(target.getUuid());
 		ClientPlayNetworking.send(RidePlayerC2SPacket.RIDE_PLAYER_PACKET, buf);
 	}
 }
