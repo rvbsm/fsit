@@ -36,7 +36,10 @@ public abstract class EntityMixin {
 
 	@Redirect(method = "updatePassengerPosition(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/Entity$PositionUpdater;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getHeightOffset()D"))
 	private double updatePasengerPosition$getHeightOffset(@NotNull Entity passenger) {
-		return passenger.getVehicle() instanceof PlayerEntity ? 0d : passenger.getHeightOffset();
+		if (passenger.getVehicle() instanceof PlayerEntity vehicle)
+			return vehicle.isInSwimmingPose() ? -0.31d : 0d;
+
+		return passenger.getHeightOffset();
 	}
 
 	@Redirect(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;"))

@@ -13,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.UUID;
+
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
@@ -36,9 +38,17 @@ public abstract class EntityMixin {
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
 		if (!this.isOnGround() || this.hasVehicle() || this.isSpectator()) return;
 
-		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking && player.getPitch() >= FSitMod.config.minAngle)
-			if (FSitMod.isSneaked(player.getUuid())) FSitMod.spawnSeat(player, this.world, this.getPos());
-			else if (FSitMod.config.sneakSit) FSitMod.addSneaked(player.getUuid());
+		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking) {
+			final UUID playerUid = player.getUuid();
+
+			if (FSitMod.isCrawled(playerUid)) FSitMod.removeCrawled(playerUid);
+			else if (player.getPitch() >= FSitMod.config.minAngle) {
+				if (FSitMod.isSneaked(playerUid)) {
+					if (player.isCrawling()) FSitMod.addCrawled(player);
+					else FSitMod.spawnSeat(player, this.world, this.getPos());
+				} else if (FSitMod.config.sneakSit) FSitMod.addSneaked(playerUid);
+			}
+		}
 	}
 
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At(value = "TAIL"))

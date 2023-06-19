@@ -1,5 +1,6 @@
 package dev.rvbsm.fsit;
 
+import dev.rvbsm.fsit.command.CrawlCommand;
 import dev.rvbsm.fsit.command.FSitCommand;
 import dev.rvbsm.fsit.command.SitCommand;
 import dev.rvbsm.fsit.config.ConfigData;
@@ -34,10 +35,11 @@ import java.util.concurrent.TimeUnit;
 
 public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 
+	public static final ConfigData config = new ConfigData();
 	private static final String MOD_ID = "fsit";
 	private static final Set<UUID> moddedPlayers = new HashSet<>();
+	private static final Set<UUID> crawledPlayers = new HashSet<>();
 	private static final Set<UUID> sneakedPlayers = new HashSet<>();
-	public static final ConfigData config = new ConfigData();
 
 	@Contract("!null, !null -> _")
 	public static @NotNull Text getTranslation(String type, String id) {
@@ -74,6 +76,19 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		return sneakedPlayers.contains(playerUid);
 	}
 
+	public static void addCrawled(PlayerEntity player) {
+		crawledPlayers.add(player.getUuid());
+		player.sendMessage(Text.translatable("mount.onboard", "Shift"), true);
+	}
+
+	public static void removeCrawled(UUID playerUid) {
+		crawledPlayers.remove(playerUid);
+	}
+
+	public static boolean isCrawled(UUID playerUid) {
+		return crawledPlayers.contains(playerUid);
+	}
+
 	public static void spawnSeat(PlayerEntity player, World world, Vec3d pos) {
 		final SeatEntity seatEntity = new SeatEntity(world, pos);
 
@@ -105,5 +120,6 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 	public void onInitializeServer() {
 		CommandRegistrationCallback.EVENT.register(new FSitCommand()::register);
 		CommandRegistrationCallback.EVENT.register(new SitCommand()::register);
+		CommandRegistrationCallback.EVENT.register(new CrawlCommand()::register);
 	}
 }
