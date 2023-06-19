@@ -1,5 +1,7 @@
 package dev.rvbsm.fsit;
 
+import dev.rvbsm.fsit.command.FSitCommand;
+import dev.rvbsm.fsit.command.SitCommand;
 import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.entity.SeatEntity;
@@ -9,7 +11,9 @@ import dev.rvbsm.fsit.event.PlayerConnectionCallbacks;
 import dev.rvbsm.fsit.packet.PongC2SPacket;
 import dev.rvbsm.fsit.packet.RidePlayerC2SPacket;
 import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -28,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-public class FSitMod implements ModInitializer {
+public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 
 	private static final String MOD_ID = "fsit";
 	private static final Set<UUID> moddedPlayers = new HashSet<>();
@@ -95,5 +99,11 @@ public class FSitMod implements ModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.SPAWN_SEAT_PACKET, SpawnSeatC2SPacket::receive);
 		ServerPlayNetworking.registerGlobalReceiver(RidePlayerC2SPacket.RIDE_PLAYER_PACKET, RidePlayerC2SPacket::receiveRequest);
 		ServerPlayNetworking.registerGlobalReceiver(RidePlayerC2SPacket.RIDE_ACCEPT_PACKET, RidePlayerC2SPacket::receiveAccept);
+	}
+
+	@Override
+	public void onInitializeServer() {
+		CommandRegistrationCallback.EVENT.register(new FSitCommand()::register);
+		CommandRegistrationCallback.EVENT.register(new SitCommand()::register);
 	}
 }
