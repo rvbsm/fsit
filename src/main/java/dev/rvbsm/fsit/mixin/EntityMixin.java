@@ -45,16 +45,10 @@ public abstract class EntityMixin {
 			final UUID playerUid = player.getUuid();
 
 			if (FSitMod.isCrawled(playerUid)) FSitMod.removeCrawled(playerUid);
-			else if (player.getPitch() >= FSitMod.config.minAngle) {
+			else if (!FSitMod.isModded(playerUid) && player.getPitch() >= FSitMod.config.minAngle) {
 				if (FSitMod.isSneaked(playerUid)) {
-					if (player.isCrawling()) {
-						if (player instanceof ServerPlayerEntity) FSitMod.addCrawled(player);
-						else CrawlC2SPacket.send();
-					}
-					else {
-						if (player instanceof ServerPlayerEntity) FSitMod.spawnSeat(player, this.world, this.getPos());
-						else SpawnSeatC2SPacket.send(player.getPos(), null, false);
-					}
+					if (player.isCrawling()) FSitMod.addCrawled(player);
+					else FSitMod.spawnSeat(player, this.world, this.getPos());
 				} else if (FSitMod.config.sneakSit) FSitMod.addSneaked(playerUid);
 			}
 		}

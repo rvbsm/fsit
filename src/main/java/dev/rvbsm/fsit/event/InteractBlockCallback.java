@@ -45,11 +45,11 @@ public abstract class InteractBlockCallback {
 	}
 
 	public static boolean isInRadius(Vec3d playerPos, BlockHitResult hitResult) {
-		return playerPos.distanceTo(hitResult.getBlockPos().toCenterPos()) <= RADIUS;
+		return playerPos.distanceTo(hitResult.getPos()) <= RADIUS;
 	}
 
 	public static boolean isSittable(World world, BlockHitResult hitResult) {
-		if (hitResult.getSide() == Direction.UP) return false;
+		if (hitResult.getSide() != Direction.UP) return false;
 
 		final BlockPos blockPos = hitResult.getBlockPos();
 		if (!world.isAir(blockPos.up())) return false;

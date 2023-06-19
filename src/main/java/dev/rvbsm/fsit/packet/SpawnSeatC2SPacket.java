@@ -22,8 +22,7 @@ public abstract class SpawnSeatC2SPacket {
 
 	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
 		final Vec3d playerPos = new Vec3d(buf.readVector3f());
-		final boolean withSneak = buf.readBoolean();
-		if (withSneak) FSitMod.spawnSeat(player, player.getWorld(), playerPos);
+		if (buf.capacity() == 12) FSitMod.spawnSeat(player, player.getWorld(), playerPos);
 		else {
 			final Vec3d hitPos = new Vec3d(buf.readVector3f());
 			final BlockPos blockPos = new BlockPos((int) hitPos.x, (int) hitPos.y, (int) hitPos.z);
@@ -32,15 +31,14 @@ public abstract class SpawnSeatC2SPacket {
 
 			final BlockHitResult hitResult = new BlockHitResult(hitPos, direction, blockPos, insideBlock);
 			if (InteractBlockCallback.isInRadius(playerPos, hitResult))
-				FSitMod.spawnSeat(player, player.getWorld(), hitResult.getPos());
+				FSitMod.spawnSeat(player, player.getWorld(), hitPos);
 		}
 	}
 
-	public static void send(Vec3d pos, @Nullable BlockHitResult hitResult, boolean withSneak) {
+	public static void send(Vec3d pos, @Nullable BlockHitResult hitResult) {
 		final PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeVector3f(pos.toVector3f());
-		buf.writeBoolean(withSneak);
-		if (withSneak) {
+		if (hitResult != null) {
 			buf.writeVector3f(hitResult.getPos().toVector3f());
 			buf.writeEnumConstant(hitResult.getSide());
 			buf.writeBoolean(hitResult.isInsideBlock());

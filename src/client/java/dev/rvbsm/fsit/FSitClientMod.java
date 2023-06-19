@@ -23,10 +23,25 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 
 	public static final PlayerBlockList blockedPlayers = new PlayerBlockList(FSitMod.getModId() + "-blocklist");
+	private static boolean isSneaked = false;
+
+	public static void addSneaked() {
+		FSitClientMod.isSneaked = true;
+
+		final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);
+		CompletableFuture.runAsync(() -> FSitClientMod.isSneaked = false, delayedExecutor);
+	}
+
+	public static boolean isSneaked() {
+		return FSitClientMod.isSneaked;
+	}
 
 	@Override
 	public void onInitializeClient() {
