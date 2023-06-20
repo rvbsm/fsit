@@ -43,10 +43,10 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 	private static final Set<UUID> sneakedPlayers = new HashSet<>();
 	private static final Set<UUID> crawledPlayers = new HashSet<>();
 
-	@Contract("!null, !null -> _")
-	public static @NotNull Text getTranslation(String type, String id) {
-		final String translationKey = String.join(".", type, FSitMod.MOD_ID, id);
-		return Text.translatable(translationKey);
+	@Contract("!null, !null, _ -> !null")
+	public static @NotNull Text getTranslation(String type, String id, Object... args) {
+		final String translationKey = String.join(".", type, "fsit", id);
+		return Text.translatable(translationKey, args);
 	}
 
 	public static String getModId() {
@@ -78,16 +78,15 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		return sneakedPlayers.contains(playerUid);
 	}
 
-	public static void addCrawled(PlayerEntity player) {
-		crawledPlayers.add(player.getUuid());
-		player.sendMessage(Text.translatable("mount.onboard", "Shift"), true);
+	public static void addCrawling(UUID playerUid) {
+		crawledPlayers.add(playerUid);
 	}
 
-	public static void removeCrawled(UUID playerUid) {
+	public static void removeCrawling(UUID playerUid) {
 		crawledPlayers.remove(playerUid);
 	}
 
-	public static boolean isCrawled(UUID playerUid) {
+	public static boolean isCrawling(UUID playerUid) {
 		return crawledPlayers.contains(playerUid);
 	}
 
@@ -116,6 +115,10 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.TYPE, (packet, player, responseSender) -> {
 			if (InteractBlockCallback.isInRadius(packet.playerPos(), packet.sitPos()))
 				FSitMod.spawnSeat(player, player.getWorld(), packet.sitPos());
+		});
+		ServerPlayNetworking.registerGlobalReceiver(CrawlC2SPacket.TYPE, (packet, player, responseSender) -> {
+			if (packet.crawling()) FSitMod.addCrawling(player.getUuid());
+			else FSitMod.removeCrawling(player.getUuid());
 		});
 		ServerPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
 			final PlayerEntity target = player.getWorld().getPlayerByUuid(packet.uuid());

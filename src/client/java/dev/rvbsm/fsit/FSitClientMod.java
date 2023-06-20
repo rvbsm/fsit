@@ -7,6 +7,7 @@ import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.config.PlayerBlockList;
 import dev.rvbsm.fsit.event.client.InteractBlockCallback;
 import dev.rvbsm.fsit.event.client.InteractPlayerCallback;
+import dev.rvbsm.fsit.packet.CrawlC2SPacket;
 import dev.rvbsm.fsit.packet.PingS2CPacket;
 import dev.rvbsm.fsit.packet.PongC2SPacket;
 import dev.rvbsm.fsit.packet.RidePlayerPacket;
@@ -28,18 +29,29 @@ import java.util.concurrent.TimeUnit;
 
 public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 
-	public static final PlayerBlockList blockedPlayers = new PlayerBlockList(FSitMod.getModId() + "-blocklist");
-	private static boolean isSneaked = false;
+	public static final PlayerBlockList blockedPlayers = new PlayerBlockList("fsit-blocklist");
+	private static boolean sneaked = false;
+	private static boolean crawling = false;
 
-	public static void addSneaked() {
-		FSitClientMod.isSneaked = true;
+	public static void setSneaked() {
+		FSitClientMod.sneaked = true;
 
 		final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);
-		CompletableFuture.runAsync(() -> FSitClientMod.isSneaked = false, delayedExecutor);
+		CompletableFuture.runAsync(() -> FSitClientMod.sneaked = false, delayedExecutor);
 	}
 
 	public static boolean isSneaked() {
-		return FSitClientMod.isSneaked;
+		return FSitClientMod.sneaked;
+	}
+
+	public static boolean isCrawling() {
+		return FSitClientMod.crawling;
+	}
+
+	public static void setCrawling(boolean crawling) {
+		FSitClientMod.crawling = crawling;
+
+		ClientPlayNetworking.send(new CrawlC2SPacket(crawling));
 	}
 
 	@Override

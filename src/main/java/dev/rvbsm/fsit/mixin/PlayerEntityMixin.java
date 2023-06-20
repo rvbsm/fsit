@@ -26,16 +26,16 @@ public abstract class PlayerEntityMixin {
 				player.networkHandler.sendPacket(new BlockUpdateS2CPacket(this.blockAbove, AIR));
 				this.blockAbove = null;
 			}
-			if (!FSitMod.isCrawled(player.getUuid())) instance.setPose(entityPose);
-			else {
-				player.setPose(EntityPose.SWIMMING);
-
+			if (FSitMod.isCrawling(player.getUuid())) {
+				entityPose = EntityPose.SWIMMING;
 				final BlockPos blockAbove = player.isOnGround() ? player.getBlockPos().up() : player.getBlockPos().up(2);
-				if (player.getWorld().getBlockState(blockAbove).isAir()) {
+				if (player.getWorld().getBlockState(blockAbove).isAir() && !FSitMod.isModded(player.getUuid())) {
 					this.blockAbove = blockAbove;
 					player.networkHandler.sendPacket(new BlockUpdateS2CPacket(this.blockAbove, BARRIER));
 				}
 			}
 		}
+
+		instance.setPose(entityPose);
 	}
 }

@@ -1,24 +1,25 @@
 package dev.rvbsm.fsit.packet;
 
-import dev.rvbsm.fsit.FSitMod;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-public abstract class CrawlC2SPacket {
+public record CrawlC2SPacket(boolean crawling) implements FabricPacket {
 
-	public static final Identifier CRAWL_PACKET = new Identifier(FSitMod.getModId(), "crawl");
+	public static final PacketType<CrawlC2SPacket> TYPE = PacketType.create(new Identifier("fsit", "crawl"), CrawlC2SPacket::new);
 
-	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		FSitMod.addCrawled(player);
+	private CrawlC2SPacket(PacketByteBuf buf) {
+		this(buf.readBoolean());
 	}
 
-	public static void send() {
-		ClientPlayNetworking.send(CRAWL_PACKET, PacketByteBufs.empty());
+	@Override
+	public void write(PacketByteBuf buf) {
+		buf.writeBoolean(this.crawling);
+	}
+
+	@Override
+	public PacketType<?> getType() {
+		return TYPE;
 	}
 }
