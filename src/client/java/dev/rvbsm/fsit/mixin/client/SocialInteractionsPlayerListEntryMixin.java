@@ -2,8 +2,10 @@ package dev.rvbsm.fsit.mixin.client;
 
 import dev.rvbsm.fsit.FSitClientMod;
 import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.packet.RidePlayerPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry;
@@ -46,6 +48,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 		this.blockButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, BLOCKLIST_TEXTURE, 64, 64, button -> {
 			FSitClientMod.blockedPlayers.add(uuid);
 			setBlockButtonVisible(false);
+			ClientPlayNetworking.send(new RidePlayerPacket(RidePlayerPacket.RideType.REFUSE, uuid));
 		}, BLOCK_BUTTON_TEXT) {
 
 			@Override

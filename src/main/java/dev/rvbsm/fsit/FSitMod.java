@@ -129,6 +129,7 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 				}
 				case REFUSE -> {
 					if (player.hasPassenger(target)) target.stopRiding();
+					else if (target.hasPassenger(player)) player.stopRiding();
 				}
 			}
 		});
