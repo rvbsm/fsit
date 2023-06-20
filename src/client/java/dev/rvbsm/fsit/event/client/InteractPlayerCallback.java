@@ -19,7 +19,7 @@ public abstract class InteractPlayerCallback {
 
 	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
 		if (!player.isMainPlayer()) return ActionResult.PASS;
-		else if (!FSitMod.config.sitPlayers) return ActionResult.PASS;
+		else if (!FSitMod.config.ridePlayers) return ActionResult.PASS;
 		else if (FSitClientMod.blockedPlayers.contains(entity.getUuid())) return ActionResult.PASS;
 		else if (player.isSpectator() || entity.isSpectator()) return ActionResult.PASS;
 		else if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;

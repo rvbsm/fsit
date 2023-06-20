@@ -25,7 +25,7 @@ public abstract class InteractPlayerCallback {
 			return ActionResult.SUCCESS;
 		}
 
-		if (!FSitMod.config.sitPlayers && entity.isPlayer() && !entity.hasPassengers()) {
+		if (!FSitMod.config.ridePlayers && entity.isPlayer() && !entity.hasPassengers()) {
 			player.startRiding(entity, true);
 
 			return ActionResult.SUCCESS;

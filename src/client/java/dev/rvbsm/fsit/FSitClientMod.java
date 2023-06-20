@@ -64,7 +64,7 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, (packet, player, responseSender) -> responseSender.sendPacket(new PongC2SPacket()));
 		ClientPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
 			if (packet.type() == RidePlayerPacket.RideType.REQUEST)
-				if (FSitMod.config.sitPlayers && !FSitClientMod.blockedPlayers.contains(packet.uuid()))
+				if (FSitMod.config.ridePlayers && !FSitClientMod.blockedPlayers.contains(packet.uuid()))
 					responseSender.sendPacket(new RidePlayerPacket(RidePlayerPacket.RideType.ACCEPT, packet.uuid()));
 		});
 	}
@@ -119,10 +119,10 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 							.build());
 
 			final SubCategoryBuilder miscCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "misc"));
-			miscCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.SIT_PLAYERS.keyText(), FSitMod.config.sitPlayers)
-							.setDefaultValue(ConfigData.Entries.SIT_PLAYERS::defaultValue)
-							.setSaveConsumer(ConfigData.Entries.SIT_PLAYERS::save)
-							.setTooltip(ConfigData.Entries.SIT_PLAYERS.commentText())
+			miscCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.RIDE_PLAYERS.keyText(), FSitMod.config.ridePlayers)
+							.setDefaultValue(ConfigData.Entries.RIDE_PLAYERS::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.RIDE_PLAYERS::save)
+							.setTooltip(ConfigData.Entries.RIDE_PLAYERS.commentText())
 							.build());
 
 			main.addEntry(sneakCategory.setExpanded(true).build());

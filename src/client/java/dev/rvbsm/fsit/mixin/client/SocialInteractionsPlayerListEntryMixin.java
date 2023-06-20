@@ -56,7 +56,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 				return getNarrationMessage(super.getNarrationMessage());
 			}
 		};
-		this.blockButton.active = FSitMod.config.sitPlayers;
+		this.blockButton.active = FSitMod.config.ridePlayers;
 		this.blockButton.setTooltip(Tooltip.of(this.blockButton.active ? BLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.blockButton.setTooltipDelay(10);
 		this.blockButton.visible = !FSitClientMod.blockedPlayers.contains(uuid);
@@ -71,7 +71,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 				return getNarrationMessage(super.getNarrationMessage());
 			}
 		};
-		this.unblockButton.active = FSitMod.config.sitPlayers;
+		this.unblockButton.active = FSitMod.config.ridePlayers;
 		this.unblockButton.setTooltip(Tooltip.of(this.unblockButton.active ? UNBLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.unblockButton.setTooltipDelay(10);
 		this.unblockButton.visible = FSitClientMod.blockedPlayers.contains(uuid);

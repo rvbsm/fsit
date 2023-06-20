@@ -12,49 +12,57 @@ public class ConfigData {
 
 	@Path(Fields.CONFIG_VERSION)
 	@Comment(Comments.CONFIG_VERSION)
-	public int configVersion = Entries.CONFIG_VERSION.defaultValue;
+	@PreserveNotNull
+	public final int configVersion = Entries.CONFIG_VERSION.defaultValue;
 
 	@Path(Fields.SNEAK_SIT)
 	@Comment(Comments.SNEAK_SIT)
-	public boolean sneakSit = Entries.SNEAK_SIT.defaultValue;
+	@PreserveNotNull
+	public final boolean sneakSit = Entries.SNEAK_SIT.defaultValue;
 
 	@Path(Fields.MIN_ANGLE)
 	@Comment(Comments.MIN_ANGLE)
+	@PreserveNotNull
 	@SpecDoubleInRange(min = -90, max = 90)
-	public double minAngle = Entries.MIN_ANGLE.defaultValue;
+	public final double minAngle = Entries.MIN_ANGLE.defaultValue;
 
 	@Path(Fields.SNEAK_DELAY)
 	@Comment(Comments.SNEAK_DELAY)
+	@PreserveNotNull
 	@SpecIntInRange(min = 100, max = 2000)
-	public int sneakDelay = Entries.SNEAK_DELAY.defaultValue;
+	public final int sneakDelay = Entries.SNEAK_DELAY.defaultValue;
 
 	@Path(Fields.SITTABLE_SIT)
 	@Comment(Comments.SITTABLE_SIT)
-	public boolean sittableSit = Entries.SITTABLE_SIT.defaultValue;
+	@PreserveNotNull
+	public final boolean sittableSit = Entries.SITTABLE_SIT.defaultValue;
 
 	@Path(Fields.SITTABLE_BLOCKS)
 	@Comment(Comments.SITTABLE_BLOCKS)
+	@PreserveNotNull
 	@Conversion(Identifier2StringConverter.class)
-	public List<Identifier> sittableBlocks = Entries.SITTABLE_BLOCKS.defaultValue.stream().map(Identifier::new).toList();
+	public final List<Identifier> sittableBlocks = Entries.SITTABLE_BLOCKS.defaultValue.stream().map(Identifier::new).toList();
 
 	@Path(Fields.SITTABLE_TAGS)
 	@Comment(Comments.SITTABLE_TAGS)
+	@PreserveNotNull
 	@Conversion(Identifier2StringConverter.class)
-	public List<Identifier> sittableTags = Entries.SITTABLE_TAGS.defaultValue.stream().map(Identifier::new).toList();
+	public final List<Identifier> sittableTags = Entries.SITTABLE_TAGS.defaultValue.stream().map(Identifier::new).toList();
 
-	@Path(Fields.SIT_PLAYERS)
-	@Comment(Comments.SIT_PLAYERS)
-	public boolean sitPlayers = Entries.SIT_PLAYERS.defaultValue;
+	@Path(Fields.RIDE_PLAYERS)
+	@Comment(Comments.RIDE_PLAYERS)
+	@PreserveNotNull
+	public final boolean ridePlayers = Entries.RIDE_PLAYERS.defaultValue;
 
 	public interface Fields {
 		String CONFIG_VERSION = "config_version";
-		String SNEAK_SIT = "sneak.sneak_sit";
+		String SNEAK_SIT = "sneak.sit";
 		String MIN_ANGLE = "sneak.min_angle";
-		String SNEAK_DELAY = "sneak.sneak_delay";
+		String SNEAK_DELAY = "sneak.delay";
 		String SITTABLE_SIT = "sittable.sit";
 		String SITTABLE_BLOCKS = "sittable.blocks";
 		String SITTABLE_TAGS = "sittable.tags";
-		String SIT_PLAYERS = "misc.sit_players";
+		String RIDE_PLAYERS = "misc.ride_players";
 	}
 
 	private interface Comments {
@@ -65,7 +73,7 @@ public class ConfigData {
 		String SITTABLE_SIT = "Toggles sitting on specified blocks";
 		String SITTABLE_BLOCKS = "List of block ids (e.g. \"oak_log\") available to sit";
 		String SITTABLE_TAGS = "List of block tags";
-		String SIT_PLAYERS = "Toggles sitting on other players";
+		String RIDE_PLAYERS = "Toggles sitting on other players";
 	}
 
 	public interface Entries {
@@ -76,7 +84,7 @@ public class ConfigData {
 		ConfigEntry<Boolean> SITTABLE_SIT = new ConfigEntry<>(Fields.SITTABLE_SIT, true);
 		ConfigEntry<List<String>> SITTABLE_BLOCKS = new ConfigEntry<>(Fields.SITTABLE_BLOCKS, List.of());
 		ConfigEntry<List<String>> SITTABLE_TAGS = new ConfigEntry<>(Fields.SITTABLE_TAGS, List.of("minecraft:slabs", "minecraft:stairs", "minecraft:logs"));
-		ConfigEntry<Boolean> SIT_PLAYERS = new ConfigEntry<>(Fields.SIT_PLAYERS, false);
+		ConfigEntry<Boolean> RIDE_PLAYERS = new ConfigEntry<>(Fields.RIDE_PLAYERS, false);
 
 		record ConfigEntry<T>(String key, T defaultValue) {
 			public void save(T value) {
