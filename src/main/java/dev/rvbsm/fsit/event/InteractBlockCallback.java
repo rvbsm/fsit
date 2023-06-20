@@ -36,7 +36,7 @@ public abstract class InteractBlockCallback {
 		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;
 		else if (!player.isOnGround() && player.shouldCancelInteraction()) return ActionResult.PASS;
 
-		if (InteractBlockCallback.isInRadius(player.getPos(), hitResult) && InteractBlockCallback.isSittable(world, hitResult)) {
+		if (InteractBlockCallback.isInRadius(player.getPos(), hitResult.getPos()) && InteractBlockCallback.isSittable(world, hitResult)) {
 			FSitMod.spawnSeat(player, world, hitResult.getPos());
 			return ActionResult.SUCCESS;
 		}
@@ -44,8 +44,8 @@ public abstract class InteractBlockCallback {
 		return ActionResult.PASS;
 	}
 
-	public static boolean isInRadius(Vec3d playerPos, BlockHitResult hitResult) {
-		return playerPos.distanceTo(hitResult.getPos()) <= RADIUS;
+	public static boolean isInRadius(Vec3d playerPos, Vec3d sitPos) {
+		return playerPos.distanceTo(sitPos) <= RADIUS;
 	}
 
 	public static boolean isSittable(World world, BlockHitResult hitResult) {

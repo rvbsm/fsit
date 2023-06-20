@@ -5,11 +5,11 @@ import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-public record PongC2SPacket() implements FabricPacket {
+public record PingS2CPacket() implements FabricPacket {
 
-	public static final PacketType<PongC2SPacket> TYPE = PacketType.create(new Identifier("fsit", "pong"), PongC2SPacket::new);
+	public static final PacketType<PingS2CPacket> TYPE = PacketType.create(new Identifier("fsit", "ping"), PingS2CPacket::new);
 
-	private PongC2SPacket(PacketByteBuf buf) {
+	private PingS2CPacket(PacketByteBuf buf) {
 		this();
 	}
 

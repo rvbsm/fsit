@@ -11,7 +11,7 @@ import dev.rvbsm.fsit.event.InteractPlayerCallback;
 import dev.rvbsm.fsit.event.PlayerConnectionCallbacks;
 import dev.rvbsm.fsit.packet.CrawlC2SPacket;
 import dev.rvbsm.fsit.packet.PongC2SPacket;
-import dev.rvbsm.fsit.packet.RidePlayerC2SPacket;
+import dev.rvbsm.fsit.packet.RidePlayerPacket;
 import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -111,11 +112,28 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		ServerPlayConnectionEvents.JOIN.register(PlayerConnectionCallbacks::onConnect);
 		ServerPlayConnectionEvents.DISCONNECT.register(PlayerConnectionCallbacks::onDisconnect);
 
-		ServerPlayNetworking.registerGlobalReceiver(PongC2SPacket.PONG_PACKET, PongC2SPacket::receive);
-		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.SPAWN_SEAT_PACKET, SpawnSeatC2SPacket::receive);
-		ServerPlayNetworking.registerGlobalReceiver(CrawlC2SPacket.CRAWL_PACKET, CrawlC2SPacket::receive);
-		ServerPlayNetworking.registerGlobalReceiver(RidePlayerC2SPacket.RIDE_PLAYER_PACKET, RidePlayerC2SPacket::receiveRequest);
-		ServerPlayNetworking.registerGlobalReceiver(RidePlayerC2SPacket.RIDE_ACCEPT_PACKET, RidePlayerC2SPacket::receiveAccept);
+		ServerPlayNetworking.registerGlobalReceiver(PongC2SPacket.TYPE, (packet, player, responseSender) -> FSitMod.addModded(player.getUuid()));
+		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.TYPE, (packet, player, responseSender) -> {
+			if (InteractBlockCallback.isInRadius(packet.playerPos(), packet.sitPos()))
+				FSitMod.spawnSeat(player, player.getWorld(), packet.sitPos());
+		});
+		ServerPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
+			final PlayerEntity target = player.getWorld().getPlayerByUuid(packet.uuid());
+			if (target == null) return;
+
+			switch (packet.type()) {
+				case REQUEST -> {
+					if (FSitMod.isModded(packet.uuid()))
+						ServerPlayNetworking.send((ServerPlayerEntity) target, new RidePlayerPacket(packet.type(), player.getUuid()));
+				}
+				case ACCEPT -> {
+					if (player.distanceTo(target) <= 3) target.startRiding(player);
+				}
+				case REFUSE -> {
+					if (player.hasPassenger(target)) target.stopRiding();
+				}
+			}
+		});
 	}
 
 	@Override

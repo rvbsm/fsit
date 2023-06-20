@@ -1,7 +1,8 @@
 package dev.rvbsm.fsit.event;
 
 import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.packet.RidePlayerC2SPacket;
+import dev.rvbsm.fsit.packet.RidePlayerPacket;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,7 +20,7 @@ public abstract class InteractPlayerCallback {
 		else if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
 
 		if (entity.isPlayer() && FSitMod.isModded(entity.getUuid())) {
-			RidePlayerC2SPacket.sendRequest((ServerPlayerEntity) entity, player);
+			ServerPlayNetworking.send((ServerPlayerEntity) entity, new RidePlayerPacket(RidePlayerPacket.RideType.REQUEST, player.getUuid()));
 
 			return ActionResult.SUCCESS;
 		}

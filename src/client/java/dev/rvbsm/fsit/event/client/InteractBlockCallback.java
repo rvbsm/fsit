@@ -4,7 +4,7 @@ import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.FluidModificationItem;
@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 public abstract class InteractBlockCallback {
 
 	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
-		if (!MinecraftClient.getInstance().player.equals(player)) return ActionResult.PASS;
+		if (!player.isMainPlayer()) return ActionResult.PASS;
 		else if (!FSitMod.config.sittableSit) return ActionResult.PASS;
 
 		final Item handItem = player.getStackInHand(hand).getItem();
@@ -27,7 +27,7 @@ public abstract class InteractBlockCallback {
 		else if (!player.isOnGround() && player.shouldCancelInteraction()) return ActionResult.PASS;
 
 		if (dev.rvbsm.fsit.event.InteractBlockCallback.isSittable(world, hitResult)) {
-			SpawnSeatC2SPacket.send(player.getPos(), hitResult);
+			ClientPlayNetworking.send(new SpawnSeatC2SPacket(player.getPos(), hitResult.getPos()));
 
 			return ActionResult.SUCCESS;
 		}

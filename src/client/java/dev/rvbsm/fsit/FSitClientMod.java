@@ -9,8 +9,7 @@ import dev.rvbsm.fsit.event.client.InteractBlockCallback;
 import dev.rvbsm.fsit.event.client.InteractPlayerCallback;
 import dev.rvbsm.fsit.packet.PingS2CPacket;
 import dev.rvbsm.fsit.packet.PongC2SPacket;
-import dev.rvbsm.fsit.packet.RidePlayerC2SPacket;
-import dev.rvbsm.fsit.packet.RidePlayerS2CPacket;
+import dev.rvbsm.fsit.packet.RidePlayerPacket;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -50,8 +49,12 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
 		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
 
-		ClientPlayNetworking.registerGlobalReceiver(PongC2SPacket.PING_PACKET, PingS2CPacket::receive);
-		ClientPlayNetworking.registerGlobalReceiver(RidePlayerC2SPacket.RIDE_PLAYER_PACKET, RidePlayerS2CPacket::receiveRequest);
+		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, (packet, player, responseSender) -> responseSender.sendPacket(new PongC2SPacket()));
+		ClientPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
+			if (packet.type() == RidePlayerPacket.RideType.REQUEST)
+				if (FSitMod.config.sitPlayers && !FSitClientMod.blockedPlayers.contains(packet.uuid()))
+					responseSender.sendPacket(new RidePlayerPacket(RidePlayerPacket.RideType.ACCEPT, packet.uuid()));
+		});
 	}
 
 	@Override

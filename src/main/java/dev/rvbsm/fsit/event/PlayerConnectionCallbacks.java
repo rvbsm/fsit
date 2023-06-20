@@ -2,8 +2,7 @@ package dev.rvbsm.fsit.event;
 
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.entity.SeatEntity;
-import dev.rvbsm.fsit.packet.PongC2SPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import dev.rvbsm.fsit.packet.PingS2CPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,7 +12,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 public abstract class PlayerConnectionCallbacks {
 
 	public static void onConnect(ServerPlayNetworkHandler serverPlayNetworkHandler, PacketSender packetSender, MinecraftServer minecraftServer) {
-		packetSender.sendPacket(PongC2SPacket.PING_PACKET, PacketByteBufs.empty());
+		packetSender.sendPacket(new PingS2CPacket());
 	}
 
 	public static void onDisconnect(ServerPlayNetworkHandler serverPlayNetworkHandler, MinecraftServer server) {
