@@ -50,6 +50,9 @@ public abstract class EntityMixin {
 						player.sendMessage(FSitMod.getTranslation("message", "oncrawl", "Shift"), true);
 					} else FSitMod.spawnSeat(player, this.world, this.getPos());
 				} else if (FSitMod.config.sneakSit) FSitMod.addSneaked(playerUid);
+			} else if (player.hasPassengers() && player.getPitch() <= -33.3f) {
+				final Entity passenger = player.getFirstPassenger();
+				passenger.stopRiding();
 			}
 		}
 	}
