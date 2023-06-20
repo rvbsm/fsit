@@ -20,16 +20,17 @@ public abstract class FSitConfig {
 		return CommentedFileConfig.of(configPath, TomlFormat.instance());
 	}
 
-	public static <Config> void load(Config destination) {
+	public static void load(ConfigData destination) {
 		config.load();
-
-		for (Field field : destination.getClass().getDeclaredFields()) {
-			if (field.isAnnotationPresent(com.electronwill.nightconfig.core.conversion.Path.class) && field.isAnnotationPresent(Comment.class))
-				config.setComment(field.getAnnotation(com.electronwill.nightconfig.core.conversion.Path.class).value(), field.getAnnotation(Comment.class).value());
-		}
-		config.save();
+		if (config.contains("config_version") && config.getInt("config_version") == 2) ConfigMigrator.migrate2To3(config);
 
 		new ObjectConverter().toObject(config, destination);
+		new ObjectConverter().toConfig(destination, config);
+		for (Field field : destination.getClass().getDeclaredFields())
+			if (field.isAnnotationPresent(com.electronwill.nightconfig.core.conversion.Path.class) && field.isAnnotationPresent(Comment.class))
+				config.setComment(field.getAnnotation(com.electronwill.nightconfig.core.conversion.Path.class).value(), field.getAnnotation(Comment.class).value());
+
+		config.save();
 	}
 
 	public static void save() {
