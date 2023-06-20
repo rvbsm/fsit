@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 @Mixin(SocialInteractionsPlayerListEntry.class)
 public abstract class SocialInteractionsPlayerListEntryMixin {
 
-	private static final Identifier BLOCKLIST_TEXTURE = new Identifier(FSitMod.getModId(), "textures/gui/blocklist_button.png");
+	private static final Identifier BLOCKLIST_TEXTURE = new Identifier("fsit", "textures/gui/blocklist_button.png");
 	private static final Text BLOCK_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.block");
 	private static final Text UNBLOCK_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.unblock");
 	private static final Text DISABLED_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.disabled");

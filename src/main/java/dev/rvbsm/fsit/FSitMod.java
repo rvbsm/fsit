@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 
 	public static final ConfigData config = new ConfigData();
-	private static final String MOD_ID = "fsit";
 	private static final Set<UUID> moddedPlayers = new HashSet<>();
 	private static final Set<UUID> sneakedPlayers = new HashSet<>();
 	private static final Set<UUID> crawledPlayers = new HashSet<>();
@@ -47,10 +46,6 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 	public static @NotNull Text getTranslation(String type, String id, Object... args) {
 		final String translationKey = String.join(".", type, "fsit", id);
 		return Text.translatable(translationKey, args);
-	}
-
-	public static String getModId() {
-		return FSitMod.MOD_ID;
 	}
 
 	public static void addModded(UUID playerUid) {

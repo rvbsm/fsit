@@ -12,10 +12,10 @@ import java.nio.file.Path;
 
 public abstract class FSitConfig {
 
-	protected static final CommentedFileConfig config = FSitConfig.getConfig(FSitMod.getModId());
+	protected static final CommentedFileConfig config = FSitConfig.getConfig();
 
-	private static CommentedFileConfig getConfig(String configName) {
-		final Path configPath = FabricLoader.getInstance().getConfigDir().resolve(configName + ".toml");
+	private static CommentedFileConfig getConfig() {
+		final Path configPath = FabricLoader.getInstance().getConfigDir().resolve("fsit.toml");
 
 		return CommentedFileConfig.of(configPath, TomlFormat.instance());
 	}

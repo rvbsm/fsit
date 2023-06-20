@@ -1,14 +1,11 @@
 package dev.rvbsm.fsit.config;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
-import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
 import com.electronwill.nightconfig.core.conversion.*;
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.config.conversion.Comment;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class ConfigData {
