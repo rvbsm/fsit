@@ -1,20 +1,20 @@
 package dev.rvbsm.fsit.entity;
 
+import dev.rvbsm.fsit.FSitMod;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
 
 public class SeatEntity extends AreaEffectCloudEntity {
 
-	private static final double offset = .5d;
-	private boolean mounted = false;
+	private static final double OFFSET = .5d;
+	private Entity mounted;
 
-	public SeatEntity(World world, @NotNull Vec3d pos) {
-		super(world, pos.x, pos.y - offset, pos.z);
+	public SeatEntity(World world, Vec3d pos) {
+		super(world, pos.x, pos.y - OFFSET, pos.z);
 
 		super.setNoGravity(true);
 		super.setInvulnerable(true);
@@ -29,14 +29,18 @@ public class SeatEntity extends AreaEffectCloudEntity {
 	@Override
 	protected void addPassenger(Entity passenger) {
 		super.addPassenger(passenger);
-		this.mounted = true;
+		if (this.mounted == null) this.mounted = passenger;
 	}
 
 	@Override
 	public void tick() {
-		if (this.mounted) {
+		if (this.mounted != null) {
 			final BlockPos blockPos = super.getBlockPos();
-			if (!super.hasPassengers() || super.getWorld().getBlockState(blockPos).isAir()) this.discard();
+
+			if (!super.hasPassenger(this.mounted) || !FSitMod.isInPose(this.mounted.getUuid(), PlayerPose.SIT) || super.getWorld().getBlockState(blockPos).isAir()) {
+				super.detach();
+				super.discard();
+			}
 		}
 	}
 }
