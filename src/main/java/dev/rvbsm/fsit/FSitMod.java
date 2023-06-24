@@ -5,6 +5,7 @@ import dev.rvbsm.fsit.command.FSitCommand;
 import dev.rvbsm.fsit.command.SitCommand;
 import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.config.FSitConfig;
+import dev.rvbsm.fsit.entity.PlayerPose;
 import dev.rvbsm.fsit.entity.SeatEntity;
 import dev.rvbsm.fsit.event.InteractBlockCallback;
 import dev.rvbsm.fsit.event.InteractPlayerCallback;
@@ -28,9 +29,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -39,58 +38,64 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 
 	public static final ConfigData config = new ConfigData();
 	private static final Set<UUID> moddedPlayers = new HashSet<>();
-	private static final Set<UUID> sneakedPlayers = new HashSet<>();
-	private static final Set<UUID> crawledPlayers = new HashSet<>();
+	private static final Map<UUID, PlayerPose> playersPose = new HashMap<>();
 
-	@Contract("!null, !null, _ -> !null")
+	@Contract(value = "!null, !null, _ -> new", pure = true)
 	public static @NotNull Text getTranslation(String type, String id, Object... args) {
 		final String translationKey = String.join(".", type, "fsit", id);
 		return Text.translatable(translationKey, args);
 	}
 
-	public static void addModded(UUID playerUid) {
-		moddedPlayers.add(playerUid);
+	public static void addModded(UUID playerId) {
+		moddedPlayers.add(playerId);
 	}
 
-	public static void removeModded(UUID playerUid) {
-		moddedPlayers.remove(playerUid);
+	public static void removeModded(UUID playerId) {
+		moddedPlayers.remove(playerId);
 	}
 
-	public static boolean isModded(UUID playerUid) {
-		return moddedPlayers.contains(playerUid);
+	public static boolean isModded(UUID playerId) {
+		return moddedPlayers.contains(playerId);
 	}
 
-	public static void addSneaked(UUID playerUid) {
-		if (!FSitMod.sneakedPlayers.contains(playerUid)) {
-			final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);
-
-			FSitMod.sneakedPlayers.add(playerUid);
-			CompletableFuture.runAsync(() -> FSitMod.sneakedPlayers.remove(playerUid), delayedExecutor);
-		}
+	public static PlayerPose getPose(UUID playerId) {
+		return playersPose.getOrDefault(playerId, PlayerPose.NONE);
 	}
 
-	public static boolean isSneaked(UUID playerUid) {
-		return sneakedPlayers.contains(playerUid);
+	public static boolean isInPose(UUID playerId, PlayerPose pose) {
+		return FSitMod.getPose(playerId) == pose;
 	}
 
-	public static void addCrawling(UUID playerUid) {
-		crawledPlayers.add(playerUid);
+	public static void resetPose(UUID playerId) {
+		playersPose.put(playerId, PlayerPose.NONE);
 	}
 
-	public static void removeCrawling(UUID playerUid) {
-		crawledPlayers.remove(playerUid);
+	public static void setSneaked(PlayerEntity player) {
+		if (!FSitMod.isInPose(player.getUuid(), PlayerPose.NONE)) return;
+		else if (player.isSpectator() || !player.isOnGround()) return;
+		playersPose.put(player.getUuid(), PlayerPose.SNEAK);
+
+		final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);
+		CompletableFuture.runAsync(() -> {
+			if (FSitMod.isInPose(player.getUuid(), PlayerPose.SNEAK)) FSitMod.resetPose(player.getUuid());
+		}, delayedExecutor);
 	}
 
-	public static boolean isCrawling(UUID playerUid) {
-		return crawledPlayers.contains(playerUid);
+	public static void setSitting(PlayerEntity player, Vec3d pos) {
+		if (player.isSpectator() || !player.isOnGround()) return;
+		playersPose.put(player.getUuid(), PlayerPose.SIT);
+
+		final World world = player.getWorld();
+		final SeatEntity seat = new SeatEntity(world, pos);
+		world.spawnEntity(seat);
+		player.startRiding(seat, true);
 	}
 
-	public static void spawnSeat(PlayerEntity player, World world, Vec3d pos) {
-		final SeatEntity seatEntity = new SeatEntity(world, pos);
+	public static void setCrawling(PlayerEntity player) {
+		if (player.isSpectator() || !player.isOnGround() || player.hasVehicle()) return;
+		playersPose.put(player.getUuid(), PlayerPose.CRAWL);
 
-		world.spawnEntity(seatEntity);
-		player.startRiding(seatEntity, true);
-		FSitMod.sneakedPlayers.remove(player.getUuid());
+		if (!FSitMod.isModded(player.getUuid())) player.sendMessage(Text.of("Press Sneak key to stop crawling"), true);
 	}
 
 	public static void loadConfig() {
@@ -109,11 +114,11 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(PongC2SPacket.TYPE, (packet, player, responseSender) -> FSitMod.addModded(player.getUuid()));
 		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.TYPE, (packet, player, responseSender) -> {
 			if (InteractBlockCallback.isInRadius(packet.playerPos(), packet.sitPos()))
-				FSitMod.spawnSeat(player, player.getWorld(), packet.sitPos());
+				FSitMod.setSitting(player, packet.sitPos());
 		});
 		ServerPlayNetworking.registerGlobalReceiver(CrawlC2SPacket.TYPE, (packet, player, responseSender) -> {
-			if (packet.crawling()) FSitMod.addCrawling(player.getUuid());
-			else FSitMod.removeCrawling(player.getUuid());
+			if (packet.crawling()) FSitMod.setCrawling(player);
+			else FSitMod.resetPose(player.getUuid());
 		});
 		ServerPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
 			final PlayerEntity target = player.getWorld().getPlayerByUuid(packet.uuid());

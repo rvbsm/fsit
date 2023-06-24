@@ -24,13 +24,12 @@ public class CrawlCommand implements Commandish<ServerCommandSource> {
 	public int command(CommandContext<ServerCommandSource> ctx) {
 		final ServerCommandSource src = ctx.getSource();
 		final PlayerEntity player = src.getPlayer();
-		if (player == null || !player.isOnGround() || player.hasVehicle() || player.isSpectator()) return -1;
+		if (player == null) return -1;
 
-		final UUID playerUid = player.getUuid();
-		if (FSitMod.isCrawling(playerUid)) FSitMod.removeCrawling(playerUid);
-		else {
-			FSitMod.addCrawling(player.getUuid());
-			player.sendMessage(FSitMod.getTranslation("message", "oncrawl", "Shift"), true);
+		final UUID playerId = player.getUuid();
+		switch (FSitMod.getPose(playerId)) {
+			case NONE, SNEAK -> FSitMod.setCrawling(player);
+			case SIT, CRAWL -> FSitMod.resetPose(playerId);
 		}
 
 		return Command.SINGLE_SUCCESS;

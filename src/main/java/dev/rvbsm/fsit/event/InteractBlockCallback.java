@@ -34,10 +34,10 @@ public abstract class InteractBlockCallback {
 		final Item handItem = player.getStackInHand(hand).getItem();
 		if (handItem instanceof BlockItem) return ActionResult.PASS;
 		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;
-		else if (!player.isOnGround() && player.shouldCancelInteraction()) return ActionResult.PASS;
+		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 
 		if (InteractBlockCallback.isInRadius(player.getPos(), hitResult.getPos()) && InteractBlockCallback.isSittable(world, hitResult)) {
-			FSitMod.spawnSeat(player, world, hitResult.getPos());
+			FSitMod.setSitting(player, hitResult.getPos());
 			return ActionResult.SUCCESS;
 		}
 
