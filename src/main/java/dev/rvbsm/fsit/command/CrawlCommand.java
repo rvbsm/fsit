@@ -29,7 +29,7 @@ public class CrawlCommand implements Commandish<ServerCommandSource> {
 		final UUID playerId = player.getUuid();
 		switch (FSitMod.getPose(playerId)) {
 			case NONE, SNEAK -> FSitMod.setCrawling(player);
-			case SIT, CRAWL -> FSitMod.resetPose(playerId);
+			case SIT, CRAWL -> FSitMod.resetPose(player);
 		}
 
 		return Command.SINGLE_SUCCESS;

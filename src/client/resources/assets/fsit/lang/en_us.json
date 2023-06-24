@@ -19,5 +19,5 @@
 	"gui.fsit.socialInteractions.block": "Disallow riding",
 	"gui.fsit.socialInteractions.unblock": "Allow riding",
 	"gui.fsit.socialInteractions.disabled": "Player Riding is disabled",
-	"message.fsit.oncrawl": "Press %1$s to stop crawling"
+	"message.fsit.onpose": "Press %1$s to get up"
 }

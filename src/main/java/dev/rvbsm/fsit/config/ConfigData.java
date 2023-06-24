@@ -18,19 +18,19 @@ public class ConfigData {
 	@Path(Fields.SNEAK_SIT)
 	@Comment(Comments.SNEAK_SIT)
 	@PreserveNotNull
-	public final boolean sneakSit = Entries.SNEAK_SIT.defaultValue;
+	public boolean sneakSit = Entries.SNEAK_SIT.defaultValue;
 
 	@Path(Fields.MIN_ANGLE)
 	@Comment(Comments.MIN_ANGLE)
 	@PreserveNotNull
-	@SpecDoubleInRange(min = -90, max = 90)
-	public final double minAngle = Entries.MIN_ANGLE.defaultValue;
+	@SpecDoubleInRange(min = 0, max = 90)
+	public double minAngle = Entries.MIN_ANGLE.defaultValue;
 
 	@Path(Fields.SNEAK_DELAY)
 	@Comment(Comments.SNEAK_DELAY)
 	@PreserveNotNull
 	@SpecIntInRange(min = 100, max = 2000)
-	public final int sneakDelay = Entries.SNEAK_DELAY.defaultValue;
+	public int sneakDelay = Entries.SNEAK_DELAY.defaultValue;
 
 	@Path(Fields.SITTABLE_SIT)
 	@Comment(Comments.SITTABLE_SIT)
@@ -53,6 +53,14 @@ public class ConfigData {
 	@Comment(Comments.RIDE_PLAYERS)
 	@PreserveNotNull
 	public final boolean ridePlayers = Entries.RIDE_PLAYERS.defaultValue;
+
+	public ConfigData() {}
+
+	public ConfigData(boolean sneakSit, double minAngle, int sneakDelay) {
+		this.sneakSit = sneakSit;
+		this.minAngle = minAngle;
+		this.sneakDelay = sneakDelay;
+	}
 
 	public interface Fields {
 		String CONFIG_VERSION = "config_version";

@@ -10,11 +10,11 @@ public abstract class PlayerConnectionCallbacks {
 
 	public static void onConnect(ServerPlayNetworkHandler serverPlayNetworkHandler, PacketSender packetSender, MinecraftServer minecraftServer) {
 		packetSender.sendPacket(new PingS2CPacket());
-		FSitMod.resetPose(serverPlayNetworkHandler.player.getUuid());
+		FSitMod.resetPose(serverPlayNetworkHandler.player);
 	}
 
 	public static void onDisconnect(ServerPlayNetworkHandler serverPlayNetworkHandler, MinecraftServer server) {
-		FSitMod.resetPose(serverPlayNetworkHandler.player.getUuid());
+		FSitMod.resetPose(serverPlayNetworkHandler.player);
 		FSitMod.removeModded(serverPlayNetworkHandler.player.getUuid());
 	}
 

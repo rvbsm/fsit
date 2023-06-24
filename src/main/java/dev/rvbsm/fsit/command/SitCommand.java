@@ -29,7 +29,7 @@ public class SitCommand implements Commandish<ServerCommandSource> {
 		final UUID playerId = player.getUuid();
 		switch (FSitMod.getPose(playerId)) {
 			case NONE, SNEAK -> FSitMod.setSitting(player, player.getPos());
-			case SIT, CRAWL -> FSitMod.resetPose(playerId);
+			case SIT, CRAWL -> FSitMod.resetPose(player);
 		}
 
 		return Command.SINGLE_SUCCESS;

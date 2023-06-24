@@ -1,6 +1,7 @@
 package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.entity.PlayerPose;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,15 +27,15 @@ public abstract class EntityMixin {
 	@Inject(method = "setSneaking", at = @At("HEAD"))
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
 		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking) {
-			final UUID playerUid = player.getUuid();
-			if (FSitMod.isModded(playerUid)) return;
+			final UUID playerId = player.getUuid();
+			final ConfigData config = FSitMod.getConfig(playerId);
 
-			if (FSitMod.isInPose(playerUid, PlayerPose.CRAWL)) FSitMod.resetPose(playerUid);
-			else if (player.getPitch() >= FSitMod.config.minAngle) {
-				if (FSitMod.isInPose(playerUid, PlayerPose.SNEAK)) {
+			if (FSitMod.isInPose(playerId, PlayerPose.CRAWL)) FSitMod.resetPose(player);
+			else if (player.getPitch() >= config.minAngle) {
+				if (FSitMod.isInPose(playerId, PlayerPose.SNEAK)) {
 					if (player.isCrawling()) FSitMod.setCrawling(player);
 					else FSitMod.setSitting(player, this.getPos());
-				} else if (FSitMod.config.sneakSit) FSitMod.setSneaked(player);
+				} else if (config.sneakSit) FSitMod.setSneaked(player);
 			} else if (player.getPitch() <= -33.3f) {
 				if (player.getFirstPassenger() instanceof PlayerEntity passenger) passenger.stopRiding();
 			}
@@ -44,7 +45,7 @@ public abstract class EntityMixin {
 	@Inject(method = "stopRiding", at = @At("HEAD"))
 	public void stopRiding(CallbackInfo ci) {
 		if ((Entity) (Object) this instanceof ServerPlayerEntity player)
-			if (FSitMod.isInPose(player.getUuid(), PlayerPose.SIT)) FSitMod.resetPose(player.getUuid());
+			if (FSitMod.isInPose(player.getUuid(), PlayerPose.SIT)) FSitMod.resetPose(player);
 	}
 
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("TAIL"))

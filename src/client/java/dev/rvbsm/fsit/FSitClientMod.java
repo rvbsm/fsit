@@ -8,7 +8,10 @@ import dev.rvbsm.fsit.config.PlayerBlockList;
 import dev.rvbsm.fsit.entity.PlayerPose;
 import dev.rvbsm.fsit.event.client.InteractBlockCallback;
 import dev.rvbsm.fsit.event.client.InteractPlayerCallback;
-import dev.rvbsm.fsit.packet.*;
+import dev.rvbsm.fsit.packet.ConfigSyncC2SPacket;
+import dev.rvbsm.fsit.packet.PingS2CPacket;
+import dev.rvbsm.fsit.packet.PoseSyncS2CPacket;
+import dev.rvbsm.fsit.packet.RidePlayerPacket;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -20,60 +23,31 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
 
 public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 
 	public static final PlayerBlockList blockedPlayers = new PlayerBlockList("fsit-blocklist");
 	private static PlayerPose playerPose = PlayerPose.NONE;
 
-	public static PlayerPose getPose() {
-		return FSitClientMod.playerPose;
+	private static void setPose(PlayerPose pose) {
+		FSitClientMod.playerPose = pose;
+
+		final MinecraftClient client = MinecraftClient.getInstance();
+		if (pose != PlayerPose.NONE && pose != PlayerPose.SNEAK)
+			client.player.sendMessage(FSitMod.getTranslation("message", "onpose", client.options.sneakKey.getBoundKeyTranslationKey()), true);
 	}
 
 	public static boolean isInPose(PlayerPose pose) {
-		return FSitClientMod.getPose() == pose;
+		return playerPose == pose;
 	}
 
-	public static void resetPose() {
-		if (FSitClientMod.isInPose(PlayerPose.CRAWL))
-			ClientPlayNetworking.send(new CrawlC2SPacket(false));
-
-		FSitClientMod.playerPose = PlayerPose.NONE;
-	}
-
-	public static void setSneaked() {
-		final MinecraftClient client = MinecraftClient.getInstance();
-		if (!FSitClientMod.isInPose(PlayerPose.NONE)) return;
-		else if (client.player.isSpectator() || !client.player.isOnGround()) return;
-		FSitClientMod.playerPose = PlayerPose.SNEAK;
-
-		final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);
-		CompletableFuture.runAsync(() -> {
-			if (FSitClientMod.isInPose(PlayerPose.SNEAK)) FSitClientMod.resetPose();
-		}, delayedExecutor);
-	}
-
-	public static void setSitting(Vec3d pos) {
-		final MinecraftClient client = MinecraftClient.getInstance();
-		FSitClientMod.playerPose = PlayerPose.SIT;
-		ClientPlayNetworking.send(new SpawnSeatC2SPacket(client.player.getPos(), pos));
-	}
-
-	public static void setCrawling() {
-		final MinecraftClient client = MinecraftClient.getInstance();
-		if (client.player.isSpectator() || !client.player.isOnGround() || client.player.hasVehicle()) return;
-		FSitClientMod.playerPose = PlayerPose.CRAWL;
-
-		ClientPlayNetworking.send(new CrawlC2SPacket(true));
-		client.player.sendMessage(FSitMod.getTranslation("message", "oncrawl", client.options.sneakKey.getBoundKeyLocalizedText()), true);
+	private static void saveConfig() {
+		FSitConfig.save();
+		ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.config));
 	}
 
 	@Override
@@ -83,7 +57,8 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
 		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
 
-		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, (packet, player, responseSender) -> responseSender.sendPacket(new PongC2SPacket()));
+		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, (packet, player, responseSender) -> responseSender.sendPacket(new ConfigSyncC2SPacket(FSitMod.config)));
+		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, (packet, player, responseSender) -> FSitClientMod.setPose(packet.pose()));
 		ClientPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
 			if (packet.type() == RidePlayerPacket.RideType.REQUEST)
 				if (FSitMod.config.ridePlayers && !FSitClientMod.blockedPlayers.contains(packet.uuid()))
@@ -98,7 +73,7 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 							.setParentScreen(screen)
 							.setTitle(Text.literal("FSit"))
 							.setDefaultBackgroundTexture(new Identifier("minecraft:textures/block/deepslate_bricks.png"))
-							.setSavingRunnable(FSitConfig::save);
+							.setSavingRunnable(FSitClientMod::saveConfig);
 			final ConfigEntryBuilder entryBuilder = configBuilder.entryBuilder();
 
 			final List<String> sittableTags = FSitMod.config.sittableTags.stream().map(Identifier::toString).toList();
@@ -112,7 +87,7 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 							.setSaveConsumer(ConfigData.Entries.SNEAK_SIT::save)
 							.setTooltip(ConfigData.Entries.SNEAK_SIT.commentText())
 							.build());
-			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.MIN_ANGLE.keyText(), (int) FSitMod.config.minAngle, -90, 90)
+			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.MIN_ANGLE.keyText(), (int) FSitMod.config.minAngle, 0, 90)
 							.setDefaultValue(ConfigData.Entries.MIN_ANGLE.defaultValue()::intValue)
 							.setSaveConsumer((value) -> ConfigData.Entries.MIN_ANGLE.save(value.doubleValue()))
 							.setTooltip(ConfigData.Entries.MIN_ANGLE.commentText())
