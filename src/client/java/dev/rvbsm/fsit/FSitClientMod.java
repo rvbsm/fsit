@@ -5,12 +5,10 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.config.PlayerBlockList;
+import dev.rvbsm.fsit.entity.PlayerPose;
 import dev.rvbsm.fsit.event.client.InteractBlockCallback;
 import dev.rvbsm.fsit.event.client.InteractPlayerCallback;
-import dev.rvbsm.fsit.packet.CrawlC2SPacket;
-import dev.rvbsm.fsit.packet.PingS2CPacket;
-import dev.rvbsm.fsit.packet.PongC2SPacket;
-import dev.rvbsm.fsit.packet.RidePlayerPacket;
+import dev.rvbsm.fsit.packet.*;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -19,8 +17,12 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -30,28 +32,48 @@ import java.util.concurrent.TimeUnit;
 public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 
 	public static final PlayerBlockList blockedPlayers = new PlayerBlockList("fsit-blocklist");
-	private static boolean sneaked = false;
-	private static boolean crawling = false;
+	private static PlayerPose playerPose = PlayerPose.NONE;
+
+	public static PlayerPose getPose() {
+		return FSitClientMod.playerPose;
+	}
+
+	public static boolean isInPose(PlayerPose pose) {
+		return FSitClientMod.getPose() == pose;
+	}
+
+	public static void resetPose() {
+		if (FSitClientMod.isInPose(PlayerPose.CRAWL))
+			ClientPlayNetworking.send(new CrawlC2SPacket(false));
+
+		FSitClientMod.playerPose = PlayerPose.NONE;
+	}
 
 	public static void setSneaked() {
-		FSitClientMod.sneaked = true;
+		final MinecraftClient client = MinecraftClient.getInstance();
+		if (!FSitClientMod.isInPose(PlayerPose.NONE)) return;
+		else if (client.player.isSpectator() || !client.player.isOnGround()) return;
+		FSitClientMod.playerPose = PlayerPose.SNEAK;
 
 		final Executor delayedExecutor = CompletableFuture.delayedExecutor(FSitMod.config.sneakDelay, TimeUnit.MILLISECONDS);
-		CompletableFuture.runAsync(() -> FSitClientMod.sneaked = false, delayedExecutor);
+		CompletableFuture.runAsync(() -> {
+			if (FSitClientMod.isInPose(PlayerPose.SNEAK)) FSitClientMod.resetPose();
+		}, delayedExecutor);
 	}
 
-	public static boolean isSneaked() {
-		return FSitClientMod.sneaked;
+	public static void setSitting(Vec3d pos) {
+		final MinecraftClient client = MinecraftClient.getInstance();
+		FSitClientMod.playerPose = PlayerPose.SIT;
+		ClientPlayNetworking.send(new SpawnSeatC2SPacket(client.player.getPos(), pos));
 	}
 
-	public static boolean isCrawling() {
-		return FSitClientMod.crawling;
-	}
+	public static void setCrawling() {
+		final MinecraftClient client = MinecraftClient.getInstance();
+		if (client.player.isSpectator() || !client.player.isOnGround() || client.player.hasVehicle()) return;
+		FSitClientMod.playerPose = PlayerPose.CRAWL;
 
-	public static void setCrawling(boolean crawling) {
-		FSitClientMod.crawling = crawling;
-
-		ClientPlayNetworking.send(new CrawlC2SPacket(crawling));
+		ClientPlayNetworking.send(new CrawlC2SPacket(true));
+		client.player.sendMessage(FSitMod.getTranslation("message", "oncrawl", client.options.sneakKey.getBoundKeyLocalizedText()), true);
 	}
 
 	@Override

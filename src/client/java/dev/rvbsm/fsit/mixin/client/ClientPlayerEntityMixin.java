@@ -2,12 +2,9 @@ package dev.rvbsm.fsit.mixin.client;
 
 import dev.rvbsm.fsit.FSitClientMod;
 import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
+import dev.rvbsm.fsit.entity.PlayerPose;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.ClientPlayerEntity;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,9 +16,6 @@ public abstract class ClientPlayerEntityMixin {
 
 	@Shadow
 	public Input input;
-	@Shadow
-	@Final
-	protected MinecraftClient client;
 	private boolean prevSneaking;
 
 	@Shadow
@@ -31,17 +25,14 @@ public abstract class ClientPlayerEntityMixin {
 	public void isSneaking(CallbackInfo ci) {
 		final ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
 		if (!this.isMainPlayer()) return;
-		if (FSitClientMod.isCrawling()) player.setSwimming(true);
-		if (!player.isOnGround() || player.hasVehicle() || player.isSpectator()) return;
+		if (FSitClientMod.isInPose(PlayerPose.CRAWL)) player.setSwimming(true);
 
 		if (this.prevSneaking && !this.input.sneaking) {
-			if (FSitClientMod.isCrawling()) FSitClientMod.setCrawling(false);
+			if (FSitClientMod.isInPose(PlayerPose.CRAWL)) FSitClientMod.resetPose();
 			else if (player.getPitch() >= FSitMod.config.minAngle) {
-				if (FSitClientMod.isSneaked()) {
-					if (player.isCrawling()) {
-						FSitClientMod.setCrawling(true);
-						player.sendMessage(FSitMod.getTranslation("message", "oncrawl", this.client.options.sneakKey.getBoundKeyLocalizedText()), true);
-					} else ClientPlayNetworking.send(new SpawnSeatC2SPacket(player.getPos(), player.getPos()));
+				if (FSitClientMod.isInPose(PlayerPose.SNEAK)) {
+					if (player.isCrawling()) FSitClientMod.setCrawling();
+					else FSitClientMod.setSitting(player.getPos());
 				} else if (FSitMod.config.sneakSit) FSitClientMod.setSneaked();
 			}
 		}
