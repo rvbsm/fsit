@@ -38,7 +38,7 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 
 		final MinecraftClient client = MinecraftClient.getInstance();
 		if (pose != PlayerPose.NONE && pose != PlayerPose.SNEAK)
-			client.player.sendMessage(FSitMod.getTranslation("message", "onpose", client.options.sneakKey.getBoundKeyTranslationKey()), true);
+			client.player.sendMessage(FSitMod.getTranslation("message", "onpose", client.options.sneakKey.getBoundKeyLocalizedText()), true);
 	}
 
 	public static boolean isInPose(PlayerPose pose) {
