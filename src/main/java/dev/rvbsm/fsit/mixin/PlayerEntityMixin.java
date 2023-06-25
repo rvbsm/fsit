@@ -31,7 +31,11 @@ public abstract class PlayerEntityMixin {
 			if (this.blockAbove != null) {
 				player.networkHandler.sendPacket(new BlockUpdateS2CPacket(this.blockAbove, AIR));
 				this.blockAbove = null;
+			} else if (this.entityAbove != null && !FSitMod.isPosing(player.getUuid())) {
+				player.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(this.entityAbove.getId()));
+				this.entityAbove = null;
 			}
+
 			if (FSitMod.isInPose(player.getUuid(), PlayerPose.CRAWL)) {
 				player.setSwimming(true);
 				if (FSitMod.isModded(player.getUuid())) return;
@@ -56,9 +60,6 @@ public abstract class PlayerEntityMixin {
 					player.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(this.entityAbove.getId()));
 					this.entityAbove = null;
 				}
-			} else if (this.entityAbove != null) {
-				player.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(this.entityAbove.getId()));
-				this.entityAbove = null;
 			}
 		}
 	}

@@ -84,6 +84,10 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		return FSitMod.getPose(playerId) == pose;
 	}
 
+	public static boolean isPosing(UUID playerId) {
+		return !FSitMod.isInPose(playerId, PlayerPose.NONE) && !FSitMod.isInPose(playerId, PlayerPose.SNEAK);
+	}
+
 	public static void setSneaked(PlayerEntity player) {
 		if (!FSitMod.isInPose(player.getUuid(), PlayerPose.NONE)) return;
 		else if (player.isSpectator() || !player.isOnGround()) return;
@@ -97,7 +101,7 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 	}
 
 	public static void setSitting(PlayerEntity player, Vec3d pos) {
-		if (player.isSpectator() || !player.isOnGround()) return;
+		if (player.isSpectator() || !player.isOnGround() || player.hasVehicle()) return;
 		FSitMod.setPose(player, PlayerPose.SIT);
 
 		final World world = player.getWorld();

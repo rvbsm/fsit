@@ -30,14 +30,15 @@ public abstract class EntityMixin {
 			final UUID playerId = player.getUuid();
 			final ConfigData config = FSitMod.getConfig(playerId);
 
-			if (FSitMod.isInPose(playerId, PlayerPose.CRAWL)) FSitMod.resetPose(player);
-			else if (player.getPitch() >= config.minAngle) {
-				if (FSitMod.isInPose(playerId, PlayerPose.SNEAK)) {
+			if (FSitMod.isPosing(playerId)) FSitMod.resetPose(player);
+			else if (FSitMod.isInPose(playerId, PlayerPose.NONE) && config.sneakSit) FSitMod.setSneaked(player);
+			else if (FSitMod.isInPose(playerId, PlayerPose.SNEAK)) {
+				if (player.getPitch() >= config.minAngle) {
 					if (player.isCrawling()) FSitMod.setCrawling(player);
-					else FSitMod.setSitting(player, this.getPos());
-				} else if (config.sneakSit) FSitMod.setSneaked(player);
-			} else if (player.getPitch() <= -33.3f) {
-				if (player.getFirstPassenger() instanceof PlayerEntity passenger) passenger.stopRiding();
+					else FSitMod.setSitting(player, player.getPos());
+				} else if (player.getPitch() <= -config.minAngle) {
+					if (player.getFirstPassenger() instanceof PlayerEntity passenger) passenger.stopRiding();
+				}
 			}
 		}
 	}
