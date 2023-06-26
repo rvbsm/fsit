@@ -21,9 +21,11 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
@@ -102,6 +104,10 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 
 	public static void setSitting(PlayerEntity player, Vec3d pos) {
 		if (player.isSpectator() || !player.isOnGround() || player.hasVehicle()) return;
+
+		final BlockPos blockPos = player.getBlockPos();
+		final BlockState blockBelowState = player.getWorld().getBlockState(player.getPos().y % 1 == 0 ? blockPos.down() : blockPos);
+		if (blockBelowState.isAir()) return;
 		FSitMod.setPose(player, PlayerPose.SIT);
 
 		final World world = player.getWorld();
