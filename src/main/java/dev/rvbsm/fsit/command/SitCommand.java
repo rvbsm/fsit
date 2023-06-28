@@ -24,10 +24,8 @@ public class SitCommand implements Commandish<ServerCommandSource> {
 		final ServerPlayerEntity player = src.getPlayer();
 		if (player == null) return -1;
 
-		switch (FSitMod.getPose(player.getUuid())) {
-			case NONE, SNEAK -> FSitMod.setSitting(player, player.getPos());
-			case SIT, CRAWL -> FSitMod.resetPose(player);
-		}
+		if (FSitMod.isPosing(player.getUuid())) FSitMod.resetPose(player);
+		else FSitMod.setSitting(player, player.getPos());
 
 		return Command.SINGLE_SUCCESS;
 	}
