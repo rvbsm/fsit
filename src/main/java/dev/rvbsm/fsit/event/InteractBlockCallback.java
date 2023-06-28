@@ -1,6 +1,7 @@
 package dev.rvbsm.fsit.event;
 
 import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.config.ConfigData;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
@@ -28,16 +29,18 @@ public abstract class InteractBlockCallback {
 	private static final int RADIUS = 2;
 
 	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+		final ConfigData config = FSitMod.getConfig(player.getUuid());
+
 		if (world.isClient) return ActionResult.PASS;
 		else if (FSitMod.isModded(player.getUuid())) return ActionResult.PASS;
-		else if (!FSitMod.config.sittableSit) return ActionResult.PASS;
+		else if (!config.sittableSit) return ActionResult.PASS;
 
 		final Item handItem = player.getStackInHand(hand).getItem();
 		if (handItem instanceof BlockItem) return ActionResult.PASS;
 		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;
 		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 
-		if (InteractBlockCallback.isInRadius(player.getPos(), hitResult.getPos()) && InteractBlockCallback.isSittable(world, hitResult)) {
+		if (InteractBlockCallback.isInRadius(player.getPos(), hitResult.getPos()) && InteractBlockCallback.isSittable(world, hitResult, player)) {
 			FSitMod.setSitting((ServerPlayerEntity) player, hitResult.getPos());
 			return ActionResult.SUCCESS;
 		}
@@ -49,7 +52,9 @@ public abstract class InteractBlockCallback {
 		return playerPos.distanceTo(sitPos) <= RADIUS;
 	}
 
-	public static boolean isSittable(World world, BlockHitResult hitResult) {
+	public static boolean isSittable(World world, BlockHitResult hitResult, PlayerEntity player) {
+		final ConfigData config = FSitMod.getConfig(player.getUuid());
+
 		if (hitResult.getSide() != Direction.UP) return false;
 
 		final BlockPos blockPos = hitResult.getBlockPos();
@@ -60,7 +65,7 @@ public abstract class InteractBlockCallback {
 
 		final Stream<Identifier> blockTags = blockState.streamTags().map(TagKey::id);
 		final Identifier blockIdentifier = Registries.BLOCK.getId(block);
-		if (blockTags.anyMatch(FSitMod.config.sittableTags::contains) || FSitMod.config.sittableBlocks.contains(blockIdentifier)) {
+		if (blockTags.anyMatch(config.sittableTags::contains) || config.sittableBlocks.contains(blockIdentifier)) {
 			if (block instanceof PillarBlock) {
 				return blockState.get(Properties.AXIS) != Direction.Axis.Y;
 			} else if (block instanceof StairsBlock) {

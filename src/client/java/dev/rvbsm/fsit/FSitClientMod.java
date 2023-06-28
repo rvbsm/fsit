@@ -31,6 +31,7 @@ import java.util.List;
 public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 
 	public static final PlayerBlockList blockedPlayers = new PlayerBlockList("fsit-blocklist");
+	public static final ConfigData config = FSitMod.config;
 	private static PlayerPose playerPose = PlayerPose.NONE;
 
 	private static void setPose(PlayerPose pose) {

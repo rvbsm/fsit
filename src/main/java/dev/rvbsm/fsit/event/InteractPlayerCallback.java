@@ -1,6 +1,7 @@
 package dev.rvbsm.fsit.event;
 
 import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.packet.RidePlayerPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
@@ -14,6 +15,8 @@ import net.minecraft.world.World;
 public abstract class InteractPlayerCallback {
 
 	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, HitResult hitResult) {
+		final ConfigData config = FSitMod.getConfig(player.getUuid());
+
 		if (world.isClient) return ActionResult.PASS;
 		else if (FSitMod.isModded(player.getUuid())) return ActionResult.PASS;
 		else if (player.isSpectator() || entity.isSpectator()) return ActionResult.PASS;
@@ -25,7 +28,7 @@ public abstract class InteractPlayerCallback {
 			return ActionResult.SUCCESS;
 		}
 
-		if (!FSitMod.config.ridePlayers && entity.isPlayer() && !entity.hasPassengers()) {
+		if (!config.ridePlayers && entity.isPlayer() && !entity.hasPassengers()) {
 			player.startRiding(entity, true);
 
 			return ActionResult.SUCCESS;

@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 
-	public static final ConfigData config = new ConfigData();
+	protected static final ConfigData config = new ConfigData();
 	private static final Map<UUID, ConfigData> moddedPlayers = new HashMap<>();
 	private static final Map<UUID, PlayerPose> playersPose = new HashMap<>();
 
