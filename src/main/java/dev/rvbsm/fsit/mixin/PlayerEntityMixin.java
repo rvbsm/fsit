@@ -6,7 +6,10 @@ import dev.rvbsm.fsit.entity.PlayerPose;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.*;
+import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -28,10 +31,19 @@ public abstract class PlayerEntityMixin {
 	@Inject(method = "updatePose", at = @At("HEAD"))
 	public void updatePose(CallbackInfo ci) {
 		if ((PlayerEntity) (Object) this instanceof ServerPlayerEntity player) {
+			final World world = player.getWorld();
+			final BlockPos blockPos = player.getBlockPos().up(player.getPos().y % 1 < .5d ? 1 : 2);
+//?			if (player.getMovementSpeed() > something) blockPos = blockPos.offset(player.getMovementDirection());
+			final Vec3d entityPos = blockPos.toCenterPos();
+
+			final boolean placeBarrier = world.getBlockState(blockPos).isAir();
+			final boolean placeShulker = !placeBarrier && !world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, Direction.DOWN);
+
 			if (this.blockAbove != null) {
 				player.networkHandler.sendPacket(new BlockUpdateS2CPacket(this.blockAbove, AIR));
 				this.blockAbove = null;
-			} else if (this.entityAbove != null && !FSitMod.isPosing(player.getUuid())) {
+			}
+			if (this.entityAbove != null && !placeShulker) {
 				player.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(this.entityAbove.getId()));
 				this.entityAbove = null;
 			}
@@ -40,25 +52,18 @@ public abstract class PlayerEntityMixin {
 				player.setSwimming(true);
 				if (FSitMod.isModded(player.getUuid())) return;
 
-				final Vec3d entityPos = player.getPos().offset(Direction.UP, 1.0d);
-				final BlockPos blockPos = new BlockPos((int) entityPos.x, (int) entityPos.y, (int) entityPos.z);
-				final World world = player.getWorld();
-				if (world.getBlockState(blockPos).isAir()) {
-					this.blockAbove = blockPos;
-					player.networkHandler.sendPacket(new BlockUpdateS2CPacket(blockPos, BARRIER));
-				} else if (!world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, Direction.DOWN)) {
+				if (placeShulker) {
 					if (this.entityAbove == null) {
 						this.entityAbove = new CrawlEntity(world, entityPos);
-						player.networkHandler.sendPacket(new EntitySpawnS2CPacket(this.entityAbove));
+						player.networkHandler.sendPacket(this.entityAbove.createSpawnPacket());
 						player.networkHandler.sendPacket(new EntityTrackerUpdateS2CPacket(this.entityAbove.getId(), this.entityAbove.getDataTracker().getChangedEntries()));
-					}
-					if (!this.entityAbove.getPos().equals(entityPos)) {
+					} else if (!this.entityAbove.getPos().equals(entityPos)) {
 						this.entityAbove.setPosition(entityPos);
 						player.networkHandler.sendPacket(new EntityPositionS2CPacket(this.entityAbove));
 					}
-				} else if (this.entityAbove != null) {
-					player.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(this.entityAbove.getId()));
-					this.entityAbove = null;
+				} else if (placeBarrier) {
+					this.blockAbove = blockPos;
+					player.networkHandler.sendPacket(new BlockUpdateS2CPacket(blockPos, BARRIER));
 				}
 			}
 		}
