@@ -3,10 +3,8 @@ package dev.rvbsm.fsit.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import dev.rvbsm.fsit.FSitMod;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
-
-import java.util.UUID;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 public class SitCommand implements Commandish<ServerCommandSource> {
 
@@ -23,11 +21,10 @@ public class SitCommand implements Commandish<ServerCommandSource> {
 	@Override
 	public int command(CommandContext<ServerCommandSource> ctx) {
 		final ServerCommandSource src = ctx.getSource();
-		final PlayerEntity player = src.getPlayer();
+		final ServerPlayerEntity player = src.getPlayer();
 		if (player == null) return -1;
 
-		final UUID playerId = player.getUuid();
-		switch (FSitMod.getPose(playerId)) {
+		switch (FSitMod.getPose(player.getUuid())) {
 			case NONE, SNEAK -> FSitMod.setSitting(player, player.getPos());
 			case SIT, CRAWL -> FSitMod.resetPose(player);
 		}

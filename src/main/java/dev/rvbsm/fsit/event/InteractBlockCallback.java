@@ -10,6 +10,7 @@ import net.minecraft.item.FluidModificationItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -37,7 +38,7 @@ public abstract class InteractBlockCallback {
 		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 
 		if (InteractBlockCallback.isInRadius(player.getPos(), hitResult.getPos()) && InteractBlockCallback.isSittable(world, hitResult)) {
-			FSitMod.setSitting(player, hitResult.getPos());
+			FSitMod.setSitting((ServerPlayerEntity) player, hitResult.getPos());
 			return ActionResult.SUCCESS;
 		}
 

@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -66,20 +65,20 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		return moddedPlayers.containsKey(playerId);
 	}
 
-	private static void setPose(PlayerEntity player, PlayerPose pose) {
+	private static void setPose(ServerPlayerEntity player, PlayerPose pose) {
 		FSitMod.playersPose.put(player.getUuid(), pose);
-		ServerPlayNetworking.send((ServerPlayerEntity) player, new PoseSyncS2CPacket(pose));
+		ServerPlayNetworking.send(player, new PoseSyncS2CPacket(pose));
 
-		if (pose != PlayerPose.NONE && pose != PlayerPose.SNEAK && !FSitMod.isModded(player.getUuid()))
+		if (FSitMod.isPosing(player.getUuid()) && !FSitMod.isModded(player.getUuid()))
 			player.sendMessage(Text.of("Press Sneak key to get up"), true);
-	}
-
-	public static void resetPose(PlayerEntity player) {
-		FSitMod.setPose(player, PlayerPose.NONE);
 	}
 
 	public static PlayerPose getPose(UUID playerId) {
 		return playersPose.getOrDefault(playerId, PlayerPose.NONE);
+	}
+
+	public static void resetPose(ServerPlayerEntity player) {
+		FSitMod.setPose(player, PlayerPose.NONE);
 	}
 
 	public static boolean isInPose(UUID playerId, PlayerPose pose) {
@@ -90,7 +89,7 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		return !FSitMod.isInPose(playerId, PlayerPose.NONE) && !FSitMod.isInPose(playerId, PlayerPose.SNEAK);
 	}
 
-	public static void setSneaked(PlayerEntity player) {
+	public static void setSneaked(ServerPlayerEntity player) {
 		if (!FSitMod.isInPose(player.getUuid(), PlayerPose.NONE)) return;
 		else if (player.isSpectator() || !player.isOnGround()) return;
 		FSitMod.setPose(player, PlayerPose.SNEAK);
@@ -102,7 +101,7 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		}, delayedExecutor);
 	}
 
-	public static void setSitting(PlayerEntity player, Vec3d pos) {
+	public static void setSitting(ServerPlayerEntity player, Vec3d pos) {
 		if (player.isSpectator() || !player.isOnGround() || player.hasVehicle()) return;
 
 		final BlockPos blockPos = player.getBlockPos();
@@ -116,7 +115,7 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		player.startRiding(seat, true);
 	}
 
-	public static void setCrawling(PlayerEntity player) {
+	public static void setCrawling(ServerPlayerEntity player) {
 		if (player.isSpectator() || !player.isOnGround() || player.hasVehicle()) return;
 		FSitMod.setPose(player, PlayerPose.CRAWL);
 	}
@@ -140,13 +139,13 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 				FSitMod.setSitting(player, packet.sitPos());
 		});
 		ServerPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
-			final PlayerEntity target = player.getWorld().getPlayerByUuid(packet.uuid());
+			final ServerPlayerEntity target = (ServerPlayerEntity) player.getServerWorld().getPlayerByUuid(packet.uuid());
 			if (target == null) return;
 
 			switch (packet.type()) {
 				case REQUEST -> {
 					if (FSitMod.isModded(packet.uuid()))
-						ServerPlayNetworking.send((ServerPlayerEntity) target, new RidePlayerPacket(packet.type(), player.getUuid()));
+						ServerPlayNetworking.send(target, new RidePlayerPacket(packet.type(), player.getUuid()));
 				}
 				case ACCEPT -> {
 					if (player.distanceTo(target) <= 3) target.startRiding(player);
