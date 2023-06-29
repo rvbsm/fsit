@@ -32,7 +32,7 @@ public abstract class PlayerEntityMixin {
 	public void updatePose(CallbackInfo ci) {
 		if ((PlayerEntity) (Object) this instanceof ServerPlayerEntity player) {
 			final World world = player.getWorld();
-			final BlockPos blockPos = player.getBlockPos().up(player.getPos().y % 1 < .5d ? 1 : 2);
+			final BlockPos blockPos = player.getBlockPos().up();
 //?			if (player.getMovementSpeed() > something) blockPos = blockPos.offset(player.getMovementDirection());
 			final Vec3d entityPos = blockPos.toCenterPos();
 
