@@ -32,8 +32,8 @@ public abstract class PlayerEntityMixin {
 	public void updatePose(CallbackInfo ci) {
 		if ((PlayerEntity) (Object) this instanceof ServerPlayerEntity player) {
 			final World world = player.getWorld();
-			final BlockPos blockPos = player.getBlockPos().up();
-//?			if (player.getMovementSpeed() > something) blockPos = blockPos.offset(player.getMovementDirection());
+			BlockPos blockPos = player.getBlockPos().up();
+			if (player.getMovementSpeed() > 4.5f) blockPos = blockPos.offset(player.getMovementDirection());
 			final Vec3d entityPos = blockPos.toCenterPos();
 
 			final boolean placeBarrier = world.getBlockState(blockPos).isAir();
