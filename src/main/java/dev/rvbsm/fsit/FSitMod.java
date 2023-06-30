@@ -67,7 +67,7 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 
 	private static void setPose(ServerPlayerEntity player, PlayerPose pose) {
 		FSitMod.playersPose.put(player.getUuid(), pose);
-		ServerPlayNetworking.send(player, new PoseSyncS2CPacket(pose));
+		if (FSitMod.isModded(player.getUuid())) ServerPlayNetworking.send(player, new PoseSyncS2CPacket(pose));
 
 		if (FSitMod.isPosing(player.getUuid()) && !FSitMod.isModded(player.getUuid()))
 			player.sendMessage(Text.of("Press Sneak key to get up"), true);
