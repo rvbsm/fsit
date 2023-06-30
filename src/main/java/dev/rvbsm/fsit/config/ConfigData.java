@@ -1,6 +1,11 @@
 package dev.rvbsm.fsit.config;
 
-import com.electronwill.nightconfig.core.conversion.*;
+import com.electronwill.nightconfig.core.conversion.Conversion;
+import com.electronwill.nightconfig.core.conversion.Converter;
+import com.electronwill.nightconfig.core.conversion.Path;
+import com.electronwill.nightconfig.core.conversion.PreserveNotNull;
+import com.electronwill.nightconfig.core.conversion.SpecDoubleInRange;
+import com.electronwill.nightconfig.core.conversion.SpecIntInRange;
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.config.conversion.Comment;
 import net.minecraft.text.Text;

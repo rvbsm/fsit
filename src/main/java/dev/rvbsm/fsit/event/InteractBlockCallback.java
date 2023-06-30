@@ -2,7 +2,11 @@ package dev.rvbsm.fsit.event;
 
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.config.ConfigData;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.PillarBlock;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.entity.player.PlayerEntity;
