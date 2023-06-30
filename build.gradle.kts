@@ -41,7 +41,9 @@ dependencies {
 	modInclude(libs.nightconfig.toml)
 
 	modApi(libs.modmenu)
-	modApi(libs.clothconfig)
+	modApi(libs.clothconfig) {
+		exclude(group = "net.fabricmc.fabric-api")
+	}
 }
 
 tasks {
