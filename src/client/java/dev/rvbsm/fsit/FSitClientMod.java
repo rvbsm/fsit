@@ -46,7 +46,9 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 
 	private static void saveConfig() {
 		FSitConfig.save();
-		ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.config));
+
+		if (MinecraftClient.getInstance().getServer() != null)
+			ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.config));
 	}
 
 	@Override
