@@ -45,7 +45,7 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 	}
 
 	private static void saveConfig() {
-		FSitConfig.save();
+		FSitConfig.save(FSitMod.config);
 
 		if (MinecraftClient.getInstance().getServer() != null)
 			ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.config));
@@ -83,27 +83,27 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 			final ConfigCategory main = configBuilder.getOrCreateCategory(Text.literal("main"));
 
 			final SubCategoryBuilder sneakCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "sneak"));
-			sneakCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.SNEAK_SIT.keyText(), FSitMod.config.sneakSit)
-							.setDefaultValue(ConfigData.Entries.SNEAK_SIT::defaultValue)
-							.setSaveConsumer(ConfigData.Entries.SNEAK_SIT::save)
-							.setTooltip(ConfigData.Entries.SNEAK_SIT.commentText())
+			sneakCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.SNEAK_ENABLED.keyText(), FSitMod.config.sneak)
+							.setDefaultValue(ConfigData.Entries.SNEAK_ENABLED::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.SNEAK_ENABLED::save)
+							.setTooltip(ConfigData.Entries.SNEAK_ENABLED.commentText())
 							.build());
 			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.MIN_ANGLE.keyText(), (int) FSitMod.config.minAngle, 0, 90)
 							.setDefaultValue(ConfigData.Entries.MIN_ANGLE.defaultValue()::intValue)
 							.setSaveConsumer((value) -> ConfigData.Entries.MIN_ANGLE.save(value.doubleValue()))
 							.setTooltip(ConfigData.Entries.MIN_ANGLE.commentText())
 							.build());
-			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SNEAK_SIT.keyText(), FSitMod.config.sneakDelay, 100, 2000)
+			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SNEAK_DELAY.keyText(), FSitMod.config.sneakDelay, 100, 2000)
 							.setDefaultValue(ConfigData.Entries.SNEAK_DELAY::defaultValue)
 							.setSaveConsumer(ConfigData.Entries.SNEAK_DELAY::save)
 							.setTooltip(ConfigData.Entries.SNEAK_DELAY.commentText())
 							.build());
 
 			final SubCategoryBuilder sittableCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "sittable"));
-			sittableCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.SITTABLE_SIT.keyText(), FSitMod.config.sittableSit)
-							.setDefaultValue(ConfigData.Entries.SITTABLE_SIT::defaultValue)
-							.setSaveConsumer(ConfigData.Entries.SITTABLE_SIT::save)
-							.setTooltip(ConfigData.Entries.SITTABLE_SIT.commentText())
+			sittableCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.SITTABLE_ENABLED.keyText(), FSitMod.config.sittable)
+							.setDefaultValue(ConfigData.Entries.SITTABLE_ENABLED::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.SITTABLE_ENABLED::save)
+							.setTooltip(ConfigData.Entries.SITTABLE_ENABLED.commentText())
 							.build());
 			sittableCategory.add(entryBuilder.startStrList(ConfigData.Entries.SITTABLE_TAGS.keyText(), sittableTags)
 							.setDefaultValue(ConfigData.Entries.SITTABLE_TAGS::defaultValue)

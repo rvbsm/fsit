@@ -31,7 +31,7 @@ public abstract class EntityMixin {
 			final ConfigData config = FSitMod.getConfig(playerId);
 
 			if (FSitMod.isPosing(playerId)) FSitMod.resetPose(player);
-			else if (FSitMod.isInPose(playerId, PlayerPose.NONE) && config.sneakSit) FSitMod.setSneaked(player);
+			else if (FSitMod.isInPose(playerId, PlayerPose.NONE) && config.sneak) FSitMod.setSneaked(player);
 			else if (FSitMod.isInPose(playerId, PlayerPose.SNEAK)) {
 				if (player.getPitch() >= config.minAngle) {
 					if (player.isCrawling()) FSitMod.setCrawling(player);

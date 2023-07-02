@@ -37,7 +37,7 @@ public abstract class InteractBlockCallback {
 
 		if (world.isClient) return ActionResult.PASS;
 		else if (FSitMod.isModded(player.getUuid())) return ActionResult.PASS;
-		else if (!config.sittableSit) return ActionResult.PASS;
+		else if (!config.sittable) return ActionResult.PASS;
 
 		final Item handItem = player.getStackInHand(hand).getItem();
 		if (handItem instanceof BlockItem) return ActionResult.PASS;

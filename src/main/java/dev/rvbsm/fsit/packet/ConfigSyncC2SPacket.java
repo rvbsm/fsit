@@ -16,7 +16,7 @@ public record ConfigSyncC2SPacket(ConfigData config) implements FabricPacket {
 
 	@Override
 	public void write(PacketByteBuf buf) {
-		buf.writeBoolean(this.config.sneakSit);
+		buf.writeBoolean(this.config.sneak);
 		buf.writeDouble(this.config.minAngle);
 		buf.writeInt(this.config.sneakDelay);
 	}

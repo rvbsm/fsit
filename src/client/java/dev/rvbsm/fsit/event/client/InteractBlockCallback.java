@@ -19,7 +19,7 @@ public abstract class InteractBlockCallback {
 
 	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
 		if (!player.isMainPlayer()) return ActionResult.PASS;
-		else if (!FSitClientMod.config.sittableSit) return ActionResult.PASS;
+		else if (!FSitClientMod.config.sittable) return ActionResult.PASS;
 
 		final Item handItem = player.getStackInHand(hand).getItem();
 		if (handItem instanceof BlockItem) return ActionResult.PASS;
