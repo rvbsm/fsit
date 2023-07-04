@@ -7,9 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,16 +19,13 @@ import java.util.UUID;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
-	@Shadow
-	public abstract Vec3d getPos();
-
 	@Inject(method = "setSneaking", at = @At("HEAD"))
 	public void setSneaking(boolean sneaking, CallbackInfo ci) {
 		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking) {
 			final UUID playerId = player.getUuid();
 			final ConfigData config = FSitMod.getConfig(playerId);
 
-			if (FSitMod.isPosing(playerId)) FSitMod.resetPose(player);
+			if (!player.hasVehicle() && FSitMod.isPosing(playerId)) FSitMod.resetPose(player);
 			else if (FSitMod.isInPose(playerId, PlayerPose.NONE) && config.sneak) FSitMod.setSneaked(player);
 			else if (FSitMod.isInPose(playerId, PlayerPose.SNEAK)) {
 				if (player.getPitch() >= config.minAngle) {
