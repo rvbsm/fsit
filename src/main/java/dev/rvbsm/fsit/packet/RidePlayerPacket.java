@@ -27,7 +27,6 @@ public record RidePlayerPacket(RideType type, UUID uuid) implements FabricPacket
 		buf.writeUuid(this.uuid);
 	}
 
-	@Environment(EnvType.SERVER)
 	public void receive(ServerPlayerEntity player, PacketSender responseSender) {
 		final ServerPlayerEntity target = (ServerPlayerEntity) player.getServerWorld().getPlayerByUuid(this.uuid);
 		if (target == null) return;

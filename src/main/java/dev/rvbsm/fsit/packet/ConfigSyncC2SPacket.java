@@ -26,7 +26,6 @@ public record ConfigSyncC2SPacket(ConfigData config) implements FabricPacket {
 		buf.writeInt(this.config.sneakDelay);
 	}
 
-	@Environment(EnvType.SERVER)
 	public void receive(ServerPlayerEntity player, PacketSender packetSender) {
 		FSitMod.setModded(player.getUuid(), this.config);
 	}
