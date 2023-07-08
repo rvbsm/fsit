@@ -23,7 +23,7 @@ public abstract class FSitConfig {
 
 	public static void load(ConfigData destination) {
 		config.load();
-		if (config.contains("config_version") && config.getInt("config_version") == 2) ConfigMigrator.migrate2To3();
+		if (config.contains("config_version") && !config.isNull("config_version") && config.get("config_version").equals(2)) ConfigMigrator.migrateFrom2();
 
 		new ObjectConverter().toObject(config, destination);
 		config.clear();
