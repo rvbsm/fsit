@@ -23,19 +23,19 @@ public class ConfigData {
 	@Path(Fields.SNEAK_ENABLED)
 	@Comment(Comments.SNEAK_ENABLED)
 	@PreserveNotNull
-	public boolean sneak = Entries.SNEAK_ENABLED.defaultValue;
+	public final boolean sneak;
 
 	@Path(Fields.MIN_ANGLE)
 	@Comment(Comments.MIN_ANGLE)
 	@PreserveNotNull
 	@SpecDoubleInRange(min = 0, max = 90)
-	public double minAngle = Entries.MIN_ANGLE.defaultValue;
+	public final double minAngle;
 
 	@Path(Fields.SNEAK_DELAY)
 	@Comment(Comments.SNEAK_DELAY)
 	@PreserveNotNull
 	@SpecIntInRange(min = 100, max = 2000)
-	public int sneakDelay = Entries.SNEAK_DELAY.defaultValue;
+	public final int sneakDelay;
 
 	@Path(Fields.SITTABLE_ENABLED)
 	@Comment(Comments.SITTABLE_ENABLED)
@@ -59,7 +59,11 @@ public class ConfigData {
 	@PreserveNotNull
 	public final boolean ridePlayers = Entries.RIDE_PLAYERS.defaultValue;
 
-	public ConfigData() {}
+	public ConfigData() {
+		this.sneak = Entries.SNEAK_ENABLED.defaultValue;
+		this.minAngle = Entries.MIN_ANGLE.defaultValue;
+		this.sneakDelay = Entries.SNEAK_DELAY.defaultValue;
+	}
 
 	public ConfigData(boolean sneak, double minAngle, int sneakDelay) {
 		this.sneak = sneak;
@@ -67,7 +71,7 @@ public class ConfigData {
 		this.sneakDelay = sneakDelay;
 	}
 
-	public interface Fields {
+	protected interface Fields {
 		String CONFIG_VERSION = "config_version";
 		String SNEAK_ENABLED = "sneak.enabled";
 		String MIN_ANGLE = "sneak.min_angle";
@@ -78,7 +82,7 @@ public class ConfigData {
 		String RIDE_PLAYERS = "misc.ride_players";
 	}
 
-	private interface Comments {
+	protected interface Comments {
 		String CONFIG_VERSION = "Do not edit";
 		String SNEAK_ENABLED = "Toggles sit-on-sneak feature";
 		String MIN_ANGLE = "Minimal pitch to sitting down";
