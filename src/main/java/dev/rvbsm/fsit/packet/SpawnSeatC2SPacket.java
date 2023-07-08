@@ -1,8 +1,14 @@
 package dev.rvbsm.fsit.packet;
 
+import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.event.InteractBlockCallback;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
@@ -18,6 +24,12 @@ public record SpawnSeatC2SPacket(Vec3d playerPos, Vec3d sitPos) implements Fabri
 	public void write(PacketByteBuf buf) {
 		buf.writeVector3f(this.playerPos.toVector3f());
 		buf.writeVector3f(this.sitPos.toVector3f());
+	}
+
+	@Environment(EnvType.SERVER)
+	public void receive(ServerPlayerEntity player, PacketSender responseSender) {
+		if (InteractBlockCallback.isInRadius(this.playerPos, this.sitPos))
+			FSitMod.setSitting(player, this.sitPos);
 	}
 
 	@Override

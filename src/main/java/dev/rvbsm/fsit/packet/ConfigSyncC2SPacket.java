@@ -1,9 +1,14 @@
 package dev.rvbsm.fsit.packet;
 
+import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.config.ConfigData;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 public record ConfigSyncC2SPacket(ConfigData config) implements FabricPacket {
@@ -19,6 +24,11 @@ public record ConfigSyncC2SPacket(ConfigData config) implements FabricPacket {
 		buf.writeBoolean(this.config.sneak);
 		buf.writeDouble(this.config.minAngle);
 		buf.writeInt(this.config.sneakDelay);
+	}
+
+	@Environment(EnvType.SERVER)
+	public void receive(ServerPlayerEntity player, PacketSender packetSender) {
+		FSitMod.setModded(player.getUuid(), this.config);
 	}
 
 	@Override

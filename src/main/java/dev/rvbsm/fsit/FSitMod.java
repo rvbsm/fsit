@@ -136,29 +136,9 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		ServerPlayConnectionEvents.JOIN.register(PlayerConnectionCallbacks::onConnect);
 		ServerPlayConnectionEvents.DISCONNECT.register(PlayerConnectionCallbacks::onDisconnect);
 
-		ServerPlayNetworking.registerGlobalReceiver(ConfigSyncC2SPacket.TYPE, (packet, player, responseSender) -> FSitMod.setModded(player.getUuid(), packet.config()));
-		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.TYPE, (packet, player, responseSender) -> {
-			if (InteractBlockCallback.isInRadius(packet.playerPos(), packet.sitPos()))
-				FSitMod.setSitting(player, packet.sitPos());
-		});
-		ServerPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
-			final ServerPlayerEntity target = (ServerPlayerEntity) player.getServerWorld().getPlayerByUuid(packet.uuid());
-			if (target == null) return;
-
-			switch (packet.type()) {
-				case REQUEST -> {
-					if (FSitMod.isModded(packet.uuid()))
-						ServerPlayNetworking.send(target, new RidePlayerPacket(packet.type(), player.getUuid()));
-				}
-				case ACCEPT -> {
-					if (player.distanceTo(target) <= 3) target.startRiding(player);
-				}
-				case REFUSE -> {
-					if (player.hasPassenger(target)) target.stopRiding();
-					else if (target.hasPassenger(player)) player.stopRiding();
-				}
-			}
-		});
+		ServerPlayNetworking.registerGlobalReceiver(ConfigSyncC2SPacket.TYPE, ConfigSyncC2SPacket::receive);
+		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.TYPE, SpawnSeatC2SPacket::receive);
+		ServerPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, RidePlayerPacket::receive);
 	}
 
 	@Override
