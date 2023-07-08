@@ -5,7 +5,7 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.config.PlayerBlockList;
-import dev.rvbsm.fsit.entity.PlayerPose;
+import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
 import dev.rvbsm.fsit.event.client.InteractBlockCallback;
 import dev.rvbsm.fsit.event.client.InteractPlayerCallback;
 import dev.rvbsm.fsit.packet.ConfigSyncC2SPacket;
@@ -30,19 +30,6 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 
 	public static final PlayerBlockList blockedPlayers = new PlayerBlockList("fsit-blocklist");
 	public static final ConfigData config = FSitMod.config;
-	private static PlayerPose playerPose = PlayerPose.NONE;
-
-	private static void setPose(PlayerPose pose) {
-		FSitClientMod.playerPose = pose;
-
-		final MinecraftClient client = MinecraftClient.getInstance();
-		if (pose != PlayerPose.NONE && pose != PlayerPose.SNEAK)
-			client.player.sendMessage(FSitMod.getTranslation("message", "onpose", client.options.sneakKey.getBoundKeyLocalizedText()), true);
-	}
-
-	public static boolean isInPose(PlayerPose pose) {
-		return playerPose == pose;
-	}
 
 	private static void saveConfig() {
 		FSitConfig.save(FSitMod.config);
@@ -58,11 +45,11 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
 		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
 
-		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, (packet, player, responseSender) -> responseSender.sendPacket(new ConfigSyncC2SPacket(FSitMod.config)));
-		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, (packet, player, responseSender) -> FSitClientMod.setPose(packet.pose()));
+		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, (packet, player, responseSender) -> responseSender.sendPacket(new ConfigSyncC2SPacket(FSitClientMod.config)));
+		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, (packet, player, responseSender) -> ((PlayerPoseAccessor) player).setPlayerPose(packet.pose()));
 		ClientPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
 			if (packet.type() == RidePlayerPacket.RideType.REQUEST)
-				if (FSitMod.config.ridePlayers && !FSitClientMod.blockedPlayers.contains(packet.uuid()))
+				if (FSitClientMod.config.ridePlayers && !FSitClientMod.blockedPlayers.contains(packet.uuid()))
 					responseSender.sendPacket(new RidePlayerPacket(RidePlayerPacket.RideType.ACCEPT, packet.uuid()));
 		});
 	}

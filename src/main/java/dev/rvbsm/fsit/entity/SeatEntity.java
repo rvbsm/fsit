@@ -1,6 +1,5 @@
 package dev.rvbsm.fsit.entity;
 
-import dev.rvbsm.fsit.FSitMod;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
@@ -49,7 +48,7 @@ public class SeatEntity extends AreaEffectCloudEntity {
 	@Override
 	public void tick() {
 		if (this.mounted != null) {
-			if (!super.hasPassenger(this.mounted) || !FSitMod.isInPose(this.mounted.getUuid(), PlayerPose.SIT))
+			if (!super.hasPassenger(this.mounted) || !((PlayerPoseAccessor) this.mounted).isInPlayerPose(PlayerPose.SIT))
 				this.detachAndDiscard();
 			else if (super.getWorld().getBlockState(super.getBlockPos()).isAir()) {
 				if (this.prevTickNoAir) this.detachAndDiscard();

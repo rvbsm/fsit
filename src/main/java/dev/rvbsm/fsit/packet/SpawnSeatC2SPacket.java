@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.packet;
 
-import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
 import dev.rvbsm.fsit.event.InteractBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -26,7 +26,7 @@ public record SpawnSeatC2SPacket(Vec3d playerPos, Vec3d sitPos) implements Fabri
 
 	public void receive(ServerPlayerEntity player, PacketSender responseSender) {
 		if (InteractBlockCallback.isInRadius(this.playerPos, this.sitPos))
-			FSitMod.setSitting(player, this.sitPos);
+			((PlayerPoseAccessor) player).setPlayerSitting(this.sitPos);
 	}
 
 	@Override

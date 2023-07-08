@@ -36,7 +36,7 @@ public abstract class EntityMixin {
 		return this.isPlayer() ? 1.0 : multiplier;
 	}
 
-	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At(value = "TAIL"))
+	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("TAIL"))
 	public void startRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		if (this.isPlayer() && entity.isPlayer()) this.calculateDimensions();
 	}

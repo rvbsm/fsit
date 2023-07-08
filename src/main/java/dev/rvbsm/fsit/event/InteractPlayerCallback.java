@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.event;
 
-import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.config.ConfigData;
+import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
 import dev.rvbsm.fsit.packet.RidePlayerPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
@@ -15,23 +15,24 @@ import net.minecraft.world.World;
 public abstract class InteractPlayerCallback {
 
 	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, HitResult hitResult) {
-		final ConfigData config = FSitMod.getConfig(player.getUuid());
-
 		if (world.isClient) return ActionResult.PASS;
-		else if (FSitMod.isModded(player.getUuid())) return ActionResult.PASS;
+		final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) player;
+		final ConfigData config = configAccessor.getConfig();
+
+		if (configAccessor.isModded()) return ActionResult.PASS;
 		else if (player.isSpectator() || entity.isSpectator()) return ActionResult.PASS;
 		else if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
 
-		if (entity.isPlayer() && FSitMod.isModded(entity.getUuid())) {
-			ServerPlayNetworking.send((ServerPlayerEntity) entity, new RidePlayerPacket(RidePlayerPacket.RideType.REQUEST, player.getUuid()));
+		if (entity.isPlayer() && !entity.hasPassengers()) {
+			if (((PlayerConfigAccessor) entity).isModded()) {
+				ServerPlayNetworking.send((ServerPlayerEntity) entity, new RidePlayerPacket(RidePlayerPacket.RideType.REQUEST, player.getUuid()));
 
-			return ActionResult.SUCCESS;
-		}
+				return ActionResult.SUCCESS;
+			} else if (config.ridePlayers) {
+				player.startRiding(entity, true);
 
-		if (!config.ridePlayers && entity.isPlayer() && !entity.hasPassengers()) {
-			player.startRiding(entity, true);
-
-			return ActionResult.SUCCESS;
+				return ActionResult.SUCCESS;
+			}
 		}
 
 		return ActionResult.PASS;

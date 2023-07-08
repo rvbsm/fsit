@@ -1,8 +1,6 @@
 package dev.rvbsm.fsit.packet;
 
-import dev.rvbsm.fsit.FSitMod;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
@@ -29,11 +27,12 @@ public record RidePlayerPacket(RideType type, UUID uuid) implements FabricPacket
 
 	public void receive(ServerPlayerEntity player, PacketSender responseSender) {
 		final ServerPlayerEntity target = (ServerPlayerEntity) player.getServerWorld().getPlayerByUuid(this.uuid);
+		final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) target;
 		if (target == null) return;
 
 		switch (this.type) {
 			case REQUEST -> {
-				if (FSitMod.isModded(this.uuid))
+				if (configAccessor.isModded())
 					ServerPlayNetworking.send(target, new RidePlayerPacket(this.type, player.getUuid()));
 			}
 			case ACCEPT -> {

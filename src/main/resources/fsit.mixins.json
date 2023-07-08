@@ -5,7 +5,9 @@
 	"mixins": [
 		"EntityMixin",
 		"PistonBlockEntityMixin",
-		"PlayerEntityMixin"
+		"PlayerEntityMixin",
+		"ServerPlayerEntityMixin",
+		"ServerPlayNetworkHandlerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

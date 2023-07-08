@@ -1,9 +1,7 @@
 package dev.rvbsm.fsit.packet;
 
-import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.config.ConfigData;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
@@ -27,7 +25,7 @@ public record ConfigSyncC2SPacket(ConfigData config) implements FabricPacket {
 	}
 
 	public void receive(ServerPlayerEntity player, PacketSender packetSender) {
-		FSitMod.setModded(player.getUuid(), this.config);
+		((PlayerConfigAccessor) player).setConfig(this.config);
 	}
 
 	@Override

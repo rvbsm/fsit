@@ -1,10 +1,6 @@
 package dev.rvbsm.fsit.mixin;
 
-import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.config.ConfigData;
-import dev.rvbsm.fsit.entity.PlayerPose;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,41 +9,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.UUID;
-
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
-	@Inject(method = "setSneaking", at = @At("HEAD"))
-	public void setSneaking(boolean sneaking, CallbackInfo ci) {
-		if ((Entity) (Object) this instanceof final ServerPlayerEntity player && !sneaking) {
-			final UUID playerId = player.getUuid();
-			final ConfigData config = FSitMod.getConfig(playerId);
-
-			if (!player.hasVehicle() && FSitMod.isPosing(playerId)) FSitMod.resetPose(player);
-			else if (FSitMod.isInPose(playerId, PlayerPose.NONE) && config.sneak) FSitMod.setSneaked(player);
-			else if (FSitMod.isInPose(playerId, PlayerPose.SNEAK)) {
-				if (player.getPitch() >= config.minAngle) {
-					if (player.isCrawling()) FSitMod.setCrawling(player);
-					else FSitMod.setSitting(player, player.getPos());
-				} else if (player.getPitch() <= -config.minAngle) {
-					if (player.getFirstPassenger() instanceof PlayerEntity passenger) passenger.stopRiding();
-				}
-			}
-		}
-	}
-
-	@Inject(method = "stopRiding", at = @At("HEAD"))
-	public void stopRiding(CallbackInfo ci) {
-		if ((Entity) (Object) this instanceof ServerPlayerEntity player)
-			if (FSitMod.isInPose(player.getUuid(), PlayerPose.SIT)) FSitMod.resetPose(player);
-	}
-
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("TAIL"))
 	public void startRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
-		if (entity instanceof ServerPlayerEntity player)
-			player.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(entity));
+		if (entity instanceof ServerPlayerEntity riddenPlayer)
+			riddenPlayer.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(riddenPlayer));
 	}
 
 	/**

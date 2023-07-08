@@ -26,7 +26,7 @@ public abstract class InteractBlockCallback {
 		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;
 		else if (!player.isOnGround() && player.shouldCancelInteraction()) return ActionResult.PASS;
 
-		if (dev.rvbsm.fsit.event.InteractBlockCallback.isSittable(world, hitResult, player)) {
+		if (dev.rvbsm.fsit.event.InteractBlockCallback.isSittable(world, hitResult, FSitClientMod.config.sittableTags, FSitClientMod.config.sittableBlocks)) {
 			ClientPlayNetworking.send(new SpawnSeatC2SPacket(player.getPos(), hitResult.getPos()));
 
 			return ActionResult.SUCCESS;

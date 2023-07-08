@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.event;
 
-import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
 import dev.rvbsm.fsit.packet.PingS2CPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.server.MinecraftServer;
@@ -10,12 +10,10 @@ public abstract class PlayerConnectionCallbacks {
 
 	public static void onConnect(ServerPlayNetworkHandler serverPlayNetworkHandler, PacketSender packetSender, MinecraftServer minecraftServer) {
 		packetSender.sendPacket(new PingS2CPacket());
-		FSitMod.resetPose(serverPlayNetworkHandler.player);
+		((PlayerPoseAccessor) serverPlayNetworkHandler.player).resetPlayerPose();
 	}
 
 	public static void onDisconnect(ServerPlayNetworkHandler serverPlayNetworkHandler, MinecraftServer server) {
-		FSitMod.resetPose(serverPlayNetworkHandler.player);
-		FSitMod.removeModded(serverPlayNetworkHandler.player.getUuid());
+		((PlayerPoseAccessor) serverPlayNetworkHandler.player).resetPlayerPose();
 	}
-
 }

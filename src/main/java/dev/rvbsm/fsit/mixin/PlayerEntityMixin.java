@@ -1,8 +1,9 @@
 package dev.rvbsm.fsit.mixin;
 
-import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.entity.CrawlEntity;
+import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
 import dev.rvbsm.fsit.entity.PlayerPose;
+import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,6 +32,8 @@ public abstract class PlayerEntityMixin {
 	@Inject(method = "updatePose", at = @At("HEAD"))
 	public void updatePose(CallbackInfo ci) {
 		if ((PlayerEntity) (Object) this instanceof ServerPlayerEntity player) {
+			final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
+			final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) player;
 			final World world = player.getWorld();
 			BlockPos blockPos = player.getBlockPos().up();
 			if (player.getMovementSpeed() > 4.5f) blockPos = blockPos.offset(player.getMovementDirection());
@@ -48,9 +51,9 @@ public abstract class PlayerEntityMixin {
 				this.entityAbove = null;
 			}
 
-			if (FSitMod.isInPose(player.getUuid(), PlayerPose.CRAWL)) {
+			if (poseAccessor.isInPlayerPose(PlayerPose.CRAWL)) {
 				player.setSwimming(true);
-				if (FSitMod.isModded(player.getUuid())) return;
+				if (configAccessor.isModded()) return;
 
 				if (placeShulker) {
 					if (this.entityAbove == null) {
