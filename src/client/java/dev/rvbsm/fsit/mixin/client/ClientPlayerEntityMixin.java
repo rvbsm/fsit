@@ -7,7 +7,6 @@ import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
@@ -28,9 +27,6 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity implements Pl
 	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
 		super(world, pos, yaw, gameProfile);
 	}
-
-	@Shadow
-	public abstract void sendMessage(Text message, boolean overlay);
 
 	@Inject(method = "tickMovement", at = @At("TAIL"))
 	public void isSneaking(CallbackInfo ci) {

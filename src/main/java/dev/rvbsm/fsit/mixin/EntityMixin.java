@@ -1,8 +1,10 @@
 package dev.rvbsm.fsit.mixin;
 
+import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,8 +17,11 @@ public abstract class EntityMixin {
 
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("TAIL"))
 	public void startRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
-		if (entity instanceof ServerPlayerEntity riddenPlayer)
+		if (entity instanceof ServerPlayerEntity riddenPlayer) {
 			riddenPlayer.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(riddenPlayer));
+			if (!((PlayerConfigAccessor) riddenPlayer).isModded())
+				riddenPlayer.sendMessage(Text.of("Look up and press Sneak key to dismount player"), true);
+		}
 	}
 
 	/**
