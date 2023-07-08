@@ -14,7 +14,6 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
@@ -49,13 +48,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 			FSitClientMod.blockedPlayers.add(uuid);
 			setBlockButtonVisible(false);
 			ClientPlayNetworking.send(new RidePlayerPacket(RidePlayerPacket.RideType.REFUSE, uuid));
-		}, BLOCK_BUTTON_TEXT) {
-
-			@Override
-			protected MutableText getNarrationMessage() {
-				return getNarrationMessage(super.getNarrationMessage());
-			}
-		};
+		}, BLOCK_BUTTON_TEXT);
 		this.blockButton.active = FSitClientMod.config.ridePlayers;
 		this.blockButton.setTooltip(Tooltip.of(this.blockButton.active ? BLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.blockButton.setTooltipDelay(10);
@@ -64,13 +57,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 		this.unblockButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, BLOCKLIST_TEXTURE, 64, 64, button -> {
 			FSitClientMod.blockedPlayers.remove(uuid);
 			setBlockButtonVisible(true);
-		}, UNBLOCK_BUTTON_TEXT) {
-
-			@Override
-			protected MutableText getNarrationMessage() {
-				return getNarrationMessage(super.getNarrationMessage());
-			}
-		};
+		}, UNBLOCK_BUTTON_TEXT);
 		this.unblockButton.active = FSitClientMod.config.ridePlayers;
 		this.unblockButton.setTooltip(Tooltip.of(this.unblockButton.active ? UNBLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.unblockButton.setTooltipDelay(10);
@@ -83,10 +70,10 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	@Inject(method = "render", at = @At("TAIL"))
 	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
 		if (this.blockButton != null && this.unblockButton != null) {
-			this.blockButton.setX(x + (entryWidth - this.blockButton.getWidth() - 4) - 48);
+			this.blockButton.setX(x + (entryWidth - this.blockButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
 			this.blockButton.setY(y + (entryHeight - this.blockButton.getHeight()) / 2);
 			this.blockButton.render(context, mouseX, mouseY, tickDelta);
-			this.unblockButton.setX(x + (entryWidth - this.unblockButton.getWidth() - 4) - 48);
+			this.unblockButton.setX(x + (entryWidth - this.unblockButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
 			this.unblockButton.setY(y + (entryHeight - this.unblockButton.getHeight()) / 2);
 			this.unblockButton.render(context, mouseX, mouseY, tickDelta);
 		}
