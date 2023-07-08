@@ -10,26 +10,26 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 
-public interface Commandish<Source extends CommandSource> {
+public interface Commandish<S extends CommandSource> {
 
-	default void register(CommandDispatcher<Source> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
+	default void register(CommandDispatcher<S> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
 		dispatcher.register(this.builder());
 	}
 
-	default LiteralArgumentBuilder<Source> builder() {
-		return LiteralArgumentBuilder.<Source>literal(this.name())
+	default LiteralArgumentBuilder<S> builder() {
+		return LiteralArgumentBuilder.<S>literal(this.name())
 						.requires(this::requires)
 						.executes(this::command);
 	}
 
-	default <T> RequiredArgumentBuilder<Source, T> requiredArgumentBuilder(String name, ArgumentType<T> type, Command<Source> command) {
-		return RequiredArgumentBuilder.<Source, T>argument(name, type).executes(command);
+	default <T> RequiredArgumentBuilder<S, T> requiredArgumentBuilder(String name, ArgumentType<T> type, Command<S> command) {
+		return RequiredArgumentBuilder.<S, T>argument(name, type).executes(command);
 	}
 
 
 	String name();
 
-	boolean requires(Source src);
+	boolean requires(S src);
 
-	int command(CommandContext<Source> ctx);
+	int command(CommandContext<S> ctx);
 }

@@ -1,8 +1,7 @@
 package dev.rvbsm.fsit;
 
-import dev.rvbsm.fsit.command.CrawlCommand;
 import dev.rvbsm.fsit.command.FSitCommand;
-import dev.rvbsm.fsit.command.SitCommand;
+import dev.rvbsm.fsit.command.PoseCommand;
 import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.entity.PlayerPose;
@@ -101,6 +100,10 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 		}, delayedExecutor);
 	}
 
+	public static void setSitting(ServerPlayerEntity player) {
+		FSitMod.setSitting(player, player.getPos());
+	}
+
 	public static void setSitting(ServerPlayerEntity player, Vec3d pos) {
 		if (player.isSpectator() || !player.isOnGround() || player.hasVehicle()) return;
 
@@ -161,7 +164,7 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 	@Override
 	public void onInitializeServer() {
 		CommandRegistrationCallback.EVENT.register(new FSitCommand()::register);
-		CommandRegistrationCallback.EVENT.register(new SitCommand()::register);
-		CommandRegistrationCallback.EVENT.register(new CrawlCommand()::register);
+		CommandRegistrationCallback.EVENT.register(new PoseCommand("sit", FSitMod::setSitting)::register);
+		CommandRegistrationCallback.EVENT.register(new PoseCommand("crawl", FSitMod::setCrawling)::register);
 	}
 }

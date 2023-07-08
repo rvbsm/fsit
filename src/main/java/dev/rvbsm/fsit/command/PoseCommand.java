@@ -6,12 +6,10 @@ import dev.rvbsm.fsit.FSitMod;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class CrawlCommand implements Commandish<ServerCommandSource> {
+import java.util.function.Consumer;
 
-	@Override
-	public String name() {
-		return "crawl";
-	}
+public record PoseCommand(String name, Consumer<ServerPlayerEntity> poseConsumer)
+				implements Commandish<ServerCommandSource> {
 
 	@Override
 	public boolean requires(ServerCommandSource src) {
@@ -25,7 +23,7 @@ public class CrawlCommand implements Commandish<ServerCommandSource> {
 		if (player == null) return -1;
 
 		if (FSitMod.isPosing(player.getUuid())) FSitMod.resetPose(player);
-		else FSitMod.setCrawling(player);
+		else poseConsumer.accept(player);
 
 		return Command.SINGLE_SUCCESS;
 	}
