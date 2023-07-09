@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.packet;
 
+import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
 import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
-import dev.rvbsm.fsit.event.InteractBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
@@ -25,7 +25,7 @@ public record SpawnSeatC2SPacket(Vec3d playerPos, Vec3d sitPos) implements Fabri
 	}
 
 	public void receive(ServerPlayerEntity player, PacketSender responseSender) {
-		if (InteractBlockCallback.isInRadius(this.playerPos, this.sitPos))
+		if (this.playerPos.distanceTo(this.sitPos) <= ((PlayerConfigAccessor) player).fsit$getConfig().sittableRadius)
 			((PlayerPoseAccessor) player).fsit$setSitting(this.sitPos);
 	}
 

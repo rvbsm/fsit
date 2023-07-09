@@ -42,6 +42,12 @@ public class ConfigData {
 	@PreserveNotNull
 	public final boolean sittable = Entries.SITTABLE_ENABLED.defaultValue;
 
+	@Path(Fields.SITTABLE_RADIUS)
+	@Comment(Comments.SITTABLE_RADIUS)
+	@PreserveNotNull
+	@SpecIntInRange(min = 0, max = 4)
+	public final int sittableRadius;
+
 	@Path(Fields.SITTABLE_BLOCKS)
 	@Comment(Comments.SITTABLE_BLOCKS)
 	@PreserveNotNull
@@ -59,16 +65,26 @@ public class ConfigData {
 	@PreserveNotNull
 	public final boolean ridePlayers = Entries.RIDE_PLAYERS.defaultValue;
 
+	@Path(Fields.RIDE_RADIUS)
+	@Comment(Comments.RIDE_RADIUS)
+	@PreserveNotNull
+	@SpecIntInRange(min = 0, max = 4)
+	public final int rideRadius;
+
 	public ConfigData() {
 		this.sneak = Entries.SNEAK_ENABLED.defaultValue;
 		this.minAngle = Entries.MIN_ANGLE.defaultValue;
 		this.sneakDelay = Entries.SNEAK_DELAY.defaultValue;
+		this.sittableRadius = Entries.SITTABLE_RADIUS.defaultValue;
+		this.rideRadius = Entries.RIDE_RADIUS.defaultValue;
 	}
 
-	public ConfigData(boolean sneak, double minAngle, int sneakDelay) {
+	public ConfigData(boolean sneak, double minAngle, int sneakDelay, int sittableRadius, int rideRadius) {
 		this.sneak = sneak;
 		this.minAngle = minAngle;
 		this.sneakDelay = sneakDelay;
+		this.sittableRadius = sittableRadius;
+		this.rideRadius = rideRadius;
 	}
 
 	protected interface Fields {
@@ -77,9 +93,11 @@ public class ConfigData {
 		String MIN_ANGLE = "sneak.min_angle";
 		String SNEAK_DELAY = "sneak.delay";
 		String SITTABLE_ENABLED = "sittable.enabled";
+		String SITTABLE_RADIUS = "sittable.radius";
 		String SITTABLE_BLOCKS = "sittable.blocks";
 		String SITTABLE_TAGS = "sittable.tags";
-		String RIDE_PLAYERS = "misc.ride_players";
+		String RIDE_PLAYERS = "misc.riding.enabled";
+		String RIDE_RADIUS = "misc.riding.radius";
 	}
 
 	protected interface Comments {
@@ -88,9 +106,11 @@ public class ConfigData {
 		String MIN_ANGLE = "Minimal pitch to sitting/crawling down";
 		String SNEAK_DELAY = "Time (ms) between sneaks to sitting/crawling down";
 		String SITTABLE_ENABLED = "Sit-on-use block feature";
+		String SITTABLE_RADIUS = "Maximum radius for sit-on-use";
 		String SITTABLE_BLOCKS = "List of block ids (e.g. \"oak_log\") available to sit";
 		String SITTABLE_TAGS = "List of block tags";
 		String RIDE_PLAYERS = "Player riding feature";
+		String RIDE_RADIUS = "Maximum radius for start riding player";
 	}
 
 	public interface Entries {
@@ -99,9 +119,11 @@ public class ConfigData {
 		ConfigEntry<Double> MIN_ANGLE = new ConfigEntry<>(Fields.MIN_ANGLE, 66d);
 		ConfigEntry<Integer> SNEAK_DELAY = new ConfigEntry<>(Fields.SNEAK_DELAY, 600);
 		ConfigEntry<Boolean> SITTABLE_ENABLED = new ConfigEntry<>(Fields.SITTABLE_ENABLED, true);
+		ConfigEntry<Integer> SITTABLE_RADIUS = new ConfigEntry<>(Fields.SITTABLE_RADIUS, 2);
 		ConfigEntry<List<String>> SITTABLE_BLOCKS = new ConfigEntry<>(Fields.SITTABLE_BLOCKS, List.of());
 		ConfigEntry<List<String>> SITTABLE_TAGS = new ConfigEntry<>(Fields.SITTABLE_TAGS, List.of("minecraft:slabs", "minecraft:stairs", "minecraft:logs"));
 		ConfigEntry<Boolean> RIDE_PLAYERS = new ConfigEntry<>(Fields.RIDE_PLAYERS, false);
+		ConfigEntry<Integer> RIDE_RADIUS = new ConfigEntry<>(Fields.RIDE_RADIUS, 3);
 
 		record ConfigEntry<T>(String key, T defaultValue) {
 			public void save(T value) {

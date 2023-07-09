@@ -92,6 +92,11 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 							.setSaveConsumer(ConfigData.Entries.SITTABLE_ENABLED::save)
 							.setTooltip(ConfigData.Entries.SITTABLE_ENABLED.commentText())
 							.build());
+			sittableCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SITTABLE_RADIUS.keyText(), FSitClientMod.config.sittableRadius, 0, 4)
+							.setDefaultValue(ConfigData.Entries.SITTABLE_RADIUS::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.SITTABLE_RADIUS::save)
+							.setTooltip(ConfigData.Entries.SITTABLE_RADIUS.commentText())
+							.build());
 			sittableCategory.add(entryBuilder.startStrList(ConfigData.Entries.SITTABLE_TAGS.keyText(), sittableTags)
 							.setDefaultValue(ConfigData.Entries.SITTABLE_TAGS::defaultValue)
 							.setSaveConsumer(ConfigData.Entries.SITTABLE_TAGS::save)
@@ -104,15 +109,24 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 							.build());
 
 			final SubCategoryBuilder miscCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "misc"));
-			miscCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.RIDE_PLAYERS.keyText(), FSitMod.config.ridePlayers)
+
+			final SubCategoryBuilder rideCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "misc.riding"));
+			rideCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.RIDE_PLAYERS.keyText(), FSitMod.config.ridePlayers)
 							.setDefaultValue(ConfigData.Entries.RIDE_PLAYERS::defaultValue)
 							.setSaveConsumer(ConfigData.Entries.RIDE_PLAYERS::save)
 							.setTooltip(ConfigData.Entries.RIDE_PLAYERS.commentText())
 							.build());
+			rideCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.RIDE_RADIUS.keyText(), FSitClientMod.config.rideRadius, 0, 4)
+							.setDefaultValue(ConfigData.Entries.RIDE_RADIUS::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.RIDE_RADIUS::save)
+							.setTooltip(ConfigData.Entries.RIDE_RADIUS.commentText())
+							.build());
+
+			miscCategory.add(rideCategory.build());
 
 			main.addEntry(sneakCategory.setExpanded(true).build());
 			main.addEntry(sittableCategory.setExpanded(true).build());
-			main.addEntry(miscCategory.build());
+			main.addEntry(miscCategory.setExpanded(true).build());
 
 			return configBuilder.build();
 		};

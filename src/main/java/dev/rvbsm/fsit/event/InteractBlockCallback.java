@@ -23,15 +23,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 public abstract class InteractBlockCallback {
-
-	private static final int RADIUS = 2;
 
 	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
 		if (world.isClient) return ActionResult.PASS;
@@ -47,16 +44,12 @@ public abstract class InteractBlockCallback {
 		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;
 		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 
-		if (InteractBlockCallback.isInRadius(player.getPos(), hitResult.getPos()) && InteractBlockCallback.isSittable(world, hitResult, config.sittableTags, config.sittableBlocks)) {
+		if (player.getPos().distanceTo(hitResult.getPos()) <= config.sittableRadius && InteractBlockCallback.isSittable(world, hitResult, config.sittableTags, config.sittableBlocks)) {
 			poseAccessor.fsit$setSitting(hitResult.getPos());
 			return ActionResult.SUCCESS;
 		}
 
 		return ActionResult.PASS;
-	}
-
-	public static boolean isInRadius(Vec3d playerPos, Vec3d sitPos) {
-		return playerPos.distanceTo(sitPos) <= RADIUS;
 	}
 
 	public static boolean isSittable(World world, BlockHitResult hitResult, List<Identifier> sittableTags, List<Identifier> sittableBlocks) {

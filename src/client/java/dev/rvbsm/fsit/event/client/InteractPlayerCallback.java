@@ -23,7 +23,7 @@ public abstract class InteractPlayerCallback {
 		else if (player.isSpectator() || entity.isSpectator()) return ActionResult.PASS;
 		else if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
 
-		if (entity.isPlayer() && !entity.hasPassengers()) {
+		if (entity.isPlayer() && !entity.hasPassengers() && player.distanceTo(entity) <= FSitClientMod.config.rideRadius) {
 			ClientPlayNetworking.send(new RidePlayerPacket(RidePlayerPacket.RideType.REQUEST, entity.getUuid()));
 
 			return ActionResult.SUCCESS;
