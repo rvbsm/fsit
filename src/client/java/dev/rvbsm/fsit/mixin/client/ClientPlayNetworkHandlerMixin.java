@@ -15,16 +15,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 
-
-	@Shadow
-	@Final
-	private MinecraftClient client;
-
-	@Redirect(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;setOverlayMessage(Lnet/minecraft/text/Text;Z)V"))
-	public void onEntityPassengersSet(InGameHud inGameHud, Text message, boolean tinted) {
-		if (this.client.player.getFirstPassenger() instanceof PlayerEntity)
-			message = FSitMod.getTranslation("message", "onpose", this.client.options.sneakKey.getBoundKeyLocalizedText());
-
-		inGameHud.setOverlayMessage(message, tinted);
-	}
+//	@Shadow
+//	@Final
+//	private MinecraftClient client;
+//
+//	@Redirect(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;setOverlayMessage(Lnet/minecraft/text/Text;Z)V"))
+//	public void onEntityPassengersSet(InGameHud inGameHud, Text message, boolean tinted) {
+//		if (this.client.player.getFirstPassenger() instanceof PlayerEntity)
+//			message = FSitMod.getTranslation("message", "onpose", this.client.options.sneakKey.getBoundKeyLocalizedText());
+//
+//		inGameHud.setOverlayMessage(message, tinted);
+//	}
 }
