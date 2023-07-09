@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,6 +23,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity implements Pl
 	@Shadow
 	@Final
 	protected MinecraftClient client;
+	@Unique
 	private PlayerPose playerPose;
 
 	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
@@ -31,19 +33,19 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity implements Pl
 	@Inject(method = "tickMovement", at = @At("TAIL"))
 	public void isSneaking(CallbackInfo ci) {
 		final ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
-		if (this.isInPlayerPose(PlayerPose.CRAWL)) player.setSwimming(true);
+		if (this.isInPose(PlayerPose.CRAWL)) player.setSwimming(true);
 	}
 
 	@Override
-	public PlayerPose getPlayerPose() {
+	public PlayerPose fsit$getPose() {
 		return this.playerPose;
 	}
 
 	@Override
-	public void setPlayerPose(PlayerPose pose) {
+	public void fsit$setPose(PlayerPose pose) {
 		this.playerPose = pose;
 
-		if (this.isPlayerPosing())
+		if (this.isPosing())
 			this.client.inGameHud.setOverlayMessage(FSitMod.getTranslation("message", "onpose", this.client.options.sneakKey.getBoundKeyLocalizedText()), false);
 	}
 }

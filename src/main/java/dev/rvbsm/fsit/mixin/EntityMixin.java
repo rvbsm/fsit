@@ -19,7 +19,7 @@ public abstract class EntityMixin {
 	public void startRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		if (entity instanceof ServerPlayerEntity riddenPlayer) {
 			riddenPlayer.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(riddenPlayer));
-			if (!((PlayerConfigAccessor) riddenPlayer).isModded())
+			if (!((PlayerConfigAccessor) riddenPlayer).fsit$isModded())
 				riddenPlayer.sendMessage(Text.of("Look up and press Sneak key to dismount player"), true);
 		}
 	}

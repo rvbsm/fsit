@@ -4,27 +4,27 @@ import net.minecraft.util.math.Vec3d;
 
 public interface PlayerPoseAccessor {
 
-	PlayerPose getPlayerPose();
+	PlayerPose fsit$getPose();
 
-	void setPlayerPose(PlayerPose pose);
+	void fsit$setPose(PlayerPose pose);
 
-	default void resetPlayerPose() {
-		this.setPlayerPose(PlayerPose.NONE);
+	default void resetPose() {
+		this.fsit$setPose(PlayerPose.NONE);
 	}
 
-	default boolean isInPlayerPose(PlayerPose pose) {
-		return this.getPlayerPose() == pose;
+	default boolean isInPose(PlayerPose pose) {
+		return this.fsit$getPose() == pose;
 	}
 
-	default boolean isPlayerPosing() {
-		return !this.isInPlayerPose(PlayerPose.NONE) && !this.isInPlayerPose(PlayerPose.SNEAK);
+	default boolean isPosing() {
+		return !this.isInPose(PlayerPose.NONE) && !this.isInPose(PlayerPose.SNEAK);
 	}
 
-	void setPlayerSneaked();
+	void fsit$setSneaked();
 
-	void setPlayerSitting();
+	void fsit$setSitting();
 
-	void setPlayerSitting(Vec3d pos);
+	void fsit$setSitting(Vec3d pos);
 
-	void setPlayerCrawling();
+	void fsit$setCrawling();
 }

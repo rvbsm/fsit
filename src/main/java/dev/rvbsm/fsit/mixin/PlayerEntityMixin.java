@@ -17,6 +17,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,9 +25,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
 
+	@Unique
 	private static final BlockState AIR = Blocks.AIR.getDefaultState();
+	@Unique
 	private static final BlockState BARRIER = Blocks.BARRIER.getDefaultState();
+	@Unique
 	private BlockPos blockAbove = null;
+	@Unique
 	private CrawlEntity entityAbove = null;
 
 	@Inject(method = "updatePose", at = @At("HEAD"))
@@ -51,9 +56,9 @@ public abstract class PlayerEntityMixin {
 				this.entityAbove = null;
 			}
 
-			if (poseAccessor.isInPlayerPose(PlayerPose.CRAWL)) {
+			if (poseAccessor.isInPose(PlayerPose.CRAWL)) {
 				player.setSwimming(true);
-				if (configAccessor.isModded()) return;
+				if (configAccessor.fsit$isModded()) return;
 
 				if (placeShulker) {
 					if (this.entityAbove == null) {

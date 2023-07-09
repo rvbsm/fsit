@@ -14,6 +14,7 @@ import java.util.UUID;
 public record RidePlayerPacket(RideType type, UUID uuid) implements FabricPacket {
 
 	public static final PacketType<RidePlayerPacket> TYPE = PacketType.create(new Identifier("fsit", "ride"), RidePlayerPacket::new);
+	private static final int RADIUS = 3;
 
 	private RidePlayerPacket(PacketByteBuf buf) {
 		this(buf.readEnumConstant(RideType.class), buf.readUuid());
@@ -32,7 +33,7 @@ public record RidePlayerPacket(RideType type, UUID uuid) implements FabricPacket
 
 		switch (this.type) {
 			case REQUEST -> {
-				if (configAccessor.isModded())
+				if (configAccessor.fsit$isModded())
 					ServerPlayNetworking.send(target, new RidePlayerPacket(this.type, player.getUuid()));
 			}
 			case ACCEPT -> {

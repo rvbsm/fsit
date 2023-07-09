@@ -17,14 +17,14 @@ public abstract class InteractPlayerCallback {
 	public static ActionResult interactPlayer(PlayerEntity player, World world, Hand hand, Entity entity, HitResult hitResult) {
 		if (world.isClient) return ActionResult.PASS;
 		final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) player;
-		final ConfigData config = configAccessor.getConfig();
+		final ConfigData config = configAccessor.fsit$getConfig();
 
-		if (configAccessor.isModded()) return ActionResult.PASS;
+		if (configAccessor.fsit$isModded()) return ActionResult.PASS;
 		else if (player.isSpectator() || entity.isSpectator()) return ActionResult.PASS;
 		else if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
 
 		if (entity.isPlayer() && !entity.hasPassengers()) {
-			if (((PlayerConfigAccessor) entity).isModded()) {
+			if (((PlayerConfigAccessor) entity).fsit$isModded()) {
 				ServerPlayNetworking.send((ServerPlayerEntity) entity, new RidePlayerPacket(RidePlayerPacket.RideType.REQUEST, player.getUuid()));
 
 				return ActionResult.SUCCESS;

@@ -10,10 +10,10 @@ public abstract class PlayerConnectionCallbacks {
 
 	public static void onConnect(ServerPlayNetworkHandler serverPlayNetworkHandler, PacketSender packetSender, MinecraftServer minecraftServer) {
 		packetSender.sendPacket(new PingS2CPacket());
-		((PlayerPoseAccessor) serverPlayNetworkHandler.player).resetPlayerPose();
+		((PlayerPoseAccessor) serverPlayNetworkHandler.player).resetPose();
 	}
 
 	public static void onDisconnect(ServerPlayNetworkHandler serverPlayNetworkHandler, MinecraftServer server) {
-		((PlayerPoseAccessor) serverPlayNetworkHandler.player).resetPlayerPose();
+		((PlayerPoseAccessor) serverPlayNetworkHandler.player).resetPose();
 	}
 }

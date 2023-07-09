@@ -19,6 +19,7 @@ import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -31,15 +32,21 @@ import java.util.function.Supplier;
 @Mixin(SocialInteractionsPlayerListEntry.class)
 public abstract class SocialInteractionsPlayerListEntryMixin {
 
+	@Unique
 	private static final Identifier BLOCKLIST_TEXTURE = new Identifier("fsit", "textures/gui/blocklist_button.png");
+	@Unique
 	private static final Text BLOCK_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.block");
+	@Unique
 	private static final Text UNBLOCK_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.unblock");
+	@Unique
 	private static final Text DISABLED_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.disabled");
 
 	@Shadow
 	@Final
 	private List<ClickableWidget> buttons;
+	@Unique
 	private ButtonWidget unblockButton;
+	@Unique
 	private ButtonWidget blockButton;
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
@@ -79,6 +86,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 		}
 	}
 
+	@Unique
 	private void setBlockButtonVisible(boolean blockButtonVisible) {
 		this.blockButton.visible = blockButtonVisible;
 		this.unblockButton.visible = !blockButtonVisible;

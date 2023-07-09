@@ -22,10 +22,10 @@ public record PoseCommand(String name, PlayerPose pose)
 		final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
 		if (player == null) return -1;
 
-		if (poseAccessor.isPlayerPosing()) poseAccessor.resetPlayerPose();
+		if (poseAccessor.isPosing()) poseAccessor.resetPose();
 		else switch (pose) {
-			case SIT -> poseAccessor.setPlayerSitting();
-			case CRAWL -> poseAccessor.setPlayerCrawling();
+			case SIT -> poseAccessor.fsit$setSitting();
+			case CRAWL -> poseAccessor.fsit$setCrawling();
 		}
 
 		return Command.SINGLE_SUCCESS;

@@ -4,9 +4,9 @@ import dev.rvbsm.fsit.config.ConfigData;
 
 public interface PlayerConfigAccessor {
 
-	ConfigData getConfig();
+	ConfigData fsit$getConfig();
 
-	void setConfig(ConfigData config);
+	void fsit$setConfig(ConfigData config);
 
-	boolean isModded();
+	boolean fsit$isModded();
 }

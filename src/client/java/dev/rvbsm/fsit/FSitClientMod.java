@@ -46,7 +46,7 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
 
 		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, (packet, player, responseSender) -> responseSender.sendPacket(new ConfigSyncC2SPacket(FSitClientMod.config)));
-		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, (packet, player, responseSender) -> ((PlayerPoseAccessor) player).setPlayerPose(packet.pose()));
+		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, (packet, player, responseSender) -> ((PlayerPoseAccessor) player).fsit$setPose(packet.pose()));
 		ClientPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
 			if (packet.type() == RidePlayerPacket.RideType.REQUEST)
 				if (FSitClientMod.config.ridePlayers && !FSitClientMod.blockedPlayers.contains(packet.uuid()))

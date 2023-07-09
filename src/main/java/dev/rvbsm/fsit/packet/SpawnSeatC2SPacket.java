@@ -26,7 +26,7 @@ public record SpawnSeatC2SPacket(Vec3d playerPos, Vec3d sitPos) implements Fabri
 
 	public void receive(ServerPlayerEntity player, PacketSender responseSender) {
 		if (InteractBlockCallback.isInRadius(this.playerPos, this.sitPos))
-			((PlayerPoseAccessor) player).setPlayerSitting(this.sitPos);
+			((PlayerPoseAccessor) player).fsit$setSitting(this.sitPos);
 	}
 
 	@Override

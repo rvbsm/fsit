@@ -37,9 +37,9 @@ public abstract class InteractBlockCallback {
 		if (world.isClient) return ActionResult.PASS;
 		final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
 		final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) player;
-		final ConfigData config = configAccessor.getConfig();
+		final ConfigData config = configAccessor.fsit$getConfig();
 
-		if (configAccessor.isModded()) return ActionResult.PASS;
+		if (configAccessor.fsit$isModded()) return ActionResult.PASS;
 		else if (!config.sittable) return ActionResult.PASS;
 
 		final Item handItem = player.getStackInHand(hand).getItem();
@@ -48,7 +48,7 @@ public abstract class InteractBlockCallback {
 		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 
 		if (InteractBlockCallback.isInRadius(player.getPos(), hitResult.getPos()) && InteractBlockCallback.isSittable(world, hitResult, config.sittableTags, config.sittableBlocks)) {
-			poseAccessor.setPlayerSitting(hitResult.getPos());
+			poseAccessor.fsit$setSitting(hitResult.getPos());
 			return ActionResult.SUCCESS;
 		}
 

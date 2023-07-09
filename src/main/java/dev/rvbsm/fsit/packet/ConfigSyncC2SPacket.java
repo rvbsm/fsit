@@ -25,7 +25,7 @@ public record ConfigSyncC2SPacket(ConfigData config) implements FabricPacket {
 	}
 
 	public void receive(ServerPlayerEntity player, PacketSender packetSender) {
-		((PlayerConfigAccessor) player).setConfig(this.config);
+		((PlayerConfigAccessor) player).fsit$setConfig(this.config);
 	}
 
 	@Override
