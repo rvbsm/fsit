@@ -84,13 +84,13 @@ public class ConfigData {
 
 	protected interface Comments {
 		String CONFIG_VERSION = "Do not edit";
-		String SNEAK_ENABLED = "Toggles sit-on-sneak feature";
-		String MIN_ANGLE = "Minimal pitch to sitting down";
-		String SNEAK_DELAY = "Time in ms between sneaks for sitting down";
-		String SITTABLE_ENABLED = "Toggles sitting on specified blocks";
+		String SNEAK_ENABLED = "Sit-on-sneak feature";
+		String MIN_ANGLE = "Minimal pitch to sitting/crawling down";
+		String SNEAK_DELAY = "Time (ms) between sneaks to sitting/crawling down";
+		String SITTABLE_ENABLED = "Sit-on-use block feature";
 		String SITTABLE_BLOCKS = "List of block ids (e.g. \"oak_log\") available to sit";
 		String SITTABLE_TAGS = "List of block tags";
-		String RIDE_PLAYERS = "Toggles riding other players";
+		String RIDE_PLAYERS = "Player riding feature";
 	}
 
 	public interface Entries {
