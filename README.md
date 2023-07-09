@@ -1,34 +1,64 @@
 # FSit (Fabric)
 
-A server-side mod that allows players to sit anywhere.
+A _server-side_ mod that allows players to sit anywhere!
+
+_Partially [GSit][gsit] rework for Fabric._
 
 __NOTE:__
-- `sit_on_players`: ___by default, when a player sits on a player, it blocks the field of view. To prevent this, install client-side mod__
-  (check additional files; bundled in full
-  version)._
+
+`ride_players`:
+___By default, when a player rides another player, their field of view is blocked.
+Install this mod also on the client to prevent view blocking___
 
 ## Usage
 
-- Sneak twice to sit down;  
-- `/sit` command;  
-- Right-click on stairs, slabs or horizontal logs (configurable).
+* Sneak twice looking down to sit down (or to force crawling while crawling);
+* Right-click on stairs, slabs or horizontal logs (lists are configurable);
+* Right-click on a player to start riding him (disabled by default);
+* `/sit`, `/crawl` commands;
 
-### Configuration (stored in `config/fsit.toml`)
+### Client
+
+If the mod is installed on the client, the server will respect the player's configuration.
+Additionally,
+players will be able to restrict players from riding them using [Social Interactions screen][social-interactions].
+
+For other players without the mod installed, the server configuration will be used.
+
+#### Client fixes
+
+* Player mount height
+* Crawling without the above support
+
+### Configuration (`config/fsit.toml`)
+
+Can be modified from the client with [Mod Menu][modmenu] and [Cloth Config API][cloth-config] installed.
+
+Reload config on server with `/fsit reload` command.
 
 ```toml
-config_version = 2 # Do not change
-
-[sittable]
-blocks = [] # List of block ids (e.g. "oak_log") available to sit.
-tags = ["minecraft:slabs", "stairs", "logs"] # List of block tags.
+#Do not edit
+config_version = 3
 
 [sneak]
-sneak_sit = true # Toggles sit by sneak feature.
-min_angle = 66.0 # degrees. Minimal pitch to sitting down.
-sneak_delay = 600 # milliseconds. Time between sneaks for sitting down.
+#Sit-on-sneak feature
+enabled = true
+#Minimal pitch to sitting/crawling down
+min_angle = 66.0
+#Time (ms) between sneaks to sitting/crawling down
+delay = 600
+
+[sittable]
+#Sit-on-use block feature
+enabled = true
+#List of block ids (e.g. "oak_log") available to sit
+blocks = []
+#List of block tags
+tags = ["minecraft:slabs", "minecraft:stairs", "minecraft:logs"]
 
 [misc]
-sit_players = false # Toggles sitting on other players
+#Player riding feature
+ride_players = true
 ```
 
 ## Contributing
@@ -41,3 +71,10 @@ For major changes, please open an issue first to discuss what you would like to 
 This project is licensed under the [MIT License][license].
 
 [license]: ./LICENSE
+
+[gsit]: https://github.com/Gecolay/GSit
+
+[social-interactions]: https://minecraft.fandom.com/wiki/Social_interactions
+
+[modmenu]: [https://modrinth.com/mod/modmenu]
+[cloth-config]: [https://modrinth.com/mod/cloth-config]
