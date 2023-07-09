@@ -54,7 +54,8 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 		this.blockButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, BLOCKLIST_TEXTURE, 64, 64, button -> {
 			FSitClientMod.blockedPlayers.add(uuid);
 			setBlockButtonVisible(false);
-			ClientPlayNetworking.send(new RidePlayerPacket(RidePlayerPacket.RideType.REFUSE, uuid));
+			if (client.player.hasPassenger(entity -> entity.getUuid() == uuid))
+				ClientPlayNetworking.send(new RidePlayerPacket(RidePlayerPacket.RideType.REFUSE, uuid));
 		}, BLOCK_BUTTON_TEXT);
 		this.blockButton.active = FSitClientMod.config.ridePlayers;
 		this.blockButton.setTooltip(Tooltip.of(this.blockButton.active ? BLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
