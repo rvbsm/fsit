@@ -21,8 +21,8 @@ jobs:
             fabric
             quilt
           game-versions: |
-            1.19.4
             1.20
+            1.20.1
           dependencies: |
             modmenu | suggests | *
             cloth-config | recommends | *
