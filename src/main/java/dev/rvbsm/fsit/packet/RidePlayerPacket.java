@@ -35,9 +35,11 @@ public record RidePlayerPacket(RideType type, UUID uuid) implements FabricPacket
 			case REQUEST -> {
 				if (configAccessor.fsit$isModded())
 					ServerPlayNetworking.send(target, new RidePlayerPacket(this.type, player.getUuid()));
+				else if (configAccessor.fsit$getConfig().ridePlayers && target.distanceTo(player) <= RADIUS)
+					player.startRiding(target);
 			}
 			case ACCEPT -> {
-				if (player.distanceTo(target) <= 3) target.startRiding(player);
+				if (player.distanceTo(target) <= RADIUS) target.startRiding(player);
 			}
 			case REFUSE -> {
 				if (player.hasPassenger(target)) target.stopRiding();
