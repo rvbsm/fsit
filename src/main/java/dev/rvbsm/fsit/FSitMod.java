@@ -26,9 +26,14 @@ public class FSitMod implements ModInitializer, DedicatedServerModInitializer {
 
 	protected static final ConfigData config = new ConfigData();
 
-	@Contract(value = "!null, !null, _ -> new", pure = true)
+	@Contract("_, _ -> new")
+	public static @NotNull String getTranslationKey(String type, String id) {
+		return String.join(".", type, "fsit", id);
+	}
+
+	@Contract(value = "_, _, _ -> new", pure = true)
 	public static @NotNull Text getTranslation(String type, String id, Object... args) {
-		final String translationKey = String.join(".", type, "fsit", id);
+		final String translationKey = FSitMod.getTranslationKey(type, id);
 		return Text.translatable(translationKey, args);
 	}
 
