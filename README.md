@@ -51,14 +51,20 @@ delay = 600
 [sittable]
 #Sit-on-use block feature
 enabled = true
+#Maximum radius for sit-on-use
+radius = 2
 #List of block ids (e.g. "oak_log") available to sit
 blocks = []
 #List of block tags
 tags = ["minecraft:slabs", "minecraft:stairs", "minecraft:logs"]
 
 [misc]
+
+[misc.riding]
 #Player riding feature
-ride_players = true
+enabled = true
+#Maximum radius for start riding player
+radius = 2
 ```
 
 ## Contributing
