@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.event.client;
 
-import dev.rvbsm.fsit.FSitClientMod;
+import dev.rvbsm.fsit.FSitModClient;
 import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,14 +19,14 @@ public abstract class InteractBlockCallback {
 
 	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
 		if (!player.isMainPlayer()) return ActionResult.PASS;
-		else if (!FSitClientMod.config.sittable) return ActionResult.PASS;
+		else if (!FSitModClient.config.sittable) return ActionResult.PASS;
 
 		final Item handItem = player.getStackInHand(hand).getItem();
 		if (handItem instanceof BlockItem) return ActionResult.PASS;
 		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;
 		else if (!player.isOnGround() && player.shouldCancelInteraction()) return ActionResult.PASS;
 
-		if (dev.rvbsm.fsit.event.InteractBlockCallback.isSittable(world, hitResult, FSitClientMod.config.sittableTags, FSitClientMod.config.sittableBlocks)) {
+		if (dev.rvbsm.fsit.event.InteractBlockCallback.isSittable(world, hitResult, FSitModClient.config.sittableTags, FSitModClient.config.sittableBlocks)) {
 			ClientPlayNetworking.send(new SpawnSeatC2SPacket(player.getPos(), hitResult.getPos()));
 
 			return ActionResult.SUCCESS;

@@ -19,13 +19,13 @@
 			"dev.rvbsm.fsit.FSitMod"
 		],
 		"client": [
-			"dev.rvbsm.fsit.FSitClientMod"
+			"dev.rvbsm.fsit.FSitModClient"
 		],
 		"server": [
-			"dev.rvbsm.fsit.FSitMod"
+			"dev.rvbsm.fsit.FSitModServer"
 		],
 		"modmenu": [
-			"dev.rvbsm.fsit.FSitClientMod"
+			"dev.rvbsm.fsit.FSitModMenu"
 		]
 	},
 	"mixins": [

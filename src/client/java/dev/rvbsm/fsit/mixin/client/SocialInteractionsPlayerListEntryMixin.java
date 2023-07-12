@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.mixin.client;
 
-import dev.rvbsm.fsit.FSitClientMod;
+import dev.rvbsm.fsit.FSitModClient;
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.packet.RidePlayerPacket;
 import net.fabricmc.api.EnvType;
@@ -52,24 +52,24 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
 	public void init(MinecraftClient client, SocialInteractionsScreen parent, UUID uuid, String name, Supplier<Identifier> skinTexture, boolean reportable, CallbackInfo ci) {
 		this.blockButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, BLOCKLIST_TEXTURE, 64, 64, button -> {
-			FSitClientMod.blockedPlayers.add(uuid);
+			FSitModClient.blockedPlayers.add(uuid);
 			setBlockButtonVisible(false);
 			if (client.player != null && client.player.hasPassenger(entity -> entity.getUuid() == uuid))
 				ClientPlayNetworking.send(new RidePlayerPacket(RidePlayerPacket.RideType.REFUSE, uuid));
 		}, BLOCK_BUTTON_TEXT);
-		this.blockButton.active = FSitClientMod.config.ridePlayers;
+		this.blockButton.active = FSitModClient.config.ridePlayers;
 		this.blockButton.setTooltip(Tooltip.of(this.blockButton.active ? BLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.blockButton.setTooltipDelay(10);
-		this.blockButton.visible = !FSitClientMod.blockedPlayers.contains(uuid);
+		this.blockButton.visible = !FSitModClient.blockedPlayers.contains(uuid);
 
 		this.unblockButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, BLOCKLIST_TEXTURE, 64, 64, button -> {
-			FSitClientMod.blockedPlayers.remove(uuid);
+			FSitModClient.blockedPlayers.remove(uuid);
 			setBlockButtonVisible(true);
 		}, UNBLOCK_BUTTON_TEXT);
-		this.unblockButton.active = FSitClientMod.config.ridePlayers;
+		this.unblockButton.active = FSitModClient.config.ridePlayers;
 		this.unblockButton.setTooltip(Tooltip.of(this.unblockButton.active ? UNBLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.unblockButton.setTooltipDelay(10);
-		this.unblockButton.visible = FSitClientMod.blockedPlayers.contains(uuid);
+		this.unblockButton.visible = FSitModClient.blockedPlayers.contains(uuid);
 
 		this.buttons.add(this.blockButton);
 		this.buttons.add(this.unblockButton);

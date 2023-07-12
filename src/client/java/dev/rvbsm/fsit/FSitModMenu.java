@@ -3,56 +3,16 @@ package dev.rvbsm.fsit;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import dev.rvbsm.fsit.config.ConfigData;
-import dev.rvbsm.fsit.config.FSitConfig;
-import dev.rvbsm.fsit.config.PlayerBlockList;
-import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
-import dev.rvbsm.fsit.event.client.InteractBlockCallback;
-import dev.rvbsm.fsit.event.client.InteractPlayerCallback;
-import dev.rvbsm.fsit.packet.ConfigSyncC2SPacket;
-import dev.rvbsm.fsit.packet.PingS2CPacket;
-import dev.rvbsm.fsit.packet.PoseSyncS2CPacket;
-import dev.rvbsm.fsit.packet.RidePlayerPacket;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
 
-public class FSitClientMod implements ClientModInitializer, ModMenuApi {
-
-	public static final PlayerBlockList blockedPlayers = new PlayerBlockList("fsit-blocklist");
-	public static final ConfigData config = FSitMod.config;
-
-	private static void saveConfig() {
-		FSitConfig.save(FSitMod.config);
-
-		if (MinecraftClient.getInstance().getServer() != null)
-			ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.config));
-	}
-
-	@Override
-	public void onInitializeClient() {
-		blockedPlayers.load();
-
-		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
-		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
-
-		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, (packet, player, responseSender) -> responseSender.sendPacket(new ConfigSyncC2SPacket(FSitClientMod.config)));
-		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, (packet, player, responseSender) -> ((PlayerPoseAccessor) player).fsit$setPose(packet.pose()));
-		ClientPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
-			if (packet.type() == RidePlayerPacket.RideType.REQUEST)
-				if (FSitClientMod.config.ridePlayers && !FSitClientMod.blockedPlayers.contains(packet.uuid()))
-					responseSender.sendPacket(new RidePlayerPacket(RidePlayerPacket.RideType.ACCEPT, packet.uuid()));
-		});
-	}
+public class FSitModMenu implements ModMenuApi {
 
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
@@ -61,7 +21,7 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 							.setParentScreen(screen)
 							.setTitle(Text.literal("FSit"))
 							.setDefaultBackgroundTexture(new Identifier("minecraft:textures/block/deepslate_bricks.png"))
-							.setSavingRunnable(FSitClientMod::saveConfig);
+							.setSavingRunnable(FSitModClient::saveConfig);
 			final ConfigEntryBuilder entryBuilder = configBuilder.entryBuilder();
 
 			final List<String> sittableTags = FSitMod.config.sittableTags.stream().map(Identifier::toString).toList();
@@ -92,7 +52,7 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 							.setSaveConsumer(ConfigData.Entries.SITTABLE_ENABLED::save)
 							.setTooltip(ConfigData.Entries.SITTABLE_ENABLED.commentText())
 							.build());
-			sittableCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SITTABLE_RADIUS.keyText(), FSitClientMod.config.sittableRadius, 0, 4)
+			sittableCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SITTABLE_RADIUS.keyText(), FSitModClient.config.sittableRadius, 0, 4)
 							.setDefaultValue(ConfigData.Entries.SITTABLE_RADIUS::defaultValue)
 							.setSaveConsumer(ConfigData.Entries.SITTABLE_RADIUS::save)
 							.setTooltip(ConfigData.Entries.SITTABLE_RADIUS.commentText())
@@ -116,7 +76,7 @@ public class FSitClientMod implements ClientModInitializer, ModMenuApi {
 							.setSaveConsumer(ConfigData.Entries.RIDE_PLAYERS::save)
 							.setTooltip(ConfigData.Entries.RIDE_PLAYERS.commentText())
 							.build());
-			rideCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.RIDE_RADIUS.keyText(), FSitClientMod.config.rideRadius, 0, 4)
+			rideCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.RIDE_RADIUS.keyText(), FSitModClient.config.rideRadius, 0, 4)
 							.setDefaultValue(ConfigData.Entries.RIDE_RADIUS::defaultValue)
 							.setSaveConsumer(ConfigData.Entries.RIDE_RADIUS::save)
 							.setTooltip(ConfigData.Entries.RIDE_RADIUS.commentText())
