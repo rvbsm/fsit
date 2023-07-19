@@ -81,6 +81,13 @@ public class FSitModMenu implements ModMenuApi {
 							.setSaveConsumer(ConfigData.Entries.RIDE_RADIUS::save)
 							.setTooltip(ConfigData.Entries.RIDE_RADIUS.commentText())
 							.build());
+			rideCategory.add(entryBuilder.startDoubleField(ConfigData.Entries.RIDE_HEIGHT.keyText(), FSitMod.config.rideHeight)
+							.setMin(0d)
+							.setMax(1d)
+							.setDefaultValue(ConfigData.Entries.RIDE_HEIGHT::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.RIDE_HEIGHT::save)
+							.setTooltip(ConfigData.Entries.RIDE_HEIGHT.commentText())
+							.build());
 
 			miscCategory.add(rideCategory.build());
 

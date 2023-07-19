@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.config.conversion;
+package dev.rvbsm.fsit.config.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

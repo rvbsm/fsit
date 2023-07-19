@@ -8,6 +8,7 @@
 	"option.fsit.sittable.tags": "Sittable block tags",
 	"option.fsit.misc.riding.enabled": "Player Riding",
 	"option.fsit.misc.riding.radius": "Ride radius",
+	"option.fsit.misc.riding.height": "Ride height",
 
 	"comment.fsit.sneak.enabled": "Toggles sit/crawl by double sneak",
 	"comment.fsit.sneak.min_angle": "Minimal pitch to sitting or crawling down",
@@ -18,6 +19,7 @@
 	"comment.fsit.sittable.tags": "List of block ids (e.g. \"oak_log\") available to sit",
 	"comment.fsit.misc.riding.enabled": "Ride other players!",
 	"comment.fsit.misc.riding.radius": "Use player to start riding radius",
+	"comment.fsit.misc.riding.height": "Amount of height above player when riding",
 
 	"category.fsit.sneak": "Sneak",
 	"category.fsit.sittable": "Sittable",

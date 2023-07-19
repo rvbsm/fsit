@@ -7,13 +7,15 @@ import com.electronwill.nightconfig.core.conversion.PreserveNotNull;
 import com.electronwill.nightconfig.core.conversion.SpecDoubleInRange;
 import com.electronwill.nightconfig.core.conversion.SpecIntInRange;
 import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.config.conversion.Comment;
+import dev.rvbsm.fsit.config.annotation.Comment;
+import dev.rvbsm.fsit.config.annotation.Environment;
+import net.fabricmc.api.EnvType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
 
-public class ConfigData {
+public final class ConfigData {
 
 	@Path(Fields.CONFIG_VERSION)
 	@Comment(Comments.CONFIG_VERSION)
@@ -71,6 +73,13 @@ public class ConfigData {
 	@SpecIntInRange(min = 0, max = 4)
 	public final int rideRadius;
 
+	@Environment(EnvType.CLIENT)
+	@Path(Fields.RIDE_HEIGHT)
+	@Comment(Comments.RIDE_HEIGHT)
+	@PreserveNotNull
+	@SpecDoubleInRange(min = 0, max = 1)
+	public final double rideHeight = Entries.RIDE_HEIGHT.defaultValue;
+
 	public ConfigData() {
 		this.sneak = Entries.SNEAK_ENABLED.defaultValue;
 		this.minAngle = Entries.MIN_ANGLE.defaultValue;
@@ -98,6 +107,7 @@ public class ConfigData {
 		String SITTABLE_TAGS = "sittable.tags";
 		String RIDE_PLAYERS = "misc.riding.enabled";
 		String RIDE_RADIUS = "misc.riding.radius";
+		String RIDE_HEIGHT = "misc.riding.height";
 	}
 
 	protected interface Comments {
@@ -111,6 +121,7 @@ public class ConfigData {
 		String SITTABLE_TAGS = "List of block tags";
 		String RIDE_PLAYERS = "Player riding feature";
 		String RIDE_RADIUS = "Maximum radius for start riding player";
+			String RIDE_HEIGHT = "Height above player's head when riding them";
 	}
 
 	public interface Entries {
@@ -124,6 +135,7 @@ public class ConfigData {
 		ConfigEntry<List<String>> SITTABLE_TAGS = new ConfigEntry<>(Fields.SITTABLE_TAGS, List.of("minecraft:slabs", "minecraft:stairs", "minecraft:logs"));
 		ConfigEntry<Boolean> RIDE_PLAYERS = new ConfigEntry<>(Fields.RIDE_PLAYERS, false);
 		ConfigEntry<Integer> RIDE_RADIUS = new ConfigEntry<>(Fields.RIDE_RADIUS, 3);
+		ConfigEntry<Double> RIDE_HEIGHT = new ConfigEntry<>(Fields.RIDE_HEIGHT, 0d);
 
 		record ConfigEntry<T>(String key, T defaultValue) {
 			public void save(T value) {
