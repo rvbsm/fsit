@@ -11,9 +11,11 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import java.lang.reflect.Field;
 
-public abstract class FSitConfig {
+public final class FSitConfig {
 
-	protected static final CommentedFileConfig config = FSitConfig.getConfig();
+	static final CommentedFileConfig config = FSitConfig.getConfig();
+
+	private FSitConfig() {}
 
 	private static CommentedFileConfig getConfig() {
 		final java.nio.file.Path configPath = FabricLoader.getInstance().getConfigDir().resolve("fsit.toml");

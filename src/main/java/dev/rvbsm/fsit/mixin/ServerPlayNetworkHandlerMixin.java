@@ -30,10 +30,10 @@ public abstract class ServerPlayNetworkHandlerMixin {
 		if (!player.hasVehicle() && poseAccessor.isPosing()) poseAccessor.resetPose();
 		else if (poseAccessor.isInPose(PlayerPose.NONE) && config.sneak) poseAccessor.fsit$setSneaked();
 		else if (poseAccessor.isInPose(PlayerPose.SNEAK)) {
-			if (player.getPitch() >= config.minAngle) {
+			if (player.getPitch() >= config.sneakAngle) {
 				if (player.isCrawling()) poseAccessor.fsit$setCrawling();
 				else poseAccessor.fsit$setSitting();
-			} else if (player.getPitch() <= -config.minAngle) {
+			} else if (player.getPitch() <= -config.sneakAngle) {
 				if (player.getFirstPassenger() instanceof PlayerEntity passenger) passenger.stopRiding();
 			}
 		}

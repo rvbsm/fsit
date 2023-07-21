@@ -35,10 +35,10 @@ public final class FSitModMenu implements ModMenuApi {
 							.setSaveConsumer(ConfigData.Entries.SNEAK_ENABLED::save)
 							.setTooltip(ConfigData.Entries.SNEAK_ENABLED.commentText())
 							.build());
-			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.MIN_ANGLE.keyText(), (int) FSitMod.config.minAngle, 0, 90)
-							.setDefaultValue(ConfigData.Entries.MIN_ANGLE.defaultValue()::intValue)
-							.setSaveConsumer((value) -> ConfigData.Entries.MIN_ANGLE.save(value.doubleValue()))
-							.setTooltip(ConfigData.Entries.MIN_ANGLE.commentText())
+			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SNEAK_ANGLE.keyText(), (int) FSitMod.config.sneakAngle, 0, 90)
+							.setDefaultValue(ConfigData.Entries.SNEAK_ANGLE.defaultValue()::intValue)
+							.setSaveConsumer((value) -> ConfigData.Entries.SNEAK_ANGLE.save(value.doubleValue()))
+							.setTooltip(ConfigData.Entries.SNEAK_ANGLE.commentText())
 							.build());
 			sneakCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SNEAK_DELAY.keyText(), FSitMod.config.sneakDelay, 100, 2000)
 							.setDefaultValue(ConfigData.Entries.SNEAK_DELAY::defaultValue)
@@ -71,10 +71,10 @@ public final class FSitModMenu implements ModMenuApi {
 			final SubCategoryBuilder miscCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "misc"));
 
 			final SubCategoryBuilder rideCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "misc.riding"));
-			rideCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.RIDE_PLAYERS.keyText(), FSitMod.config.ridePlayers)
-							.setDefaultValue(ConfigData.Entries.RIDE_PLAYERS::defaultValue)
-							.setSaveConsumer(ConfigData.Entries.RIDE_PLAYERS::save)
-							.setTooltip(ConfigData.Entries.RIDE_PLAYERS.commentText())
+			rideCategory.add(entryBuilder.startBooleanToggle(ConfigData.Entries.RIDE_ENABLED.keyText(), FSitMod.config.ride)
+							.setDefaultValue(ConfigData.Entries.RIDE_ENABLED::defaultValue)
+							.setSaveConsumer(ConfigData.Entries.RIDE_ENABLED::save)
+							.setTooltip(ConfigData.Entries.RIDE_ENABLED.commentText())
 							.build());
 			rideCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.RIDE_RADIUS.keyText(), FSitMod.config.rideRadius, 0, 4)
 							.setDefaultValue(ConfigData.Entries.RIDE_RADIUS::defaultValue)
