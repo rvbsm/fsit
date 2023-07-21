@@ -12,12 +12,12 @@ import net.minecraft.util.Identifier;
 
 import java.util.UUID;
 
-public record RidePlayerPacket(RideType type, UUID uuid) implements FabricPacket {
+public record RidePacket(ActionType type, UUID uuid) implements FabricPacket {
 
-	public static final PacketType<RidePlayerPacket> TYPE = PacketType.create(new Identifier("fsit", "ride"), RidePlayerPacket::new);
+	public static final PacketType<RidePacket> TYPE = PacketType.create(new Identifier("fsit", "ride"), RidePacket::new);
 
-	private RidePlayerPacket(PacketByteBuf buf) {
-		this(buf.readEnumConstant(RideType.class), buf.readUuid());
+	private RidePacket(PacketByteBuf buf) {
+		this(buf.readEnumConstant(ActionType.class), buf.readUuid());
 	}
 
 	@Override
@@ -35,12 +35,10 @@ public record RidePlayerPacket(RideType type, UUID uuid) implements FabricPacket
 		switch (this.type) {
 			case REQUEST -> {
 				if (configAccessor.fsit$isModded())
-					ServerPlayNetworking.send(target, new RidePlayerPacket(this.type, player.getUuid()));
-				else if (config.ridePlayers) player.startRiding(target, true);
+					ServerPlayNetworking.send(target, new RidePacket(this.type, player.getUuid()));
+				else if (config.ride) player.startRiding(target, true);
 			}
-			case ACCEPT -> {
-				if (player.distanceTo(target) <= config.rideRadius) target.startRiding(player, true);
-			}
+			case ACCEPT -> target.startRiding(player, true);
 			case REFUSE -> {
 				if (player.hasPassenger(target)) target.stopRiding();
 				else if (target.hasPassenger(player)) player.stopRiding();
@@ -53,7 +51,7 @@ public record RidePlayerPacket(RideType type, UUID uuid) implements FabricPacket
 		return TYPE;
 	}
 
-	public enum RideType {
+	public enum ActionType {
 		REQUEST, ACCEPT, REFUSE
 	}
 }
