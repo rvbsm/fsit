@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.List;
 
-public class FSitModMenu implements ModMenuApi {
+public final class FSitModMenu implements ModMenuApi {
 
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
@@ -52,7 +52,7 @@ public class FSitModMenu implements ModMenuApi {
 							.setSaveConsumer(ConfigData.Entries.SITTABLE_ENABLED::save)
 							.setTooltip(ConfigData.Entries.SITTABLE_ENABLED.commentText())
 							.build());
-			sittableCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SITTABLE_RADIUS.keyText(), FSitModClient.config.sittableRadius, 0, 4)
+			sittableCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.SITTABLE_RADIUS.keyText(), FSitMod.config.sittableRadius, 0, 4)
 							.setDefaultValue(ConfigData.Entries.SITTABLE_RADIUS::defaultValue)
 							.setSaveConsumer(ConfigData.Entries.SITTABLE_RADIUS::save)
 							.setTooltip(ConfigData.Entries.SITTABLE_RADIUS.commentText())
@@ -76,7 +76,7 @@ public class FSitModMenu implements ModMenuApi {
 							.setSaveConsumer(ConfigData.Entries.RIDE_PLAYERS::save)
 							.setTooltip(ConfigData.Entries.RIDE_PLAYERS.commentText())
 							.build());
-			rideCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.RIDE_RADIUS.keyText(), FSitModClient.config.rideRadius, 0, 4)
+			rideCategory.add(entryBuilder.startIntSlider(ConfigData.Entries.RIDE_RADIUS.keyText(), FSitMod.config.rideRadius, 0, 4)
 							.setDefaultValue(ConfigData.Entries.RIDE_RADIUS::defaultValue)
 							.setSaveConsumer(ConfigData.Entries.RIDE_RADIUS::save)
 							.setTooltip(ConfigData.Entries.RIDE_RADIUS.commentText())

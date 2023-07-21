@@ -1,46 +1,71 @@
 package dev.rvbsm.fsit;
 
-import dev.rvbsm.fsit.config.ConfigData;
+import dev.rvbsm.fsit.config.BlockedUUIDList;
 import dev.rvbsm.fsit.config.FSitConfig;
-import dev.rvbsm.fsit.config.PlayerBlockList;
 import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
-import dev.rvbsm.fsit.event.client.InteractBlockCallback;
-import dev.rvbsm.fsit.event.client.InteractPlayerCallback;
+import dev.rvbsm.fsit.event.InteractCBlockCallback;
+import dev.rvbsm.fsit.event.InteractCPlayerCallback;
 import dev.rvbsm.fsit.packet.ConfigSyncC2SPacket;
 import dev.rvbsm.fsit.packet.PingS2CPacket;
 import dev.rvbsm.fsit.packet.PoseSyncS2CPacket;
-import dev.rvbsm.fsit.packet.RidePlayerPacket;
+import dev.rvbsm.fsit.packet.RidePacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 
-public class FSitModClient implements ClientModInitializer {
+import java.util.UUID;
 
-	public static final PlayerBlockList blockedPlayers = new PlayerBlockList("fsit-blocklist");
-	public static final ConfigData config = FSitMod.config;
+public final class FSitModClient implements ClientModInitializer {
 
-	protected static void saveConfig() {
+	private static final BlockedUUIDList blockedRiders = new BlockedUUIDList("blocked-riders.fsit");
+
+	public static void addBlockedRider(UUID uuid) {
+		FSitModClient.blockedRiders.add(uuid);
+	}
+
+	public static void removeBlockedRider(UUID uuid) {
+		FSitModClient.blockedRiders.remove(uuid);
+	}
+
+	public static boolean isBlockedRider(UUID uuid) {
+		return FSitModClient.blockedRiders.contains(uuid);
+	}
+
+	static void saveConfig() {
 		FSitConfig.save(FSitMod.config);
 
 		if (MinecraftClient.getInstance().getServer() != null)
 			ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.config));
 	}
 
+	private static void receivePing(PingS2CPacket packet, ClientPlayerEntity player, PacketSender responseSender) {
+		responseSender.sendPacket(new ConfigSyncC2SPacket(FSitMod.config));
+	}
+
+	private static void receivePoseSync(PoseSyncS2CPacket packet, ClientPlayerEntity player, PacketSender responseSender) {
+		((PlayerPoseAccessor) player).fsit$setPose(packet.pose());
+	}
+
+	private static void receiveRide(RidePacket packet, ClientPlayerEntity player, PacketSender responseSender) {
+		if (packet.type() == RidePacket.ActionType.REQUEST) {
+			if (FSitMod.config.ride && !FSitModClient.blockedRiders.contains(packet.uuid()))
+				responseSender.sendPacket(new RidePacket(RidePacket.ActionType.ACCEPT, packet.uuid()));
+		}
+	}
+
 	@Override
 	public void onInitializeClient() {
-		blockedPlayers.load();
+		blockedRiders.load();
 
-		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
-		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
+		UseBlockCallback.EVENT.register(InteractCBlockCallback::interact);
+		UseEntityCallback.EVENT.register(InteractCPlayerCallback::interact);
 
-		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, (packet, player, responseSender) -> responseSender.sendPacket(new ConfigSyncC2SPacket(FSitModClient.config)));
-		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, (packet, player, responseSender) -> ((PlayerPoseAccessor) player).fsit$setPose(packet.pose()));
-		ClientPlayNetworking.registerGlobalReceiver(RidePlayerPacket.TYPE, (packet, player, responseSender) -> {
-			if (packet.type() == RidePlayerPacket.RideType.REQUEST)
-				if (FSitModClient.config.ridePlayers && !FSitModClient.blockedPlayers.contains(packet.uuid()))
-					responseSender.sendPacket(new RidePlayerPacket(RidePlayerPacket.RideType.ACCEPT, packet.uuid()));
-		});
+		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, FSitModClient::receivePing);
+		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, FSitModClient::receivePoseSync);
+		ClientPlayNetworking.registerGlobalReceiver(RidePacket.TYPE, FSitModClient::receiveRide);
 	}
 }
