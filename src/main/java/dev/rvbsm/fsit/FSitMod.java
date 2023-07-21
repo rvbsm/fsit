@@ -2,8 +2,8 @@ package dev.rvbsm.fsit;
 
 import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.config.FSitConfig;
-import dev.rvbsm.fsit.event.InteractBlockCallback;
-import dev.rvbsm.fsit.event.InteractPlayerCallback;
+import dev.rvbsm.fsit.event.InteractSBlockCallback;
+import dev.rvbsm.fsit.event.InteractSPlayerCallback;
 import dev.rvbsm.fsit.event.PlayerConnectionCallbacks;
 import dev.rvbsm.fsit.packet.ConfigSyncC2SPacket;
 import dev.rvbsm.fsit.packet.RidePlayerPacket;
@@ -44,8 +44,8 @@ public class FSitMod implements ModInitializer {
 	public void onInitialize() {
 		FSitMod.loadConfig();
 
-		UseBlockCallback.EVENT.register(InteractBlockCallback::interactBlock);
-		UseEntityCallback.EVENT.register(InteractPlayerCallback::interactPlayer);
+		UseBlockCallback.EVENT.register(InteractSBlockCallback::interact);
+		UseEntityCallback.EVENT.register(InteractSPlayerCallback::interact);
 		ServerPlayConnectionEvents.JOIN.register(PlayerConnectionCallbacks::onConnect);
 		ServerPlayConnectionEvents.DISCONNECT.register(PlayerConnectionCallbacks::onDisconnect);
 

@@ -5,9 +5,6 @@ import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
 import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.StairsBlock;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -25,12 +23,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-public abstract class InteractBlockCallback {
+public final class InteractSBlockCallback {
 
-	public static ActionResult interactBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+	private InteractSBlockCallback() {}
+
+	public static ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
 		if (world.isClient) return ActionResult.PASS;
 		final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
 		final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) player;
@@ -44,7 +45,7 @@ public abstract class InteractBlockCallback {
 		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;
 		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 
-		if (player.getPos().distanceTo(hitResult.getPos()) <= config.sittableRadius && InteractBlockCallback.isSittable(world, hitResult, config.sittableTags, config.sittableBlocks)) {
+		if (player.getPos().distanceTo(hitResult.getPos()) <= config.sittableRadius && InteractSBlockCallback.isSittable(world, hitResult, config.sittableTags, config.sittableBlocks)) {
 			poseAccessor.fsit$setSitting(hitResult.getPos());
 			return ActionResult.SUCCESS;
 		}
@@ -64,13 +65,14 @@ public abstract class InteractBlockCallback {
 		final Stream<Identifier> blockTags = blockState.streamTags().map(TagKey::id);
 		final Identifier blockIdentifier = Registries.BLOCK.getId(block);
 		if (blockTags.anyMatch(sittableTags::contains) || sittableBlocks.contains(blockIdentifier)) {
-			if (block instanceof PillarBlock) {
+			final Collection<Property<?>> blockProperties = blockState.getProperties();
+			if (blockProperties.contains(Properties.AXIS))
 				return blockState.get(Properties.AXIS) != Direction.Axis.Y;
-			} else if (block instanceof StairsBlock) {
+			else if (blockProperties.contains(Properties.BLOCK_HALF))
 				return blockState.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM;
-			} else if (block instanceof SlabBlock) {
+			else if (blockProperties.contains(Properties.SLAB_TYPE))
 				return blockState.get(Properties.SLAB_TYPE) == SlabType.BOTTOM;
-			} else return true;
+			else return true;
 		}
 
 		return false;
