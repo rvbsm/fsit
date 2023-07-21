@@ -1,11 +1,13 @@
-import java.io.ByteArrayOutputStream
+val gitVersion: groovy.lang.Closure<String> by extra
 
 plugins {
 	alias(libs.plugins.fabric.loom)
+	alias(libs.plugins.shadow)
+	alias(libs.plugins.git)
 }
 
-group = property("maven_group")!!
-version = "git --no-pager describe --tags --always".runCommand()
+group = "dev.rvbsm"
+version = gitVersion()
 
 repositories {
 	maven("https://maven.terraformersmc.com/")
@@ -26,6 +28,11 @@ val modInclude: Configuration by configurations.creating {
 	configurations.include.get().extendsFrom(this)
 }
 
+val shadowImplementation: Configuration by configurations.creating {
+	configurations.implementation.get().extendsFrom(this)
+	configurations.shadow.get().extendsFrom(this)
+}
+
 dependencies {
 	minecraft(libs.minecraft)
 	mappings("net.fabricmc:yarn:${libs.versions.yarn.mappings.get()}:v2")
@@ -37,8 +44,8 @@ dependencies {
 		modInclude(fabricApi.module(it, libs.versions.fabric.api.get()))
 	}
 
-	modInclude(libs.nightconfig.core)
-	modInclude(libs.nightconfig.toml)
+	shadowImplementation(libs.nightconfig.core)
+	shadowImplementation(libs.nightconfig.toml)
 
 	modApi(libs.modmenu)
 	modApi(libs.clothconfig) {
@@ -59,6 +66,16 @@ tasks {
 		}
 	}
 
+	shadowJar {
+		configurations = listOf(shadowImplementation)
+		archiveClassifier.set("shadow")
+	}
+
+	remapJar {
+		dependsOn(shadowJar)
+		inputFile.set(shadowJar.get().archiveFile)
+	}
+
 	jar {
 		from(file("LICENSE"))
 	}
@@ -69,14 +86,4 @@ java {
 
 	sourceCompatibility = JavaVersion.VERSION_17
 	targetCompatibility = JavaVersion.VERSION_17
-}
-
-fun String.runCommand(currentWorkingDir: File = file("./")): String {
-	val byteOut = ByteArrayOutputStream()
-	project.exec {
-		workingDir = currentWorkingDir
-		commandLine = this@runCommand.split("\\s".toRegex())
-		standardOutput = byteOut
-	}
-	return String(byteOut.toByteArray()).trim()
 }
