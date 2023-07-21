@@ -6,7 +6,7 @@ import dev.rvbsm.fsit.entity.PlayerPose;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-public class FSitModServer implements DedicatedServerModInitializer {
+public final class FSitModServer implements DedicatedServerModInitializer {
 
 	@Override
 	public void onInitializeServer() {

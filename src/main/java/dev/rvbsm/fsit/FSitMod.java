@@ -17,9 +17,9 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public class FSitMod implements ModInitializer {
+public final class FSitMod implements ModInitializer {
 
-	protected static final ConfigData config = new ConfigData();
+	static final ConfigData config = new ConfigData();
 
 	@Contract("_, _ -> new")
 	public static @NotNull String getTranslationKey(String type, String id) {
