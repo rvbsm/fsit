@@ -80,6 +80,24 @@ public final class ConfigData {
 	@SpecDoubleInRange(min = 0, max = 1)
 	public final double rideHeight = Entries.RIDE_HEIGHT.defaultValue;
 
+	@Environment(EnvType.SERVER)
+	@Path(Fields.COMMANDS_ENABLED)
+	@Comment(Comments.COMMANDS_ENABLED)
+	@PreserveNotNull
+	public final boolean commands = Entries.COMMANDS_ENABLED.defaultValue;
+
+	@Environment(EnvType.SERVER)
+	@Path(Fields.COMMANDS_SIT)
+	@Comment(Comments.COMMANDS_SIT)
+	@PreserveNotNull
+	public final String commandsSit = Entries.COMMANDS_SIT.defaultValue;
+
+	@Environment(EnvType.SERVER)
+	@Path(Fields.COMMANDS_CRAWL)
+	@Comment(Comments.COMMANDS_CRAWL)
+	@PreserveNotNull
+	public final String commandsCrawl = Entries.COMMANDS_CRAWL.defaultValue;
+
 	public ConfigData() {
 		this.sneak = Entries.SNEAK_ENABLED.defaultValue;
 		this.sneakAngle = Entries.SNEAK_ANGLE.defaultValue;
@@ -108,6 +126,9 @@ public final class ConfigData {
 		String RIDE_ENABLED = "misc.riding.enabled";
 		String RIDE_RADIUS = "misc.riding.radius";
 		String RIDE_HEIGHT = "misc.riding.height";
+		String COMMANDS_ENABLED = "misc.commands.enabled";
+		String COMMANDS_SIT = "misc.commands.sit";
+		String COMMANDS_CRAWL = "misc.commands.crawl";
 	}
 
 	interface Comments {
@@ -122,6 +143,9 @@ public final class ConfigData {
 		String RIDE_ENABLED = "Player riding feature";
 		String RIDE_RADIUS = "Maximum radius for start riding player";
 		String RIDE_HEIGHT = "Height above player's head when riding them";
+		String COMMANDS_ENABLED = "Toggle pose (/sit, /crawl) commands";
+		String COMMANDS_SIT = "Sitting command";
+		String COMMANDS_CRAWL = "Crawling command";
 	}
 
 	public interface Entries {
@@ -136,8 +160,12 @@ public final class ConfigData {
 		ConfigEntry<Boolean> RIDE_ENABLED = new ConfigEntry<>(Fields.RIDE_ENABLED, false);
 		ConfigEntry<Integer> RIDE_RADIUS = new ConfigEntry<>(Fields.RIDE_RADIUS, 3);
 		ConfigEntry<Double> RIDE_HEIGHT = new ConfigEntry<>(Fields.RIDE_HEIGHT, 0d);
+		ConfigEntry<Boolean> COMMANDS_ENABLED = new ConfigEntry<>(Fields.COMMANDS_ENABLED, true);
+		ConfigEntry<String> COMMANDS_SIT = new ConfigEntry<>(Fields.COMMANDS_SIT, "sit");
+		ConfigEntry<String> COMMANDS_CRAWL = new ConfigEntry<>(Fields.COMMANDS_CRAWL, "crawl");
 
 		record ConfigEntry<T>(String key, T defaultValue) {
+
 			public void save(T value) {
 				FSitConfig.config.set(this.key, value);
 			}

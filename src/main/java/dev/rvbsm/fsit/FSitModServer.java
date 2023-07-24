@@ -11,7 +11,10 @@ public final class FSitModServer implements DedicatedServerModInitializer {
 	@Override
 	public void onInitializeServer() {
 		CommandRegistrationCallback.EVENT.register(new FSitCommand()::register);
-		CommandRegistrationCallback.EVENT.register(new PoseCommand("sit", PlayerPose.SIT)::register);
-		CommandRegistrationCallback.EVENT.register(new PoseCommand("crawl", PlayerPose.CRAWL)::register);
+
+		if (FSitMod.config.commands) {
+			CommandRegistrationCallback.EVENT.register(new PoseCommand(FSitMod.config.commandsSit, PlayerPose.SIT)::register);
+			CommandRegistrationCallback.EVENT.register(new PoseCommand(FSitMod.config.commandsCrawl, PlayerPose.CRAWL)::register);
+		}
 	}
 }
