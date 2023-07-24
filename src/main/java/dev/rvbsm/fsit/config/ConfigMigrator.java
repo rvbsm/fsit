@@ -1,26 +1,28 @@
 package dev.rvbsm.fsit.config;
 
-abstract class ConfigMigrator {
+import java.util.Map;
 
-	protected static void migrateFrom2() {
+final class ConfigMigrator {
+
+	private static final Map<String, String> migratable = Map.of(
+					"sneak_sit", ConfigData.Fields.SNEAK_ENABLED,
+					"sneak.sneak_delay", ConfigData.Fields.SNEAK_DELAY,
+					"misc.sit_players", ConfigData.Fields.RIDE_ENABLED,
+					"sneak.min_angle", ConfigData.Fields.SNEAK_ANGLE
+	);
+
+	private ConfigMigrator() {}
+
+	static void tryMigrate() {
 		FSitConfig.config.set("config_version", ConfigData.Entries.CONFIG_VERSION.defaultValue());
 
-		if (FSitConfig.config.contains("sneak_sit")) {
-			final boolean sneak_sit = FSitConfig.config.remove("sneak_sit");
-			FSitConfig.config.removeComment("sneak_sit");
-			FSitConfig.config.set(ConfigData.Fields.SNEAK_ENABLED, sneak_sit);
-		}
+		for (var entry : migratable.entrySet())
+			if (!FSitConfig.config.isNull(entry.getKey())) migrate(entry.getKey(), entry.getValue());
+	}
 
-		if (FSitConfig.config.contains("sneak.sneak_delay")) {
-			final int sneak_delay = FSitConfig.config.remove("sneak.sneak_delay");
-			FSitConfig.config.removeComment("sneak.sneak_delay");
-			FSitConfig.config.set(ConfigData.Fields.SNEAK_DELAY, sneak_delay);
-		}
-
-		if (FSitConfig.config.contains("misc.sit_players")) {
-			final boolean ride_players = FSitConfig.config.remove("misc.sit_players");
-			FSitConfig.config.removeComment("misc.sit_players");
-			FSitConfig.config.set(ConfigData.Fields.RIDE_PLAYERS, ride_players);
-		}
+	private static <T> void migrate(String from, String to) {
+		final T value = FSitConfig.config.remove(from);
+		FSitConfig.config.removeComment(from);
+		FSitConfig.config.set(to, value);
 	}
 }
