@@ -27,7 +27,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 	public void fsit$setPose(PlayerPose pose) {
 		super.fsit$setPose(pose);
 
-		if (this.isPosing())
+		if (this.isPosing() && !this.isInPose(PlayerPose.SIT))
 			this.client.inGameHud.setOverlayMessage(FSitMod.getTranslation("message", "onpose", this.client.options.sneakKey.getBoundKeyLocalizedText()), false);
 	}
 }
