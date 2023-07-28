@@ -5,8 +5,8 @@ fabric_loader = "0.14.21"
 fabric_api = "0.83.0+1.20"
 fabric_loom = "1.2.+"
 
-modmenu = "7.1.+"
-clothconfig = "11.0.+"
+modmenu = "7.0.+"
+clothconfig = "11.1.+"
 
 nightconfig = "3.6.+"
 
