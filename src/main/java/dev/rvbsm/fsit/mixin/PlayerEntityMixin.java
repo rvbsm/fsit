@@ -48,7 +48,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPo
 			final World world = player.getWorld();
 			BlockPos blockPos = player.getBlockPos().up();
 			if (player.getMovementSpeed() > 4.5f) blockPos = blockPos.offset(player.getMovementDirection());
-			final Vec3d entityPos = blockPos.toCenterPos();
+			final Vec3d entityPos = Vec3d.of(blockPos);
 
 			final boolean placeBarrier = world.getBlockState(blockPos).isAir();
 			final boolean placeShulker = !placeBarrier && !world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, Direction.DOWN);
