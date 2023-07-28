@@ -6,6 +6,8 @@ import dev.rvbsm.fsit.entity.PlayerPose;
 import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket;
@@ -17,6 +19,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,9 +33,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPo
 	@Unique
 	private static final BlockState BARRIER = Blocks.BARRIER.getDefaultState();
 	@Unique
-	private BlockPos blockAbove = null;
+	private BlockPos supportBlock = null;
 	@Unique
-	private CrawlEntity entityAbove = null;
+	private CrawlEntity supportEntity = null;
 	@Unique
 	private PlayerPose playerPose;
 
@@ -40,46 +43,78 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPo
 		super(entityType, world);
 	}
 
+	@Shadow
+	public abstract float getMovementSpeed();
+
 	@Inject(method = "updatePose", at = @At("HEAD"))
-	public void updatePose(CallbackInfo ci) {
-		if ((PlayerEntity) (Object) this instanceof ServerPlayerEntity player) {
-			final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
+	protected void updatePose(CallbackInfo ci) {
+		final PlayerEntity player = (PlayerEntity) (Object) this;
+		if (player.getAbilities().flying) return;
+
+		final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
+		if (poseAccessor.isInPose(PlayerPose.CRAWL)) player.setSwimming(true);
+
+		if (!player.getWorld().isClient) {
 			final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) player;
+			if (configAccessor.fsit$isModded()) return;
+
 			final World world = player.getWorld();
-			BlockPos blockPos = player.getBlockPos().up();
-			if (player.getMovementSpeed() > 4.5f) blockPos = blockPos.offset(player.getMovementDirection());
+			final BlockPos blockPos = this.getSupportBlockPos();
 			final Vec3d entityPos = Vec3d.of(blockPos);
 
-			final boolean placeBarrier = world.getBlockState(blockPos).isAir();
-			final boolean placeShulker = !placeBarrier && !world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, Direction.DOWN);
+			final boolean placeBlock = world.getBlockState(blockPos).isAir();
+			final boolean placeEntity = !placeBlock && !world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, Direction.DOWN);
 
-			if (this.blockAbove != null) {
-				player.networkHandler.sendPacket(new BlockUpdateS2CPacket(this.blockAbove, AIR));
-				this.blockAbove = null;
-			}
-			if (this.entityAbove != null && !placeShulker) {
-				player.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(this.entityAbove.getId()));
-				this.entityAbove = null;
-			}
+			this.updateSupport(placeEntity);
 
 			if (poseAccessor.isInPose(PlayerPose.CRAWL)) {
-				player.setSwimming(true);
-				if (configAccessor.fsit$isModded()) return;
-
-				if (placeShulker) {
-					if (this.entityAbove == null) {
-						this.entityAbove = new CrawlEntity(world, entityPos);
-						player.networkHandler.sendPacket(this.entityAbove.createSpawnPacket());
-						player.networkHandler.sendPacket(new EntityTrackerUpdateS2CPacket(this.entityAbove.getId(), this.entityAbove.getDataTracker().getChangedEntries()));
-					} else if (!this.entityAbove.getPos().equals(entityPos)) {
-						this.entityAbove.setPosition(entityPos);
-						player.networkHandler.sendPacket(new EntityPositionS2CPacket(this.entityAbove));
-					}
-				} else if (placeBarrier) {
-					this.blockAbove = blockPos;
-					player.networkHandler.sendPacket(new BlockUpdateS2CPacket(blockPos, BARRIER));
-				}
+				if (placeEntity) this.setSupportEntity(entityPos);
+				else if (placeBlock) this.setSupportBlock(blockPos);
 			}
+		}
+	}
+
+	@Unique
+	private BlockPos getSupportBlockPos() {
+		final BlockPos blockPos = this.getBlockPos().up();
+		if (this.getMovementSpeed() > 4.5f) return blockPos.offset(this.getMovementDirection());
+
+		return blockPos;
+	}
+
+	@Unique
+	private void updateSupport(boolean placeShulker) {
+		if ((PlayerEntity) (Object) this instanceof ServerPlayerEntity player) {
+			if (this.supportBlock != null) {
+				player.networkHandler.sendPacket(new BlockUpdateS2CPacket(this.supportBlock, AIR));
+				this.supportBlock = null;
+			}
+			if (this.supportEntity != null && !placeShulker) {
+				player.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(this.supportEntity.getId()));
+				this.supportEntity = null;
+			}
+		}
+	}
+
+	@Unique
+	private void setSupportEntity(Vec3d entityPos) {
+		if ((PlayerEntity) (Object) this instanceof ServerPlayerEntity player) {
+			if (this.supportEntity == null) {
+				this.supportEntity = new CrawlEntity(this.getWorld(), entityPos);
+				player.networkHandler.sendPacket(this.supportEntity.createSpawnPacket());
+				player.networkHandler.sendPacket(new EntityTrackerUpdateS2CPacket(this.supportEntity.getId(), this.supportEntity.getDataTracker().getChangedEntries()));
+			} else if (!this.supportEntity.getPos().equals(entityPos)) {
+				this.supportEntity.setPosition(entityPos);
+				player.networkHandler.sendPacket(new EntityPositionS2CPacket(this.supportEntity));
+			}
+		}
+	}
+
+	@Unique
+	private void setSupportBlock(BlockPos blockPos) {
+		if ((PlayerEntity) (Object) this instanceof ServerPlayerEntity player) {
+			this.supportBlock = blockPos;
+			player.networkHandler.sendPacket(new BlockUpdateS2CPacket(blockPos, BARRIER));
 		}
 	}
 
