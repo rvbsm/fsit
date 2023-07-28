@@ -49,10 +49,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPo
 	@Inject(method = "updatePose", at = @At("HEAD"))
 	protected void updatePose(CallbackInfo ci) {
 		final PlayerEntity player = (PlayerEntity) (Object) this;
-		if (player.getAbilities().flying) return;
 
 		final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
-		if (poseAccessor.isInPose(PlayerPose.CRAWL)) player.setSwimming(true);
+		if (player.getAbilities().flying) poseAccessor.resetPose();
+		else if (poseAccessor.isInPose(PlayerPose.CRAWL)) player.setSwimming(true);
 
 		if (!player.getWorld().isClient) {
 			final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) player;
