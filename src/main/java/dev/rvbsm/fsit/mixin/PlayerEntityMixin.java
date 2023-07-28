@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin {
+public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPoseAccessor {
 
 	@Unique
 	private static final BlockState AIR = Blocks.AIR.getDefaultState();
@@ -33,6 +33,12 @@ public abstract class PlayerEntityMixin {
 	private BlockPos blockAbove = null;
 	@Unique
 	private CrawlEntity entityAbove = null;
+	@Unique
+	private PlayerPose playerPose;
+
+	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+		super(entityType, world);
+	}
 
 	@Inject(method = "updatePose", at = @At("HEAD"))
 	public void updatePose(CallbackInfo ci) {
@@ -75,5 +81,16 @@ public abstract class PlayerEntityMixin {
 				}
 			}
 		}
+	}
+
+
+	@Override
+	public PlayerPose fsit$getPose() {
+		return this.playerPose;
+	}
+
+	@Override
+	public void fsit$setPose(PlayerPose pose) {
+		this.playerPose = pose;
 	}
 }

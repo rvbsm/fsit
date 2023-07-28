@@ -1,24 +1,22 @@
 package dev.rvbsm.fsit.mixin;
 
-import com.mojang.authlib.GameProfile;
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
 import dev.rvbsm.fsit.entity.PlayerPose;
-import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
 import dev.rvbsm.fsit.entity.SeatEntity;
 import dev.rvbsm.fsit.packet.PoseSyncS2CPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,23 +27,25 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerPoseAccessor, PlayerConfigAccessor {
+public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements PlayerConfigAccessor {
 
-	@Unique
-	private PlayerPose playerPose;
 	@Unique
 	private ConfigData config = FSitMod.getConfig();
 	@Unique
 	private boolean isModded = false;
 
-	public ServerPlayerEntityMixin(MinecraftServer server, ServerWorld world, GameProfile profile) {
-		super(world, world.getSpawnPos(), world.getSpawnAngle(), profile);
+	protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+		super(entityType, world);
 	}
+
+	@Shadow
+	public abstract void sendMessage(Text message, boolean overlay);
 
 	@Inject(method = "stopRiding", at = @At("TAIL"))
 	public void stopRiding(CallbackInfo ci) {
 		if (this.isInPose(PlayerPose.SIT)) this.resetPose();
 	}
+
 
 	@Override
 	public ConfigData fsit$getConfig() {
@@ -59,13 +59,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 	}
 
 	@Override
-	public PlayerPose fsit$getPose() {
-		return this.playerPose;
-	}
-
-	@Override
 	public void fsit$setPose(PlayerPose pose) {
-		this.playerPose = pose;
+		super.fsit$setPose(pose);
 
 		if (this.isModded) ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, new PoseSyncS2CPacket(pose));
 		else if (this.isPosing()) this.sendMessage(Text.of("Press Sneak key to get up"), true);
@@ -78,8 +73,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
 	@Override
 	public void fsit$setSneaked() {
-		if (this.preventsPosing()) return;
-		else if (this.isPosing()) return;
+		if (this.isPosing() || this.preventsPosing()) return;
 
 		this.fsit$setPose(PlayerPose.SNEAK);
 		final Executor delayedExecutor = CompletableFuture.delayedExecutor(this.config.sneakDelay, TimeUnit.MILLISECONDS);
