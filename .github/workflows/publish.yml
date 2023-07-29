@@ -30,9 +30,6 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-id: J5NAzRqK
 
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          curseforge-id: 837056
-
           files: |
             build/libs/!(*-@(dev|sources|javadoc|shadow)).jar 
             build/libs/*-@(dev|sources|javadoc).jar
