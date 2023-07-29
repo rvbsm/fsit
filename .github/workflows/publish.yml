@@ -32,3 +32,7 @@ jobs:
 
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           curseforge-id: 837056
+
+          files: |
+            build/libs/!(*-@(dev|sources|javadoc|shadow)).jar 
+            build/libs/*-@(dev|sources|javadoc).jar
