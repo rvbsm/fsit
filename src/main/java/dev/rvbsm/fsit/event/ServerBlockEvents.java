@@ -8,9 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.FluidModificationItem;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.state.property.Properties;
@@ -18,6 +16,7 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.UseAction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -40,9 +39,8 @@ public final class ServerBlockEvents {
 		if (configAccessor.fsit$isModded()) return ActionResult.PASS;
 		else if (!config.sittable) return ActionResult.PASS;
 
-		final Item handItem = player.getStackInHand(hand).getItem();
-		if (handItem instanceof BlockItem) return ActionResult.PASS;
-		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;
+		final ItemStack handStack = player.getStackInHand(hand);
+		if (handStack.getUseAction() != UseAction.NONE) return ActionResult.PASS;
 		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 
 		if (player.getPos().distanceTo(hitResult.getPos()) <= config.sittableRadius && ServerBlockEvents.isBlockSittable(world, hitResult, config.sittableTags, config.sittableBlocks)) {
