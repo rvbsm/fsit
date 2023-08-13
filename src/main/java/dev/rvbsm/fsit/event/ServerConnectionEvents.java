@@ -6,9 +6,9 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 
-public final class PlayerConnectionCallbacks {
+public final class ServerConnectionEvents {
 
-	private PlayerConnectionCallbacks() {}
+	private ServerConnectionEvents() {}
 
 	public static void onConnect(ServerPlayNetworkHandler serverPlayNetworkHandler, PacketSender packetSender, MinecraftServer minecraftServer) {
 		packetSender.sendPacket(new PingS2CPacket());

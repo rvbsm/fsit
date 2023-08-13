@@ -13,13 +13,13 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public final class InteractSPlayerCallback {
+public final class ServerEntityEvents {
 
-	private InteractSPlayerCallback() {}
+	private ServerEntityEvents() {}
 
-	public static ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
+	public static ActionResult useOnPlayer(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
 		if (world.isClient) return ActionResult.PASS;
-		else if (InteractSPlayerCallback.cantInteract(player, entity)) return ActionResult.PASS;
+		else if (!entity.isPlayer() || ServerEntityEvents.preventsFromSitting(player, entity)) return ActionResult.PASS;
 
 		final PlayerConfigAccessor playerConfigAccessor = (PlayerConfigAccessor) player;
 		final PlayerConfigAccessor targetConfigAccessor = (PlayerConfigAccessor) entity;
@@ -40,7 +40,7 @@ public final class InteractSPlayerCallback {
 		return ActionResult.PASS;
 	}
 
-	static boolean cantInteract(PlayerEntity player, Entity entity) {
-		return player.isSpectator() || entity.isSpectator() || !entity.isPlayer() || entity.hasPassengers() || !player.getMainHandStack().isEmpty();
+	static boolean preventsFromSitting(PlayerEntity player, Entity entity) {
+		return player.isSpectator() || !player.getMainHandStack().isEmpty() || player.shouldCancelInteraction() || entity.isSpectator() || entity.hasPassengers();
 	}
 }

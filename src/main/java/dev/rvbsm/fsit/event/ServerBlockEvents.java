@@ -27,11 +27,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-public final class InteractSBlockCallback {
+public final class ServerBlockEvents {
 
-	private InteractSBlockCallback() {}
+	private ServerBlockEvents() {}
 
-	public static ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+	public static ActionResult useOnBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
 		if (world.isClient) return ActionResult.PASS;
 		final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
 		final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) player;
@@ -45,7 +45,7 @@ public final class InteractSBlockCallback {
 		else if (handItem instanceof FluidModificationItem) return ActionResult.PASS;
 		else if (player.shouldCancelInteraction()) return ActionResult.PASS;
 
-		if (player.getPos().distanceTo(hitResult.getPos()) <= config.sittableRadius && InteractSBlockCallback.isSittable(world, hitResult, config.sittableTags, config.sittableBlocks)) {
+		if (player.getPos().distanceTo(hitResult.getPos()) <= config.sittableRadius && ServerBlockEvents.isBlockSittable(world, hitResult, config.sittableTags, config.sittableBlocks)) {
 			poseAccessor.fsit$setSitting(hitResult.getPos());
 			return ActionResult.SUCCESS;
 		}
@@ -53,7 +53,7 @@ public final class InteractSBlockCallback {
 		return ActionResult.PASS;
 	}
 
-	public static boolean isSittable(World world, BlockHitResult hitResult, List<Identifier> sittableTags, List<Identifier> sittableBlocks) {
+	static boolean isBlockSittable(World world, BlockHitResult hitResult, List<Identifier> sittableTags, List<Identifier> sittableBlocks) {
 		if (hitResult.getSide() != Direction.UP) return false;
 
 		final BlockPos blockPos = hitResult.getBlockPos();
@@ -66,8 +66,7 @@ public final class InteractSBlockCallback {
 		final Identifier blockIdentifier = Registries.BLOCK.getId(block);
 		if (blockTags.anyMatch(sittableTags::contains) || sittableBlocks.contains(blockIdentifier)) {
 			final Collection<Property<?>> blockProperties = blockState.getProperties();
-			if (blockProperties.contains(Properties.AXIS))
-				return blockState.get(Properties.AXIS) != Direction.Axis.Y;
+			if (blockProperties.contains(Properties.AXIS)) return blockState.get(Properties.AXIS) != Direction.Axis.Y;
 			else if (blockProperties.contains(Properties.BLOCK_HALF))
 				return blockState.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM;
 			else if (blockProperties.contains(Properties.SLAB_TYPE))

@@ -15,11 +15,11 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
-public final class InteractCBlockCallback {
+public final class ClientBlockEvents {
 
-	private InteractCBlockCallback() {}
+	private ClientBlockEvents() {}
 
-	public static ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+	public static ActionResult useOnBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
 		if (!player.isMainPlayer()) return ActionResult.PASS;
 		else if (!FSitMod.getConfig().sittable) return ActionResult.PASS;
 
@@ -29,7 +29,7 @@ public final class InteractCBlockCallback {
 		else if (!player.isOnGround() && player.shouldCancelInteraction()) return ActionResult.PASS;
 		else if (player.getPos().distanceTo(hitResult.getPos()) > FSitMod.getConfig().sittableRadius) return ActionResult.PASS;
 
-		if (InteractSBlockCallback.isSittable(world, hitResult, FSitMod.getConfig().sittableTags, FSitMod.getConfig().sittableBlocks)) {
+		if (ServerBlockEvents.isBlockSittable(world, hitResult, FSitMod.getConfig().sittableTags, FSitMod.getConfig().sittableBlocks)) {
 			ClientPlayNetworking.send(new SpawnSeatC2SPacket(player.getPos(), hitResult.getPos()));
 
 			return ActionResult.SUCCESS;

@@ -3,8 +3,8 @@ package dev.rvbsm.fsit;
 import dev.rvbsm.fsit.config.BlockedUUIDList;
 import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
-import dev.rvbsm.fsit.event.InteractCBlockCallback;
-import dev.rvbsm.fsit.event.InteractCPlayerCallback;
+import dev.rvbsm.fsit.event.ClientBlockEvents;
+import dev.rvbsm.fsit.event.ClientEntityEvents;
 import dev.rvbsm.fsit.packet.ConfigSyncC2SPacket;
 import dev.rvbsm.fsit.packet.PingS2CPacket;
 import dev.rvbsm.fsit.packet.PoseSyncS2CPacket;
@@ -61,8 +61,8 @@ public final class FSitModClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		blockedRiders.load();
 
-		UseBlockCallback.EVENT.register(InteractCBlockCallback::interact);
-		UseEntityCallback.EVENT.register(InteractCPlayerCallback::interact);
+		UseBlockCallback.EVENT.register(ClientBlockEvents::useOnBlock);
+		UseEntityCallback.EVENT.register(ClientEntityEvents::useOnPlayer);
 
 		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, FSitModClient::receivePing);
 		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, FSitModClient::receivePoseSync);

@@ -15,13 +15,13 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
-public final class InteractCPlayerCallback {
+public final class ClientEntityEvents {
 
-	private InteractCPlayerCallback() {}
+	private ClientEntityEvents() {}
 
-	public static ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
+	public static ActionResult useOnPlayer(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
 		if (!player.isMainPlayer()) return ActionResult.PASS;
-		else if (InteractSPlayerCallback.cantInteract(player, entity)) return ActionResult.PASS;
+		else if (!entity.isPlayer() && ServerEntityEvents.preventsFromSitting(player, entity)) return ActionResult.PASS;
 		else if (FSitModClient.isBlockedRider(entity.getUuid())) return ActionResult.PASS;
 
 		if (FSitMod.getConfig().ride && player.distanceTo(entity) <= FSitMod.getConfig().rideRadius) {

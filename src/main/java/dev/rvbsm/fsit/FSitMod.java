@@ -2,9 +2,9 @@ package dev.rvbsm.fsit;
 
 import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.config.FSitConfig;
-import dev.rvbsm.fsit.event.InteractSBlockCallback;
-import dev.rvbsm.fsit.event.InteractSPlayerCallback;
-import dev.rvbsm.fsit.event.PlayerConnectionCallbacks;
+import dev.rvbsm.fsit.event.ServerBlockEvents;
+import dev.rvbsm.fsit.event.ServerEntityEvents;
+import dev.rvbsm.fsit.event.ServerConnectionEvents;
 import dev.rvbsm.fsit.packet.ConfigSyncC2SPacket;
 import dev.rvbsm.fsit.packet.RidePacket;
 import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
@@ -44,10 +44,10 @@ public final class FSitMod implements ModInitializer {
 	public void onInitialize() {
 		FSitMod.loadConfig();
 
-		UseBlockCallback.EVENT.register(InteractSBlockCallback::interact);
-		UseEntityCallback.EVENT.register(InteractSPlayerCallback::interact);
-		ServerPlayConnectionEvents.JOIN.register(PlayerConnectionCallbacks::onConnect);
-		ServerPlayConnectionEvents.DISCONNECT.register(PlayerConnectionCallbacks::onDisconnect);
+		UseBlockCallback.EVENT.register(ServerBlockEvents::useOnBlock);
+		UseEntityCallback.EVENT.register(ServerEntityEvents::useOnPlayer);
+		ServerPlayConnectionEvents.JOIN.register(ServerConnectionEvents::onConnect);
+		ServerPlayConnectionEvents.DISCONNECT.register(ServerConnectionEvents::onDisconnect);
 
 		ServerPlayNetworking.registerGlobalReceiver(ConfigSyncC2SPacket.TYPE, ConfigSyncC2SPacket::receive);
 		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.TYPE, SpawnSeatC2SPacket::receive);
