@@ -30,7 +30,6 @@ val modInclude: Configuration by configurations.creating {
 
 val shadowImplementation: Configuration by configurations.creating {
 	configurations.implementation.get().extendsFrom(this)
-	configurations.shadow.get().extendsFrom(this)
 }
 
 dependencies {
@@ -69,6 +68,7 @@ tasks {
 	shadowJar {
 		configurations = listOf(shadowImplementation)
 		archiveClassifier.set("shadow")
+		from(sourceSets["client"].output)
 	}
 
 	remapJar {
