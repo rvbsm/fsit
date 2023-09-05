@@ -17,7 +17,7 @@ final class ConfigMigrator {
 		FSitConfig.config.set("config_version", ConfigData.Entries.CONFIG_VERSION.defaultValue());
 
 		for (var entry : migratable.entrySet())
-			if (!FSitConfig.config.isNull(entry.getKey())) migrate(entry.getKey(), entry.getValue());
+			if (FSitConfig.config.contains(entry.getKey())) migrate(entry.getKey(), entry.getValue());
 	}
 
 	private static <T> void migrate(String from, String to) {
