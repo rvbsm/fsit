@@ -15,6 +15,7 @@ jobs:
           java-version: 17
           cache: gradle
       - run: ./gradlew build
+      - run: rm -f build/libs/*-shadow.jar
       - uses: Kir-Antipov/mc-publish@v3.2
         with:
           loaders: |
@@ -29,7 +30,3 @@ jobs:
 
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-id: J5NAzRqK
-
-          files: |
-            build/libs/!(*-@(dev|sources|javadoc|shadow)).jar 
-            build/libs/*-@(dev|sources|javadoc|shadow).jar
