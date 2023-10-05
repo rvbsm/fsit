@@ -17,7 +17,7 @@ repositories {
 loom {
 	splitEnvironmentSourceSets()
 
-	mods.register("fsit") {
+	mods.register(rootProject.name) {
 		sourceSet(sourceSets["main"])
 		sourceSet(sourceSets["client"])
 	}
@@ -34,12 +34,12 @@ val shadowImplementation: Configuration by configurations.creating {
 
 dependencies {
 	minecraft(libs.minecraft)
-	mappings("net.fabricmc:yarn:${libs.versions.yarn.mappings.get()}:v2")
+	mappings("${libs.yarn.mappings.get()}:v2")
 
 	modImplementation(libs.fabric.loader)
 //	modImplementation(libs.fabric.api)
 
-	listOf("fabric-events-interaction-v0", "fabric-networking-api-v1", "fabric-command-api-v2").forEach {
+	setOf("fabric-events-interaction-v0", "fabric-networking-api-v1", "fabric-command-api-v2").forEach {
 		modInclude(fabricApi.module(it, libs.versions.fabric.api.get()))
 	}
 
