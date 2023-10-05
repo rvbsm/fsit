@@ -23,8 +23,8 @@
 	"category.fsit.sittable": "Sittable",
 	"category.fsit.riding": "Player Riding",
 
-	"gui.fsit.socialInteractions.block": "Disallow riding",
-	"gui.fsit.socialInteractions.unblock": "Allow riding",
+	"gui.fsit.socialInteractions.restrict": "Disallow riding",
+	"gui.fsit.socialInteractions.allow": "Allow riding",
 	"gui.fsit.socialInteractions.disabled": "Player Riding is disabled",
 
 	"message.fsit.onpose": "Press %1$s to get up",
