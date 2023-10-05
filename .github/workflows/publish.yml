@@ -22,11 +22,10 @@ jobs:
             fabric
             quilt
           game-versions: |
-            1.20
-            1.20.1
+            1.20.2
           dependencies: |
             modmenu | suggests | *
-            cloth-config | recommends | *
+            cloth-config | suggests | *
 
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-id: J5NAzRqK
