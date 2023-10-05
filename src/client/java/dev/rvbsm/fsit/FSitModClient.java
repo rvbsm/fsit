@@ -21,29 +21,11 @@ import java.util.UUID;
 
 public final class FSitModClient implements ClientModInitializer {
 
-	private static final BlockedUUIDList blockedRiders = new BlockedUUIDList("blocked-riders.fsit");
-
-	public static void addBlockedRider(UUID uuid) {
-		FSitModClient.blockedRiders.add(uuid);
-	}
-
-	public static void removeBlockedRider(UUID uuid) {
-		FSitModClient.blockedRiders.remove(uuid);
-	}
-
-	public static boolean isBlockedRider(UUID uuid) {
-		return FSitModClient.blockedRiders.contains(uuid);
-	}
-
 	static void saveConfig() {
 		FSitMod.getConfigManager().saveConfig();
 
 		if (MinecraftClient.getInstance().getServer() != null)
 			ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.getConfig()));
-	}
-
-	private static void receivePing(PingS2CPacket packet, ClientPlayerEntity player, PacketSender responseSender) {
-		responseSender.sendPacket(new ConfigSyncC2SPacket(FSitMod.config));
 	}
 
 	private static void receivePoseSync(PoseSyncS2CPacket packet, ClientPlayerEntity player, PacketSender responseSender) {
@@ -59,12 +41,9 @@ public final class FSitModClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		blockedRiders.load();
-
 		UseBlockCallback.EVENT.register(ClientBlockEvents::useOnBlock);
 		UseEntityCallback.EVENT.register(ClientEntityEvents::useOnPlayer);
 
-		ClientPlayNetworking.registerGlobalReceiver(PingS2CPacket.TYPE, FSitModClient::receivePing);
 		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, FSitModClient::receivePoseSync);
 		ClientPlayNetworking.registerGlobalReceiver(RidePacket.TYPE, FSitModClient::receiveRide);
 	}

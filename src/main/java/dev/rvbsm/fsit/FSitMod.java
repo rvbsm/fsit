@@ -51,10 +51,7 @@ public final class FSitMod implements ModInitializer {
 
 		UseBlockCallback.EVENT.register(ServerBlockEvents::useOnBlock);
 		UseEntityCallback.EVENT.register(ServerEntityEvents::useOnPlayer);
-		ServerPlayConnectionEvents.JOIN.register(ServerConnectionEvents::onConnect);
-		ServerPlayConnectionEvents.DISCONNECT.register(ServerConnectionEvents::onDisconnect);
 
-		ServerPlayNetworking.registerGlobalReceiver(ConfigSyncC2SPacket.TYPE, ConfigSyncC2SPacket::receive);
 		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.TYPE, SpawnSeatC2SPacket::receive);
 		ServerPlayNetworking.registerGlobalReceiver(RidePacket.TYPE, RidePacket::receive);
 	}
