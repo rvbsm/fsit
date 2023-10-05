@@ -43,13 +43,17 @@ dependencies {
 		modInclude(fabricApi.module(it, libs.versions.fabric.api.get()))
 	}
 
-	shadowImplementation(libs.nightconfig.core)
-	shadowImplementation(libs.nightconfig.toml)
+	shadowImplementation(libs.toml4j) {
+		exclude("com.google.code.gson", "gson")
+	}
 
 	modApi(libs.modmenu)
 	modApi(libs.clothconfig) {
 		exclude(group = "net.fabricmc.fabric-api")
 	}
+
+	compileOnly(libs.lombok)
+	annotationProcessor(libs.lombok)
 }
 
 tasks {

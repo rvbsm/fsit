@@ -1,9 +1,9 @@
 package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.config.ConfigData;
-import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
+import dev.rvbsm.fsit.entity.ConfigHandler;
 import dev.rvbsm.fsit.entity.PlayerPose;
-import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
+import dev.rvbsm.fsit.entity.PoseHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -25,15 +25,16 @@ public abstract class ServerPlayNetworkHandlerMixin {
 		if (packet.getMode() != ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY) return;
 
 		final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
-		final ConfigData config = ((PlayerConfigAccessor) player).fsit$getConfig();
+		final ConfigData config = ((ConfigHandler) player).fsit$getConfig();
+		final ConfigData.SneakTable configSneak = config.getSneak();
 
 		if (!player.hasVehicle() && poseAccessor.isPosing()) poseAccessor.resetPose();
-		else if (poseAccessor.isInPose(PlayerPose.NONE) && config.sneak) poseAccessor.fsit$setSneaked();
 		else if (poseAccessor.isInPose(PlayerPose.SNEAK)) {
-			if (player.getPitch() >= config.sneakAngle) {
 				if (player.isCrawling()) poseAccessor.fsit$setCrawling();
 				else poseAccessor.fsit$setSitting();
-			} else if (player.getPitch() <= -config.sneakAngle) {
+		else if (poseHandler.isInPose(PlayerPose.NONE) && configSneak.isEnabled()) poseHandler.fsit$setSneaked();
+			if (player.getPitch() >= configSneak.getAngle()) {
+			} else if (player.getPitch() <= -configSneak.getAngle()) {
 				if (player.getFirstPassenger() instanceof PlayerEntity passenger) passenger.stopRiding();
 			}
 		}

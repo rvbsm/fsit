@@ -1,13 +1,13 @@
 package dev.rvbsm.fsit;
 
 import dev.rvbsm.fsit.config.ConfigData;
-import dev.rvbsm.fsit.config.FSitConfig;
 import dev.rvbsm.fsit.event.ServerBlockEvents;
 import dev.rvbsm.fsit.event.ServerEntityEvents;
 import dev.rvbsm.fsit.event.ServerConnectionEvents;
 import dev.rvbsm.fsit.packet.ConfigSyncC2SPacket;
 import dev.rvbsm.fsit.packet.RidePacket;
 import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
+import dev.rvbsm.fsit.config.ConfigManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -19,11 +19,12 @@ import org.jetbrains.annotations.NotNull;
 
 public final class FSitMod implements ModInitializer {
 
-	static final ConfigData config = new ConfigData();
+	public static final String MOD_ID = "fsit";
+	private static final ConfigManager<ConfigData> CONFIG_MANAGER = new ConfigManager<>(MOD_ID, ConfigData.class);
 
 	@Contract("_, _ -> new")
 	public static @NotNull String getTranslationKey(String type, String id) {
-		return String.join(".", type, "fsit", id);
+		return String.join(".", type, MOD_ID, id);
 	}
 
 	@Contract(value = "_, _, _ -> new", pure = true)
@@ -32,12 +33,16 @@ public final class FSitMod implements ModInitializer {
 		return Text.translatable(translationKey, args);
 	}
 
+	public static ConfigManager<ConfigData> getConfigManager() {
+		return CONFIG_MANAGER;
+	}
+
 	public static ConfigData getConfig() {
-		return FSitMod.config;
+		return CONFIG_MANAGER.getConfig();
 	}
 
 	public static void loadConfig() {
-		FSitConfig.load(FSitMod.config);
+		CONFIG_MANAGER.loadConfig();
 	}
 
 	@Override
