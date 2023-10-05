@@ -49,27 +49,27 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
 	public void init(MinecraftClient client, SocialInteractionsScreen parent, UUID uuid, String name, Supplier<Identifier> skinTexture, boolean reportable, CallbackInfo ci) {
 		this.blockButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, BLOCKED_TEXTURE, 64, 64, button -> {
-			FSitModClient.addBlockedRider(uuid);
-			setBlockButtonVisible(false);
-			if (client.player != null && client.player.hasPassenger(entity -> entity.getUuid() == uuid))
-				ClientPlayNetworking.send(new RidePacket(RidePacket.ActionType.REFUSE, uuid));
 		}, BLOCK_BUTTON_TEXT);
 		this.blockButton.setTooltip(Tooltip.of(this.blockButton.active ? BLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.blockButton.setTooltipDelay(10);
 		this.blockButton.visible = !FSitModClient.isBlockedRider(uuid);
+		final RestrictHandler restrictHandler = (RestrictHandler) client.player;
+			restrictHandler.fsit$restrictPlayer(uuid);
+			updateButtons(false);
 		this.restrictButton.active = FSitMod.getConfig().getRiding().isEnabled();
 
 		this.unblockButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, BLOCKED_TEXTURE, 64, 64, button -> {
-			FSitModClient.removeBlockedRider(uuid);
-			setBlockButtonVisible(true);
 		}, UNBLOCK_BUTTON_TEXT);
 		this.unblockButton.setTooltip(Tooltip.of(this.unblockButton.active ? UNBLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
 		this.unblockButton.setTooltipDelay(10);
 		this.unblockButton.visible = FSitModClient.isBlockedRider(uuid);
+			restrictHandler.fsit$allowPlayer(uuid);
+			updateButtons(true);
 		this.allowButton.active = FSitMod.getConfig().getRiding().isEnabled();
 
 		this.buttons.add(this.blockButton);
 		this.buttons.add(this.unblockButton);
+		this.updateButtons(!restrictHandler.fsit$isRestricted(uuid));
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
@@ -85,8 +85,8 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	}
 
 	@Unique
-	private void setBlockButtonVisible(boolean blockButtonVisible) {
 		this.blockButton.visible = blockButtonVisible;
 		this.unblockButton.visible = !blockButtonVisible;
+	private void updateButtons(boolean blockButtonVisible) {
 	}
 }

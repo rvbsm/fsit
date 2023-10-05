@@ -4,12 +4,14 @@ import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.config.ConfigData;
 import dev.rvbsm.fsit.entity.ConfigHandler;
 import dev.rvbsm.fsit.entity.PlayerPose;
+import dev.rvbsm.fsit.entity.RestrictHandler;
 import dev.rvbsm.fsit.entity.SeatEntity;
-import dev.rvbsm.fsit.packet.PoseSyncS2CPacket;
+import dev.rvbsm.fsit.network.packet.PoseSyncS2CPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -22,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -38,12 +41,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
 	@Shadow
 	public abstract void sendMessage(Text message, boolean overlay);
-
-	@Inject(method = "stopRiding", at = @At("TAIL"))
-	public void stopRiding(CallbackInfo ci) {
-		if (this.isInPose(PlayerPose.SIT)) this.resetPose();
-	}
-
 
 	@Override
 	public ConfigData fsit$getConfig() {
@@ -70,6 +67,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 		return !this.fsit$isRestricted(player.getUuid()) && !restrictHandler.fsit$isRestricted(this.getUuid()) && this.config.getRiding()
 						.isEnabled() && rideConfig.isEnabled() && player.distanceTo(this) <= rideConfig.getRadius();
 	}
+
+	@Override
+	public void fsit$restrictPlayer(UUID playerUUID) {
+		super.fsit$restrictPlayer(playerUUID);
+		if (this.hasPassenger((passenger -> passenger.getUuid() == playerUUID))) this.removeAllPassengers();
 	}
 
 	@Override
@@ -81,6 +83,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 		else if (this.isPosing()) this.sendMessage(Text.of("Press Sneak key to get up"), true);
 	}
 
+	@Unique
+	private boolean preventsPosing() {
+		return this.isSpectator() || !this.isOnGround() || this.hasVehicle();
 	}
 
 	@Override
@@ -105,7 +110,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 		if (this.preventsPosing()) return;
 
 		final BlockPos blockPos = this.getBlockPos();
-		final BlockState blockBelowState = this.getWorld().getBlockState(this.getPos().y % 1 == 0 ? blockPos.down() : blockPos);
+		final BlockState blockBelowState = this.getWorld()
+						.getBlockState(this.getPos().y % 1 == 0 ? blockPos.down() : blockPos);
 		if (blockBelowState.isAir()) return;
 		this.fsit$setPose(PlayerPose.SIT);
 
@@ -122,8 +128,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 		this.fsit$setPose(PlayerPose.CRAWL);
 	}
 
-	@Unique
-	private boolean preventsPosing() {
-		return this.isSpectator() || !this.isOnGround() || this.hasVehicle();
+	@Inject(method = "stopRiding", at = @At("TAIL"))
+	private void stopRiding(CallbackInfo ci) {
+		if (this.isInPose(PlayerPose.SIT)) this.resetPose();
 	}
 }

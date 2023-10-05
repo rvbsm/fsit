@@ -1,14 +1,16 @@
 package dev.rvbsm.fsit.mixin;
 
+import dev.rvbsm.fsit.entity.ConfigHandler;
 import dev.rvbsm.fsit.entity.CrawlEntity;
-import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
 import dev.rvbsm.fsit.entity.PlayerPose;
-import dev.rvbsm.fsit.entity.PlayerPoseAccessor;
+import dev.rvbsm.fsit.entity.PoseHandler;
+import dev.rvbsm.fsit.entity.RestrictHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
@@ -25,19 +27,27 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPoseAccessor {
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
+@Mixin(PlayerEntity.class)
+public abstract class PlayerEntityMixin extends LivingEntity implements PoseHandler, RestrictHandler {
+
+	@Unique
+	private static final String RESTRICTION_LIST_KEY = "restrictionList";
 	@Unique
 	private static final BlockState AIR = Blocks.AIR.getDefaultState();
 	@Unique
 	private static final BlockState BARRIER = Blocks.BARRIER.getDefaultState();
 	@Unique
+	protected final Set<UUID> restrictionList = new HashSet<>();
+	@Unique
 	private BlockPos supportBlock = null;
 	@Unique
 	private CrawlEntity supportEntity = null;
 	@Unique
-	private PlayerPose playerPose;
+	private PlayerPose playerPose = PlayerPose.NONE;
 
 	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
@@ -46,32 +56,34 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPo
 	@Shadow
 	public abstract float getMovementSpeed();
 
-	@Inject(method = "updatePose", at = @At("HEAD"))
-	protected void updatePose(CallbackInfo ci) {
-		final PlayerEntity player = (PlayerEntity) (Object) this;
+	@Override
+	public PlayerPose fsit$getPose() {
+		return this.playerPose;
+	}
 
-		final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
-		if (player.getAbilities().flying) poseAccessor.resetPose();
-		else if (poseAccessor.isInPose(PlayerPose.CRAWL)) player.setSwimming(true);
+	@Override
+	public void fsit$setPose(PlayerPose pose) {
+		this.playerPose = pose;
+	}
 
-		if (!player.getWorld().isClient) {
-			final PlayerConfigAccessor configAccessor = (PlayerConfigAccessor) player;
-			if (configAccessor.fsit$isModded()) return;
+	@Override
+	public Set<UUID> fsit$getRestrictionList() {
+		return this.restrictionList;
+	}
 
-			final World world = player.getWorld();
-			final BlockPos blockPos = this.getSupportBlockPos();
-			final Vec3d entityPos = Vec3d.of(blockPos);
+	@Override
+	public boolean fsit$isRestricted(UUID playerUUID) {
+		return this.restrictionList.contains(playerUUID);
+	}
 
-			final boolean placeBlock = world.getBlockState(blockPos).isAir();
-			final boolean placeEntity = !placeBlock && !world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, Direction.DOWN);
+	@Override
+	public void fsit$allowPlayer(UUID playerUUID) {
+		this.restrictionList.remove(playerUUID);
+	}
 
-			this.updateSupport(placeEntity);
-
-			if (poseAccessor.isInPose(PlayerPose.CRAWL)) {
-				if (placeEntity) this.setSupportEntity(entityPos);
-				else if (placeBlock) this.setSupportBlock(blockPos);
-			}
-		}
+	@Override
+	public void fsit$restrictPlayer(UUID playerUUID) {
+		this.restrictionList.add(playerUUID);
 	}
 
 	@Unique
@@ -102,7 +114,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPo
 			if (this.supportEntity == null) {
 				this.supportEntity = new CrawlEntity(this.getWorld(), entityPos);
 				player.networkHandler.sendPacket(this.supportEntity.createSpawnPacket());
-				player.networkHandler.sendPacket(new EntityTrackerUpdateS2CPacket(this.supportEntity.getId(), this.supportEntity.getDataTracker().getChangedEntries()));
+				player.networkHandler.sendPacket(new EntityTrackerUpdateS2CPacket(this.supportEntity.getId(), this.supportEntity.getDataTracker()
+								.getChangedEntries()));
 			} else if (!this.supportEntity.getPos().equals(entityPos)) {
 				this.supportEntity.setPosition(entityPos);
 				player.networkHandler.sendPacket(new EntityPositionS2CPacket(this.supportEntity));
@@ -118,14 +131,49 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPo
 		}
 	}
 
+	@Inject(method = "updatePose", at = @At("HEAD"))
+	private void updatePose(CallbackInfo ci) {
+		final PlayerEntity player = (PlayerEntity) (Object) this;
 
-	@Override
-	public PlayerPose fsit$getPose() {
-		return this.playerPose;
+		final PoseHandler poseHandler = (PoseHandler) player;
+		if (player.getAbilities().flying) poseHandler.resetPose();
+		else if (poseHandler.isInPose(PlayerPose.CRAWL)) player.setSwimming(true);
+
+		if (!player.getWorld().isClient) {
+			if (((ConfigHandler) player).fsit$getConfig() != null) return;
+
+			final World world = player.getWorld();
+			final BlockPos blockPos = this.getSupportBlockPos();
+			final Vec3d entityPos = Vec3d.of(blockPos);
+
+			final boolean placeBlock = world.getBlockState(blockPos).isAir();
+			final boolean placeEntity = !placeBlock && !world.getBlockState(blockPos)
+							.isSideSolidFullSquare(world, blockPos, Direction.DOWN);
+
+			this.updateSupport(placeEntity);
+
+			if (poseHandler.isInPose(PlayerPose.CRAWL)) {
+				if (placeEntity) this.setSupportEntity(entityPos);
+				else if (placeBlock) this.setSupportBlock(blockPos);
+			}
+		}
 	}
 
-	@Override
-	public void fsit$setPose(PlayerPose pose) {
-		this.playerPose = pose;
+	@Inject(method = "readCustomDataFromNbt", at = @At("RETURN"))
+	private void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
+		final long[] restrictionLongArray = nbt.getLongArray(RESTRICTION_LIST_KEY);
+		for (int i = 0; i < restrictionLongArray.length; )
+			this.fsit$restrictPlayer(new UUID(restrictionLongArray[i++], restrictionLongArray[i++]));
+	}
+
+	@Inject(method = "writeCustomDataToNbt", at = @At("RETURN"))
+	private void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
+		final long[] restrictionLongArray = new long[restrictionList.size() * 2];
+		int i = 0;
+		for (UUID uuid : restrictionList) {
+			restrictionLongArray[i++] = uuid.getMostSignificantBits();
+			restrictionLongArray[i++] = uuid.getLeastSignificantBits();
+		}
+		nbt.putLongArray(RESTRICTION_LIST_KEY, restrictionLongArray);
 	}
 }
