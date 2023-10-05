@@ -36,10 +36,10 @@ public final class FSitModClient implements ClientModInitializer {
 	}
 
 	static void saveConfig() {
-		FSitConfig.save(FSitMod.config);
+		FSitMod.getConfigManager().saveConfig();
 
 		if (MinecraftClient.getInstance().getServer() != null)
-			ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.config));
+			ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.getConfig()));
 	}
 
 	private static void receivePing(PingS2CPacket packet, ClientPlayerEntity player, PacketSender responseSender) {

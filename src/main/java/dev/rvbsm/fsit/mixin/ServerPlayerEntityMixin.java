@@ -2,7 +2,7 @@ package dev.rvbsm.fsit.mixin;
 
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.config.ConfigData;
-import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
+import dev.rvbsm.fsit.entity.ConfigHandler;
 import dev.rvbsm.fsit.entity.PlayerPose;
 import dev.rvbsm.fsit.entity.SeatEntity;
 import dev.rvbsm.fsit.packet.PoseSyncS2CPacket;
@@ -27,12 +27,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements PlayerConfigAccessor {
+public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ConfigHandler {
 
 	@Unique
 	private ConfigData config = FSitMod.getConfig();
-	@Unique
-	private boolean isModded = false;
 
 	protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
@@ -55,20 +53,34 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 	@Override
 	public void fsit$setConfig(ConfigData config) {
 		this.config = config;
-		this.isModded = true;
+		if (this.hasPassengers() && !config.getRiding().isEnabled()) this.removeAllPassengers();
+	}
+
+	@Override
+	public boolean fsit$hasConfig() {
+		return this.config == FSitMod.getConfig();
+	}
+
+	@Override
+	public boolean fsit$canStartRiding(PlayerEntity player) {
+		final ConfigHandler configHandler = (ConfigHandler) player;
+		final RestrictHandler restrictHandler = (RestrictHandler) player;
+		final ConfigData.RidingTable rideConfig = configHandler.fsit$getConfig().getRiding();
+
+		return !this.fsit$isRestricted(player.getUuid()) && !restrictHandler.fsit$isRestricted(this.getUuid()) && this.config.getRiding()
+						.isEnabled() && rideConfig.isEnabled() && player.distanceTo(this) <= rideConfig.getRadius();
+	}
 	}
 
 	@Override
 	public void fsit$setPose(PlayerPose pose) {
 		super.fsit$setPose(pose);
 
-		if (this.isModded) ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, new PoseSyncS2CPacket(pose));
+		if (this.fsit$hasConfig())
+			ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, new PoseSyncS2CPacket(pose));
 		else if (this.isPosing()) this.sendMessage(Text.of("Press Sneak key to get up"), true);
 	}
 
-	@Override
-	public boolean fsit$isModded() {
-		return this.isModded;
 	}
 
 	@Override
@@ -76,7 +88,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 		if (this.isPosing() || this.preventsPosing()) return;
 
 		this.fsit$setPose(PlayerPose.SNEAK);
-		final Executor delayedExecutor = CompletableFuture.delayedExecutor(this.config.sneakDelay, TimeUnit.MILLISECONDS);
+		final Executor delayedExecutor = CompletableFuture.delayedExecutor(this.config.getSneak()
+						.getDelay(), TimeUnit.MILLISECONDS);
 		CompletableFuture.runAsync(() -> {
 			if (!this.isPosing()) this.resetPose();
 		}, delayedExecutor);
