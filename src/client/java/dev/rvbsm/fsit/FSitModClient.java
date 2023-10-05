@@ -17,23 +17,9 @@ public final class FSitModClient implements ClientModInitializer {
 			ClientPlayNetworking.send(new ConfigSyncC2SPacket(FSitMod.getConfig()));
 	}
 
-	private static void receivePoseSync(PoseSyncS2CPacket packet, ClientPlayerEntity player, PacketSender responseSender) {
-		((PlayerPoseAccessor) player).fsit$setPose(packet.pose());
-	}
-
-	private static void receiveRide(RidePacket packet, ClientPlayerEntity player, PacketSender responseSender) {
-		if (packet.type() == RidePacket.ActionType.REQUEST) {
-			if (FSitMod.config.ride && !FSitModClient.blockedRiders.contains(packet.uuid()))
-				responseSender.sendPacket(new RidePacket(RidePacket.ActionType.ACCEPT, packet.uuid()));
-		}
-	}
-
 	@Override
 	public void onInitializeClient() {
-		UseBlockCallback.EVENT.register(ClientBlockEvents::useOnBlock);
-		UseEntityCallback.EVENT.register(ClientEntityEvents::useOnPlayer);
-
-		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, FSitModClient::receivePoseSync);
-		ClientPlayNetworking.registerGlobalReceiver(RidePacket.TYPE, FSitModClient::receiveRide);
+		ClientPlayNetworking.registerGlobalReceiver(RestrictionListSyncS2CPacket.TYPE, ClientNetworkHandler::receiveRestrictionList);
+		ClientPlayNetworking.registerGlobalReceiver(PoseSyncS2CPacket.TYPE, ClientNetworkHandler::receivePoseSync);
 	}
 }

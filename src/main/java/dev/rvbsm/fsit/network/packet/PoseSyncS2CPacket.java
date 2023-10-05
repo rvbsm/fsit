@@ -1,5 +1,6 @@
-package dev.rvbsm.fsit.packet;
+package dev.rvbsm.fsit.network.packet;
 
+import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.entity.PlayerPose;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
@@ -8,7 +9,8 @@ import net.minecraft.util.Identifier;
 
 public record PoseSyncS2CPacket(PlayerPose pose) implements FabricPacket {
 
-	public static final PacketType<PoseSyncS2CPacket> TYPE = PacketType.create(new Identifier("fsit", "pose_sync"), PoseSyncS2CPacket::new);
+	private static final Identifier ID = Identifier.of(FSitMod.MOD_ID, "pose_sync");
+	public static final PacketType<PoseSyncS2CPacket> TYPE = PacketType.create(ID, PoseSyncS2CPacket::new);
 
 	private PoseSyncS2CPacket(PacketByteBuf buf) {
 		this(buf.readEnumConstant(PlayerPose.class));
