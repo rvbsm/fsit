@@ -2,7 +2,7 @@ package dev.rvbsm.fsit.entity;
 
 import net.minecraft.util.math.Vec3d;
 
-public interface PlayerPoseAccessor {
+public interface PoseHandler {
 
 	PlayerPose fsit$getPose();
 
