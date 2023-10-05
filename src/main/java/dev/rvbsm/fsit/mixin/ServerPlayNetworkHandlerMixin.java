@@ -24,16 +24,16 @@ public abstract class ServerPlayNetworkHandlerMixin {
 	public void onClientCommand(ClientCommandC2SPacket packet, CallbackInfo ci) {
 		if (packet.getMode() != ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY) return;
 
-		final PlayerPoseAccessor poseAccessor = (PlayerPoseAccessor) player;
+		final PoseHandler poseHandler = (PoseHandler) player;
 		final ConfigData config = ((ConfigHandler) player).fsit$getConfig();
 		final ConfigData.SneakTable configSneak = config.getSneak();
 
-		if (!player.hasVehicle() && poseAccessor.isPosing()) poseAccessor.resetPose();
-		else if (poseAccessor.isInPose(PlayerPose.SNEAK)) {
-				if (player.isCrawling()) poseAccessor.fsit$setCrawling();
-				else poseAccessor.fsit$setSitting();
+		if (!player.hasVehicle() && poseHandler.isPosing()) poseHandler.resetPose();
 		else if (poseHandler.isInPose(PlayerPose.NONE) && configSneak.isEnabled()) poseHandler.fsit$setSneaked();
+		else if (poseHandler.isInPose(PlayerPose.SNEAK)) {
 			if (player.getPitch() >= configSneak.getAngle()) {
+				if (player.isCrawling()) poseHandler.fsit$setCrawling();
+				else poseHandler.fsit$setSitting();
 			} else if (player.getPitch() <= -configSneak.getAngle()) {
 				if (player.getFirstPassenger() instanceof PlayerEntity passenger) passenger.stopRiding();
 			}

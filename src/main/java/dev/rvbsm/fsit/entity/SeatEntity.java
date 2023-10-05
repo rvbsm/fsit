@@ -48,7 +48,7 @@ public class SeatEntity extends AreaEffectCloudEntity {
 	@Override
 	public void tick() {
 		if (this.mounted != null) {
-			if (!super.hasPassenger(this.mounted) || !((PlayerPoseAccessor) this.mounted).isInPose(PlayerPose.SIT))
+			if (!super.hasPassenger(this.mounted) || !((PoseHandler) this.mounted).isInPose(PlayerPose.SIT))
 				this.detachAndDiscard();
 			else if (super.getWorld().getBlockState(super.getBlockPos()).isAir()) {
 				if (this.prevTickNoAir) this.detachAndDiscard();
