@@ -1,13 +1,10 @@
 package dev.rvbsm.fsit;
 
 import dev.rvbsm.fsit.config.ConfigData;
-import dev.rvbsm.fsit.event.ServerBlockEvents;
-import dev.rvbsm.fsit.event.ServerEntityEvents;
-import dev.rvbsm.fsit.event.ServerConnectionEvents;
-import dev.rvbsm.fsit.packet.ConfigSyncC2SPacket;
-import dev.rvbsm.fsit.packet.RidePacket;
-import dev.rvbsm.fsit.packet.SpawnSeatC2SPacket;
 import dev.rvbsm.fsit.config.ConfigManager;
+import dev.rvbsm.fsit.network.ServerNetworkHandler;
+import dev.rvbsm.fsit.network.packet.ConfigSyncC2SPacket;
+import dev.rvbsm.fsit.network.packet.RestrictPlayerC2SPacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -49,10 +46,12 @@ public final class FSitMod implements ModInitializer {
 	public void onInitialize() {
 		FSitMod.loadConfig();
 
-		UseBlockCallback.EVENT.register(ServerBlockEvents::useOnBlock);
-		UseEntityCallback.EVENT.register(ServerEntityEvents::useOnPlayer);
+		ServerPlayConnectionEvents.JOIN.register(ServerNetworkHandler.Connection::onJoin);
 
-		ServerPlayNetworking.registerGlobalReceiver(SpawnSeatC2SPacket.TYPE, SpawnSeatC2SPacket::receive);
-		ServerPlayNetworking.registerGlobalReceiver(RidePacket.TYPE, RidePacket::receive);
+		UseBlockCallback.EVENT.register(ServerNetworkHandler::onUseBlock);
+		UseEntityCallback.EVENT.register(ServerNetworkHandler::onUseEntity);
+
+		ServerPlayNetworking.registerGlobalReceiver(ConfigSyncC2SPacket.TYPE, ServerNetworkHandler::onConfigReceive);
+		ServerPlayNetworking.registerGlobalReceiver(RestrictPlayerC2SPacket.TYPE, ServerNetworkHandler::onRestrictReceive);
 	}
 }
