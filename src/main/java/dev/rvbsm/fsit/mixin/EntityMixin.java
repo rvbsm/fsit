@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.mixin;
 
-import dev.rvbsm.fsit.entity.PlayerConfigAccessor;
+import dev.rvbsm.fsit.entity.ConfigHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,7 +19,7 @@ public abstract class EntityMixin {
 	public void startRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		if (entity instanceof ServerPlayerEntity riddenPlayer) {
 			riddenPlayer.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(riddenPlayer));
-			if (!((PlayerConfigAccessor) riddenPlayer).fsit$isModded())
+			if (!((ConfigHandler) riddenPlayer).fsit$hasConfig())
 				riddenPlayer.sendMessage(Text.of("Look up and press Sneak key to dismount a player"), true);
 		}
 	}
