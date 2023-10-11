@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public final class FSitMod implements ModInitializer {
 
 	public static final String MOD_ID = "fsit";
-	private static final ConfigManager<ConfigData> CONFIG_MANAGER = new ConfigManager<>(MOD_ID, ConfigData.class);
+	private static final ConfigManager<ConfigData> CONFIG_MANAGER = new ConfigManager<>(MOD_ID, ConfigData.class, ConfigData.MIGRATED_FIELDS);
 
 	@Contract("_, _ -> new")
 	public static @NotNull String getTranslationKey(String type, String id) {

@@ -14,6 +14,10 @@ import java.util.stream.Collectors;
 public final class ConfigData {
 
 	public static final ConfigData DEFAULT = new ConfigData();
+	public static final Map<String, String> MIGRATED_FIELDS = Map.of(
+					"misc.riding", "riding",
+					"misc.commands", "commands"
+	);
 
 	private final int configVersion = 4;
 

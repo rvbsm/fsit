@@ -23,15 +23,17 @@ public class ConfigManager<T> {
 	private static final Gson GSON = createGson();
 	private static final Toml TOML_READER = new Toml();
 	private static final TomlWriter TOML_WRITER = new TomlWriter();
+	private final ConfigMigrator configMigrator;
 
 	private final File configFile;
 	private final Class<T> configClass;
 	@Getter
 	private T config;
 
-	public ConfigManager(String configName, Class<T> configClass) {
+	public ConfigManager(String configName, Class<T> configClass, Map<String, String> migrationMap) {
 		this.configFile = FabricLoader.getInstance().getConfigDir().resolve(configName + ".toml").toFile();
 		this.configClass = configClass;
+		this.configMigrator = new ConfigMigrator(migrationMap);
 	}
 
 	private static Gson createGson() {
@@ -51,7 +53,10 @@ public class ConfigManager<T> {
 	}
 
 	public void loadConfig() {
-		final Map<String, Object> configMap = this.configFile.exists() ? TOML_READER.read(this.configFile).toMap() : new HashMap<>();
+		final Map<String, Object> configMap = this.configFile.exists()
+						? TOML_READER.read(this.configFile).toMap()
+						: new HashMap<>();
+		this.configMigrator.migrate(configMap);
 		final String configJson = GSON.toJson(configMap);
 		this.config = this.configify(configJson);
 
