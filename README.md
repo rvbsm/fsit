@@ -6,8 +6,8 @@ _Partially [GSit][gsit] rework for Fabric._
 
 __NOTE:__
 
-`ride_players`:
-___By default, when a player rides another player, their field of view is blocked.
+Player Riding:
+___By default, when a player rides another player, his hit-box is blocking player's view.
 Install this mod also on the client to prevent view blocking___
 
 ## Usage
@@ -25,11 +25,6 @@ players will be able to restrict players from riding them using [Social Interact
 
 For other players without the mod installed, the server configuration will be used.
 
-#### Client fixes
-
-* Player mount height
-* Crawling without the above support
-
 ### Configuration (`config/fsit.toml`)
 
 Can be modified from the client with [Mod Menu][modmenu] and [Cloth Config API][cloth-config] installed.
@@ -37,34 +32,22 @@ Can be modified from the client with [Mod Menu][modmenu] and [Cloth Config API][
 Reload config on server with `/fsit reload` command.
 
 ```toml
-#Do not edit
-config_version = 3
+config_version = 4
 
 [sneak]
-#Sit-on-sneak feature
 enabled = true
-#Minimal pitch to sitting/crawling down
-min_angle = 66.0
-#Time (ms) between sneaks to sitting/crawling down
+angle = 66.0
 delay = 600
 
 [sittable]
-#Sit-on-use block feature
 enabled = true
-#Maximum radius for sit-on-use
 radius = 2
-#List of block ids (e.g. "oak_log") available to sit
 blocks = []
-#List of block tags
 tags = ["minecraft:slabs", "minecraft:stairs", "minecraft:logs"]
 
-[misc]
-
-[misc.riding]
-#Player riding feature
+[riding]
 enabled = true
-#Maximum radius for start riding player
-radius = 2
+radius = 3
 ```
 
 ## Contributing
