@@ -23,11 +23,6 @@ loom {
 	}
 }
 
-val modInclude: Configuration by configurations.creating {
-	configurations.modImplementation.get().extendsFrom(this)
-	configurations.include.get().extendsFrom(this)
-}
-
 val shadowImplementation: Configuration by configurations.creating {
 	configurations.implementation.get().extendsFrom(this)
 }
@@ -40,16 +35,16 @@ dependencies {
 //	modImplementation(libs.fabric.api)
 
 	setOf("fabric-events-interaction-v0", "fabric-networking-api-v1", "fabric-command-api-v2").forEach {
-		modInclude(fabricApi.module(it, libs.versions.fabric.api.get()))
+		modImplementation(include(fabricApi.module(it, libs.versions.fabric.api.get()))!!)
 	}
 
 	shadowImplementation(libs.toml4j) {
-		exclude("com.google.code.gson", "gson")
+		exclude("com.google.code.gson")
 	}
 
 	modApi(libs.modmenu)
 	modApi(libs.clothconfig) {
-		exclude(group = "net.fabricmc.fabric-api")
+		exclude("net.fabricmc.fabric-api")
 	}
 
 	compileOnly(libs.lombok)
