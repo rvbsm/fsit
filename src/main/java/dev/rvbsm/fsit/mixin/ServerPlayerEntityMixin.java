@@ -55,7 +55,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
 	@Override
 	public boolean fsit$hasConfig() {
-		return this.config == FSitMod.getConfig();
+		return this.config != FSitMod.getConfig();
 	}
 
 	@Override
