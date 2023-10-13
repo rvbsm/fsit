@@ -46,12 +46,12 @@ public final class FSitMod implements ModInitializer {
 	public void onInitialize() {
 		FSitMod.loadConfig();
 
-		ServerPlayConnectionEvents.JOIN.register(ServerNetworkHandler.Connection::onJoin);
-
-		UseBlockCallback.EVENT.register(ServerNetworkHandler::onUseBlock);
-		UseEntityCallback.EVENT.register(ServerNetworkHandler::onUseEntity);
+		ServerPlayConnectionEvents.JOIN.register(ServerNetworkHandler::onJoin);
 
 		ServerPlayNetworking.registerGlobalReceiver(ConfigSyncC2SPacket.TYPE, ServerNetworkHandler::onConfigReceive);
 		ServerPlayNetworking.registerGlobalReceiver(RestrictPlayerC2SPacket.TYPE, ServerNetworkHandler::onRestrictReceive);
+
+		UseBlockCallback.EVENT.register(ServerNetworkHandler::onUseBlock);
+		UseEntityCallback.EVENT.register(ServerNetworkHandler::onUseEntity);
 	}
 }

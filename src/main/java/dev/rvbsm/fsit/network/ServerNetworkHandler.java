@@ -39,6 +39,11 @@ public final class ServerNetworkHandler {
 
 	private ServerNetworkHandler() {}
 
+	public static void onJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
+		sender.sendPacket(new RestrictionListSyncS2CPacket(((RestrictHandler) handler.player).fsit$getRestrictionList()));
+		((PoseHandler) handler.player).resetPose();
+	}
+
 	public static void onConfigReceive(ConfigSyncC2SPacket packet, ServerPlayerEntity player, PacketSender sender) {
 		((ConfigHandler) player).fsit$setConfig(packet.config());
 	}
@@ -109,25 +114,5 @@ public final class ServerNetworkHandler {
 		}
 
 		return ActionResult.PASS;
-	}
-
-//	public static class Configuration {
-//
-//		public static void onConfigure(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
-//			if (ServerConfigurationNetworking.canSend(handler, RestrictSyncS2CPacket.TYPE)) handler.addTask(new ConfigSyncTask());
-//		}
-//
-//		public static void onConfigReceive(ConfigSyncC2SPacket packet, ServerConfigurationNetworkHandler handler, PacketSender sender) {
-//			((ServerPlayerConfigHandler) handler).fsit$setConfig(packet.config());
-//			handler.completeTask(ConfigSyncTask.KEY);
-//		}
-//	}
-
-	public static class Connection {
-
-		public static void onJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
-			sender.sendPacket(new RestrictionListSyncS2CPacket(((RestrictHandler) handler.player).fsit$getRestrictionList()));
-			((PoseHandler) handler.player).resetPose();
-		}
 	}
 }
