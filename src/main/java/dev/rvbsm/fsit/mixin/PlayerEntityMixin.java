@@ -140,7 +140,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PoseHand
 		else if (poseHandler.isInPose(PlayerPose.CRAWL)) player.setSwimming(true);
 
 		if (!player.getWorld().isClient) {
-			if (((ConfigHandler) player).fsit$getConfig() != null) return;
+			if (((ConfigHandler) player).fsit$hasConfig()) return;
 
 			final World world = player.getWorld();
 			final BlockPos blockPos = this.getSupportBlockPos();
