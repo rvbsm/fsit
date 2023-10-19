@@ -29,12 +29,12 @@ public abstract class ServerPlayNetworkHandlerMixin {
 		final ConfigData.SneakTable configSneak = config.getSneak();
 
 		if (!player.hasVehicle() && poseHandler.isPosing()) poseHandler.resetPose();
-		else if (poseHandler.isInPose(PlayerPose.NONE) && configSneak.isEnabled()) poseHandler.fsit$setSneaked();
+		else if (poseHandler.isInPose(PlayerPose.NONE)) poseHandler.fsit$setSneaked();
 		else if (poseHandler.isInPose(PlayerPose.SNEAK)) {
-			if (player.getPitch() >= configSneak.getAngle()) {
+			if (player.getPitch() >= configSneak.getAngle() && configSneak.isEnabled()) {
 				if (player.isCrawling()) poseHandler.fsit$setCrawling();
 				else poseHandler.fsit$setSitting();
-			} else if (player.getPitch() <= -configSneak.getAngle()) {
+			} else if (player.getPitch() <= 0) {
 				if (player.getFirstPassenger() instanceof PlayerEntity passenger) passenger.stopRiding();
 			}
 		}
