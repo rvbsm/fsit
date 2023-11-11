@@ -101,7 +101,7 @@ public final class ServerNetworkHandler {
 	}
 
 	private static boolean preventsFromSitting(PlayerEntity player, PlayerEntity targetPlayer) {
-		return preventsFromSitting(player) || preventsFromSitting(targetPlayer) || targetPlayer.hasPassengers();
+		return preventsFromSitting(player) || preventsFromSitting(targetPlayer) || targetPlayer.hasPassengers() || player.equals(targetPlayer);
 	}
 
 	public static ActionResult onUseEntity(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
