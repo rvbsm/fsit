@@ -7,11 +7,13 @@ import java.util.Optional;
 public class ConfigMigrator {
 
 	private final Map<String, String> migrationMap;
+
 	ConfigMigrator(Map<String, String> migrationMap) {
-		this.migrationMap=  migrationMap;
+		this.migrationMap = migrationMap;
 	}
+
 	private Optional<Object> getNestedValue(Map<String, Object> configMap, String nestedKey) {
-		String[] keys = nestedKey.split("\\.");
+		final String[] keys = nestedKey.split("\\.");
 		for (int i = 0; i < keys.length; i++) {
 			Object value = configMap.get(keys[i]);
 			if (i < keys.length - 1) {
@@ -23,7 +25,7 @@ public class ConfigMigrator {
 	}
 
 	private void putNestedValue(Map<String, Object> configMap, String nestedKey, Object value) {
-		String[] keys = nestedKey.split("\\.");
+		final String[] keys = nestedKey.split("\\.");
 		for (int i = 0; i < keys.length; i++) {
 			if (i < keys.length - 1) configMap = (Map<String, Object>) configMap.computeIfAbsent(keys[i], k -> new HashMap<>());
 			else configMap.put(keys[i], value);
@@ -31,7 +33,7 @@ public class ConfigMigrator {
 	}
 
 	private void removeNestedValue(Map<String, Object> configMap, String nestedKey) {
-		String[] keys = nestedKey.split("\\.");
+		final String[] keys = nestedKey.split("\\.");
 		for (int i = 0; i < keys.length; i++) {
 			if (i < keys.length - 1) {
 				if (configMap.get(keys[i]) instanceof Map) configMap = (Map<String, Object>) configMap.get(keys[i]);
@@ -42,7 +44,7 @@ public class ConfigMigrator {
 
 	void migrate(Map<String, Object> configMap) {
 		this.migrationMap.forEach((oldFieldName, newFieldName) -> {
-			Optional<Object> oldFieldValue = this.getNestedValue(configMap, oldFieldName);
+			final Optional<Object> oldFieldValue = this.getNestedValue(configMap, oldFieldName);
 			if (oldFieldValue.isPresent()) {
 				this.putNestedValue(configMap, newFieldName, oldFieldValue.get());
 				this.removeNestedValue(configMap, oldFieldName);
