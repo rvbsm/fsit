@@ -20,7 +20,7 @@ public class ReloadCommand implements Commandish<ServerCommandSource> {
 	}
 
 	@Override
-	public int command(CommandContext<ServerCommandSource> ctx) {
+	public int executes(CommandContext<ServerCommandSource> ctx) {
 		FSitMod.loadConfig();
 		ctx.getSource().sendMessage(Text.of("Config reloaded"));
 		return Command.SINGLE_SUCCESS;

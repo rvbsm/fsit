@@ -27,7 +27,7 @@ public class FSitCommand implements Commandish<ServerCommandSource> {
 	}
 
 	@Override
-	public int command(CommandContext<ServerCommandSource> ctx) {
+	public int executes(CommandContext<ServerCommandSource> ctx) {
 		// todo
 		return Command.SINGLE_SUCCESS;
 	}
