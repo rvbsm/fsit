@@ -15,23 +15,29 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ConfigManager<T> {
 
 	private static final Gson GSON = createGson();
 	private static final Toml TOML_READER = new Toml();
 	private static final TomlWriter TOML_WRITER = new TomlWriter();
-	private final ConfigMigrator configMigrator;
 
 	private final File configFile;
 	private final Class<T> configClass;
+	private final ConfigMigrator configMigrator;
+
 	@Getter
 	private T config;
+	private Map<String, Object> configMap = new LinkedHashMap<>();
+	@Getter
+	private Set<String> configKeys;
 
 	public ConfigManager(String configName, Class<T> configClass, Map<String, String> migrationMap) {
-		this.configFile = FabricLoader.getInstance().getConfigDir().resolve(configName + ".toml").toFile();
+		this.configFile = getConfigFile(configName);
 		this.configClass = configClass;
 		this.configMigrator = new ConfigMigrator(migrationMap);
 	}
@@ -44,8 +50,45 @@ public class ConfigManager<T> {
 						.create();
 	}
 
+	private static File getConfigFile(String configName) {
+		return FabricLoader.getInstance().getConfigDir().resolve(configName + ".toml").toFile();
+	}
+
+	private static Map<String, Object> flatMap(Map<String, Object> fromMap, String prefix) {
+		final Map<String, Object> toMap = new LinkedHashMap<>();
+		fromMap.forEach((key, value) -> {
+			final String toKey = prefix.isEmpty() ? key : (prefix + "." + key);
+			if (value instanceof Map<?, ?>) toMap.putAll(flatMap((Map<String, Object>) value, toKey));
+			else toMap.put(toKey, value);
+		});
+
+		return toMap;
+	}
+
+	private static Map<String, Object> nestedMap(Map<String, Object> fromMap) {
+		final Map<String, Object> toMap = new LinkedHashMap<>();
+		fromMap.forEach((fromKey, value) -> {
+			String[] keys = fromKey.split("\\.");
+			Map<String, Object> subMap = toMap;
+			for (int i = 0; i < keys.length - 1; i++)
+				subMap = (Map<String, Object>) subMap.computeIfAbsent(keys[i], k -> new LinkedHashMap<>());
+			subMap.put(keys[keys.length - 1], value);
+		});
+
+		return toMap;
+	}
+
+	private void load(Map<String, Object> configMap) {
+		final String configJson = GSON.toJson(configMap);
+		this.config = this.configify(configJson);
+	}
+
 	public String stringify(T configData) {
 		return GSON.toJson(configData);
+	}
+
+	public Map<String, Object> mapify(T configData) {
+		return GSON.fromJson(this.stringify(configData), new TypeToken<Map<String, Object>>() {}.getType());
 	}
 
 	public T configify(String configJson) {
@@ -55,18 +98,34 @@ public class ConfigManager<T> {
 	public void loadConfig() {
 		final Map<String, Object> configMap = this.configFile.exists()
 						? TOML_READER.read(this.configFile).toMap()
-						: new HashMap<>();
+						: new LinkedHashMap<>();
 		this.configMigrator.migrate(configMap);
-		final String configJson = GSON.toJson(configMap);
-		this.config = this.configify(configJson);
 
+		this.load(configMap);
 		this.saveConfig();
 	}
 
 	@SneakyThrows
 	public void saveConfig() {
-		final String configJson = this.stringify(this.config);
-		final Map<String, Object> configMap = GSON.fromJson(configJson, new TypeToken<Map<String, Object>>() {}.getType());
+		final Map<String, Object> configMap = this.mapify(this.config);
 		TOML_WRITER.write(configMap, this.configFile);
+
+		this.configMap = flatMap(configMap, "");
+		if (this.configKeys == null) this.configKeys = this.configMap.keySet()
+						.stream()
+						.filter(key -> !key.equals("config_version"))
+						.collect(Collectors.toUnmodifiableSet());
+	}
+
+	public Object getByFlat(String key) {
+		return this.configMap.get(key);
+	}
+
+	public void updateByFlat(String key, Object value) {
+		this.configMap.put(key, value);
+		final Map<String, Object> nestedMap = nestedMap(this.configMap);
+
+		this.load(nestedMap);
+		this.saveConfig();
 	}
 }
