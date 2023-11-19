@@ -126,8 +126,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 		if (!this.preventsPosing()) this.fsit$setPose(PlayerPose.CRAWL);
 	}
 
-		this.fsit$setPose(PlayerPose.CRAWL);
-	}
 
 	@Inject(method = "stopRiding", at = @At("TAIL"))
 	private void stopRiding(CallbackInfo ci) {
