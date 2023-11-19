@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 
 public class SeatEntity extends AreaEffectCloudEntity {
 
+	public static final Text CUSTOM_NAME = Text.literal("FSit Seat");
 	private static final double OFFSET = .5d;
 	private Entity mounted;
 	private boolean prevTickNoAir = false;
@@ -21,7 +22,7 @@ public class SeatEntity extends AreaEffectCloudEntity {
 		super.setNoGravity(true);
 		super.setInvulnerable(true);
 		super.setInvisible(true);
-		super.setCustomName(Text.literal("FSit Seat"));
+		super.setCustomName(CUSTOM_NAME);
 
 		super.setRadius(.0f);
 		super.setDuration(Integer.MAX_VALUE);

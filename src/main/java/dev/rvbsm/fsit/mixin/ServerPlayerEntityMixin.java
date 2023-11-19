@@ -90,14 +90,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
 	@Override
 	public void fsit$setSneaked() {
-		if (this.isPosing() || this.preventsPosing()) return;
-
-		this.fsit$setPose(PlayerPose.SNEAK);
-		final Executor delayedExecutor = CompletableFuture.delayedExecutor(this.config.getSneak()
-						.getDelay(), TimeUnit.MILLISECONDS);
-		CompletableFuture.runAsync(() -> {
-			if (!this.isPosing()) this.resetPose();
-		}, delayedExecutor);
+		if (!this.isPosing() || !this.preventsPosing()) {
+			this.fsit$setPose(PlayerPose.SNEAK);
+			final Executor delayedExecutor = CompletableFuture.delayedExecutor(this.config.getSneak()
+							.getDelay(), TimeUnit.MILLISECONDS);
+			CompletableFuture.runAsync(() -> {
+				if (!this.isPosing()) this.resetPose();
+			}, delayedExecutor);
+		}
 	}
 
 	@Override
@@ -107,23 +107,24 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
 	@Override
 	public void fsit$setSitting(Vec3d pos) {
-		if (this.preventsPosing()) return;
+		if (!this.preventsPosing()) {
+			final BlockPos blockPos = this.getBlockPos();
+			final BlockState blockBelowState = this.getWorld()
+							.getBlockState(this.getPos().y % 1 == 0 ? blockPos.down() : blockPos);
+			if (blockBelowState.isAir()) return;
+			this.fsit$setPose(PlayerPose.SIT);
 
-		final BlockPos blockPos = this.getBlockPos();
-		final BlockState blockBelowState = this.getWorld()
-						.getBlockState(this.getPos().y % 1 == 0 ? blockPos.down() : blockPos);
-		if (blockBelowState.isAir()) return;
-		this.fsit$setPose(PlayerPose.SIT);
-
-		final World world = this.getWorld();
-		final SeatEntity seat = new SeatEntity(world, pos);
-		world.spawnEntity(seat);
-		this.startRiding(seat, true);
+			final World world = this.getWorld();
+			final SeatEntity seat = new SeatEntity(world, pos);
+			world.spawnEntity(seat);
+			this.startRiding(seat, true);
+		}
 	}
 
 	@Override
 	public void fsit$setCrawling() {
-		if (this.preventsPosing()) return;
+		if (!this.preventsPosing()) this.fsit$setPose(PlayerPose.CRAWL);
+	}
 
 		this.fsit$setPose(PlayerPose.CRAWL);
 	}
