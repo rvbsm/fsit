@@ -2,13 +2,13 @@ package dev.rvbsm.fsit.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
-import dev.rvbsm.fsit.entity.PlayerPose;
 import dev.rvbsm.fsit.entity.PoseHandler;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public record PoseCommand(String name, PlayerPose pose)
-				implements Commandish<ServerCommandSource> {
+import java.util.function.Consumer;
+
+public record PoseCommand(String name, Consumer<PoseHandler> poseConsumer) implements Commandish<ServerCommandSource> {
 
 	@Override
 	public boolean requires(ServerCommandSource src) {
@@ -23,10 +23,7 @@ public record PoseCommand(String name, PlayerPose pose)
 		if (player == null) return -1;
 
 		if (poseHandler.isPosing()) poseHandler.resetPose();
-		else switch (pose) {
-			case SIT -> poseHandler.fsit$setSitting();
-			case CRAWL -> poseHandler.fsit$setCrawling();
-		}
+		else poseConsumer.accept(poseHandler);
 
 		return Command.SINGLE_SUCCESS;
 	}
