@@ -16,7 +16,7 @@ public record PoseCommand(String name, PlayerPose pose)
 	}
 
 	@Override
-	public int command(CommandContext<ServerCommandSource> ctx) {
+	public int executes(CommandContext<ServerCommandSource> ctx) {
 		final ServerCommandSource src = ctx.getSource();
 		final ServerPlayerEntity player = src.getPlayer();
 		final PoseHandler poseHandler = (PoseHandler) player;
