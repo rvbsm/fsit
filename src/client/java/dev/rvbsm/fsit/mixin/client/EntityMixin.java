@@ -39,13 +39,13 @@ public abstract class EntityMixin {
 	}
 
 	@Redirect(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;"))
-	public EntityDimensions calculateDimensions$getDimensions(@NotNull Entity entity, EntityPose pose) {
+	public EntityDimensions calculateDimensions$getDimensions$reduceHitbox(@NotNull Entity entity, EntityPose pose) {
 		final EntityDimensions dimensions = entity.getDimensions(pose);
 		return entity.isPlayer() && entity.getVehicle() instanceof PlayerEntity ? dimensions.scaled(1f, .8f) : dimensions;
 	}
 
 	@Redirect(method = "calculateBoundingBox", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;pos:Lnet/minecraft/util/math/Vec3d;", opcode = Opcodes.GETFIELD))
-	protected Vec3d calculateBoundingBox$pos(@NotNull Entity entity) {
+	protected Vec3d calculateBoundingBox$pos$moveHitboxUp(@NotNull Entity entity) {
 		if (entity.isPlayer() && entity.getVehicle() instanceof PlayerEntity) return this.pos.add(0d, .35d, 0d);
 		else return this.pos;
 	}

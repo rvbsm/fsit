@@ -43,12 +43,19 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	private ButtonWidget allowButton;
 	@Unique
 	private ButtonWidget restrictButton;
-//
+
+	@Unique
+	private void updateButtons(boolean showRestrictButton) {
+		this.restrictButton.visible = showRestrictButton;
+		this.allowButton.visible = !showRestrictButton;
+	}
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
-	public void init(MinecraftClient client, SocialInteractionsScreen parent, UUID uuid, String name, Supplier<Identifier> skinTexture, boolean reportable, CallbackInfo ci) {
+	public void init$addRestrictButton(MinecraftClient client, SocialInteractionsScreen parent, UUID uuid, String name, Supplier<Identifier> skinTexture, boolean reportable, CallbackInfo ci) {
+		final RestrictHandler restrictHandler = (RestrictHandler) client.player;
+
 		this.restrictButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, BLOCKED_TEXTURE, 64, 64, button -> {
-			((RestrictHandler) client.player).fsit$restrictPlayer(uuid);
+			restrictHandler.fsit$restrictPlayer(uuid);
 			updateButtons(false);
 		}, RESTRICT_BUTTON_TEXT);
 		this.restrictButton.active = FSitMod.getConfig().getRiding().isEnabled();
@@ -56,7 +63,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 		this.restrictButton.setTooltipDelay(10);
 
 		this.allowButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, BLOCKED_TEXTURE, 64, 64, button -> {
-			((RestrictHandler) client.player).fsit$allowPlayer(uuid);
+			restrictHandler.fsit$allowPlayer(uuid);
 			updateButtons(true);
 		}, ALLOW_BUTTON_TEXT);
 		this.allowButton.active = FSitMod.getConfig().getRiding().isEnabled();
@@ -66,11 +73,11 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 		this.buttons.add(this.restrictButton);
 		this.buttons.add(this.allowButton);
 
-		this.updateButtons(!((RestrictHandler) client.player).fsit$isRestricted(uuid));
+		this.updateButtons(!restrictHandler.fsit$isRestricted(uuid));
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
-	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
+	public void render$renderRestrictButton(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
 		if (this.restrictButton != null && this.allowButton != null) {
 			this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
 			this.restrictButton.setY(y + (entryHeight - this.restrictButton.getHeight()) / 2);
@@ -79,11 +86,5 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 			this.allowButton.setY(y + (entryHeight - this.allowButton.getHeight()) / 2);
 			this.allowButton.render(context, mouseX, mouseY, tickDelta);
 		}
-	}
-
-	@Unique
-	private void updateButtons(boolean showRestrictButton) {
-		this.restrictButton.visible = showRestrictButton;
-		this.allowButton.visible = !showRestrictButton;
 	}
 }

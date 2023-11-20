@@ -128,7 +128,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
 
 	@Inject(method = "stopRiding", at = @At("TAIL"))
-	private void stopRiding(CallbackInfo ci) {
+	private void stopRiding$resetPose(CallbackInfo ci) {
 		if (this.isInPose(PlayerPose.SIT)) this.resetPose();
 	}
 }

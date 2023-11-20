@@ -22,7 +22,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	private MinecraftClient client;
 
 	@Inject(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;startRiding(Lnet/minecraft/entity/Entity;Z)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
-	public void onEntityPassengersSet$startRiding(EntityPassengersSetS2CPacket packet, CallbackInfo ci, Entity passenger, boolean bl, int[] var4, int var5, int var6, int i, Entity vehicle) {
+	private void onEntityPassengersSet$startRiding$sendOnRideMessage(EntityPassengersSetS2CPacket packet, CallbackInfo ci, Entity passenger, boolean bl, int[] var4, int var5, int var6, int i, Entity vehicle) {
 		if (passenger == this.client.player && vehicle.isPlayer()) {
 			final Text text = FSitMod.getTranslation("message", "onride", this.client.options.sneakKey.getBoundKeyLocalizedText());
 			this.client.inGameHud.setOverlayMessage(text, false);

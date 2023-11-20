@@ -21,7 +21,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
 	public ServerPlayerEntity player;
 
 	@Inject(method = "onClientCommand", at = @At("TAIL"))
-	public void onClientCommand(ClientCommandC2SPacket packet, CallbackInfo ci) {
+	public void onClientCommand$catchSneak(ClientCommandC2SPacket packet, CallbackInfo ci) {
 		if (packet.getMode() != ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY) return;
 
 		final PoseHandler poseHandler = (PoseHandler) player;
