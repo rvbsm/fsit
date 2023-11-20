@@ -1,6 +1,5 @@
 package dev.rvbsm.fsit.mixin.client;
 
-import dev.rvbsm.fsit.FSitMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -32,11 +31,6 @@ public abstract class EntityMixin {
 	@ModifyConstant(method = "getMountedHeightOffset", constant = @Constant(doubleValue = 0.75))
 	public double getMountedHeightOffset$multiplier(double multiplier) {
 		return this.isPlayer() ? 1.0 : multiplier;
-	}
-
-	@Inject(method = "getMountedHeightOffset", at = @At("TAIL"), cancellable = true)
-	public void getMountedHeightOffset(CallbackInfoReturnable<Double> cir) {
-		cir.setReturnValue(cir.getReturnValue() + FSitMod.getConfig().rideHeight);
 	}
 
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("TAIL"))
