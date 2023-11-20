@@ -46,10 +46,15 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	private ButtonWidget allowButton;
 	@Unique
 	private ButtonWidget restrictButton;
-//
+
+	@Unique
+	private void updateButtons(boolean showRestrictButton) {
+		this.restrictButton.visible = showRestrictButton;
+		this.allowButton.visible = !showRestrictButton;
+	}
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
-	public void init(MinecraftClient client, SocialInteractionsScreen parent, UUID uuid, String name, Supplier<Identifier> skinTexture, boolean reportable, CallbackInfo ci) {
+	public void init$addRestrictButton(MinecraftClient client, SocialInteractionsScreen parent, UUID uuid, String name, Supplier<Identifier> skinTexture, boolean reportable, CallbackInfo ci) {
 		final RestrictHandler restrictHandler = (RestrictHandler) client.player;
 
 		this.restrictButton = new TexturedButtonWidget(0, 0, 20, 20, RESTRICT_BUTTON_TEXTURES, button -> {
@@ -75,7 +80,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
-	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
+	public void render$renderRestrictButton(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
 		if (this.restrictButton != null && this.allowButton != null) {
 			this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
 			this.restrictButton.setY(y + (entryHeight - this.restrictButton.getHeight()) / 2);
@@ -84,11 +89,5 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 			this.allowButton.setY(y + (entryHeight - this.allowButton.getHeight()) / 2);
 			this.allowButton.render(context, mouseX, mouseY, tickDelta);
 		}
-	}
-
-	@Unique
-	private void updateButtons(boolean showRestrictButton) {
-		this.restrictButton.visible = showRestrictButton;
-		this.allowButton.visible = !showRestrictButton;
 	}
 }
