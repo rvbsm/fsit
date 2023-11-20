@@ -1,9 +1,7 @@
 package dev.rvbsm.fsit.mixin.client;
 
 import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.FSitModClient;
-import dev.rvbsm.fsit.packet.RidePacket;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.rvbsm.fsit.entity.RestrictHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry;
@@ -32,9 +30,9 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	@Unique
 	private static final Identifier BLOCKED_TEXTURE = new Identifier("fsit", "textures/gui/blocked_button.png");
 	@Unique
-	private static final Text BLOCK_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.block");
+	private static final Text RESTRICT_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.restrict");
 	@Unique
-	private static final Text UNBLOCK_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.unblock");
+	private static final Text ALLOW_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.allow");
 	@Unique
 	private static final Text DISABLED_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.disabled");
 
@@ -42,51 +40,50 @@ public abstract class SocialInteractionsPlayerListEntryMixin {
 	@Final
 	private List<ClickableWidget> buttons;
 	@Unique
-	private ButtonWidget unblockButton;
+	private ButtonWidget allowButton;
 	@Unique
-	private ButtonWidget blockButton;
+	private ButtonWidget restrictButton;
+//
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
 	public void init(MinecraftClient client, SocialInteractionsScreen parent, UUID uuid, String name, Supplier<Identifier> skinTexture, boolean reportable, CallbackInfo ci) {
-		this.blockButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, BLOCKED_TEXTURE, 64, 64, button -> {
-		}, BLOCK_BUTTON_TEXT);
-		this.blockButton.setTooltip(Tooltip.of(this.blockButton.active ? BLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
-		this.blockButton.setTooltipDelay(10);
-		this.blockButton.visible = !FSitModClient.isBlockedRider(uuid);
-		final RestrictHandler restrictHandler = (RestrictHandler) client.player;
-			restrictHandler.fsit$restrictPlayer(uuid);
+		this.restrictButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, BLOCKED_TEXTURE, 64, 64, button -> {
+			((RestrictHandler) client.player).fsit$restrictPlayer(uuid);
 			updateButtons(false);
+		}, RESTRICT_BUTTON_TEXT);
 		this.restrictButton.active = FSitMod.getConfig().getRiding().isEnabled();
+		this.restrictButton.setTooltip(Tooltip.of(this.restrictButton.active ? RESTRICT_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
+		this.restrictButton.setTooltipDelay(10);
 
-		this.unblockButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, BLOCKED_TEXTURE, 64, 64, button -> {
-		}, UNBLOCK_BUTTON_TEXT);
-		this.unblockButton.setTooltip(Tooltip.of(this.unblockButton.active ? UNBLOCK_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
-		this.unblockButton.setTooltipDelay(10);
-		this.unblockButton.visible = FSitModClient.isBlockedRider(uuid);
-			restrictHandler.fsit$allowPlayer(uuid);
+		this.allowButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, BLOCKED_TEXTURE, 64, 64, button -> {
+			((RestrictHandler) client.player).fsit$allowPlayer(uuid);
 			updateButtons(true);
+		}, ALLOW_BUTTON_TEXT);
 		this.allowButton.active = FSitMod.getConfig().getRiding().isEnabled();
+		this.allowButton.setTooltip(Tooltip.of(this.allowButton.active ? ALLOW_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
+		this.allowButton.setTooltipDelay(10);
 
-		this.buttons.add(this.blockButton);
-		this.buttons.add(this.unblockButton);
-		this.updateButtons(!restrictHandler.fsit$isRestricted(uuid));
+		this.buttons.add(this.restrictButton);
+		this.buttons.add(this.allowButton);
+
+		this.updateButtons(!((RestrictHandler) client.player).fsit$isRestricted(uuid));
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
 	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
-		if (this.blockButton != null && this.unblockButton != null) {
-			this.blockButton.setX(x + (entryWidth - this.blockButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
-			this.blockButton.setY(y + (entryHeight - this.blockButton.getHeight()) / 2);
-			this.blockButton.render(context, mouseX, mouseY, tickDelta);
-			this.unblockButton.setX(x + (entryWidth - this.unblockButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
-			this.unblockButton.setY(y + (entryHeight - this.unblockButton.getHeight()) / 2);
-			this.unblockButton.render(context, mouseX, mouseY, tickDelta);
+		if (this.restrictButton != null && this.allowButton != null) {
+			this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
+			this.restrictButton.setY(y + (entryHeight - this.restrictButton.getHeight()) / 2);
+			this.restrictButton.render(context, mouseX, mouseY, tickDelta);
+			this.allowButton.setX(x + (entryWidth - this.allowButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
+			this.allowButton.setY(y + (entryHeight - this.allowButton.getHeight()) / 2);
+			this.allowButton.render(context, mouseX, mouseY, tickDelta);
 		}
 	}
 
 	@Unique
-		this.blockButton.visible = blockButtonVisible;
-		this.unblockButton.visible = !blockButtonVisible;
-	private void updateButtons(boolean blockButtonVisible) {
+	private void updateButtons(boolean showRestrictButton) {
+		this.restrictButton.visible = showRestrictButton;
+		this.allowButton.visible = !showRestrictButton;
 	}
 }
