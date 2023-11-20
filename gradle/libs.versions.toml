@@ -1,12 +1,12 @@
 [versions]
 minecraft = "1.20"
 yarn_mappings = "1.20+build.1"
-fabric_loader = "0.14.21"
+fabric_loader = "0.14.24"
 fabric_api = "0.83.0+1.20"
-fabric_loom = "1.2.+"
+fabric_loom = "1.4-SNAPSHOT"
 
-modmenu = "7.0.+"
-clothconfig = "11.1.+"
+modmenu = "7.0.1"
+clothconfig = "11.1.106"
 
 toml4j = "0.7.2"
 lombok = "1.18.28"
@@ -16,7 +16,7 @@ git = "3.0.+"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
-# yarn_mappings = { module = "net.fabricmc:yarn", version.ref = "yarn_mappings" }
+yarn_mappings = { module = "net.fabricmc:yarn", version.ref = "yarn_mappings" }
 fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
 fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
 
