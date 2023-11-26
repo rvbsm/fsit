@@ -8,28 +8,29 @@ __NOTE:__
 
 Player Riding:
 ___By default, when a player rides another player, his hit-box is blocking player's view.
-Install this mod also on the client to prevent view blocking___
+Install this mod on the client to prevent sight blocking.___
 
 ## Usage
 
-* Sneak twice looking down to sit down (or to force crawling while crawling);
-* Right-click on stairs, slabs or horizontal logs (lists are configurable);
-* Right-click on a player to start riding him (disabled by default);
-* `/sit`, `/crawl` commands;
+* To sit or crawl, you need to sneak twice while looking down;
+* Use stairs, slabs, or horizontal logs (configurable);
+* Ride other players;
+* By commands `/sit` and `/crawl`;
 
 ### Client
 
-If the mod is installed on the client, the server will respect the player's configuration.
+The server will respect players' configuration if this mod is installed on the client.
 Additionally,
-players will be able to restrict players from riding them using [Social Interactions screen][social-interactions].
+they can restrict other players from riding them using [Social Interactions screen][social-interactions].
 
-For other players without the mod installed, the server configuration will be used.
+For other players, server configuration will be used.
 
 ### Configuration (`config/fsit.toml`)
 
-Can be modified from the client with [Mod Menu][modmenu] and [Cloth Config API][cloth-config] installed.
+The config can be modified using [Mod Menu][modmenu] and [Cloth Config API][cloth-config] installed.
 
-Reload config on server with `/fsit reload` command.
+Use `/fsit get <key>` and `/fsit set <key> <value` to access or modify config fields.
+Reload from the file using `/fsit reload`.
 
 ```toml
 config_version = 4
@@ -63,7 +64,7 @@ This project is licensed under the [MIT License][license].
 
 [gsit]: https://github.com/Gecolay/GSit
 
-[social-interactions]: https://minecraft.fandom.com/wiki/Social_interactions
+[social-interactions]: https://minecraft.wiki/w/Social_interactions
 
 [modmenu]: [https://modrinth.com/mod/modmenu]
 [cloth-config]: [https://modrinth.com/mod/cloth-config]
