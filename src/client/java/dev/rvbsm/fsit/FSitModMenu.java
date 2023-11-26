@@ -12,6 +12,9 @@ import net.minecraft.util.Identifier;
 
 public final class FSitModMenu implements ModMenuApi {
 
+	private static final Text SNEAK_CATEGORY_TEXT = FSitMod.getTranslation("category", "sneak");
+	private static final Text SITTABLE_CATEGORY_TEXT = FSitMod.getTranslation("category", "sittable");
+	private static final Text RIDING_CATEGORY_TEXT = FSitMod.getTranslation("category", "riding");
 	private static final Text SNEAK_ENABLED_TEXT = FSitMod.getTranslation("option", "sneak.enabled");
 	private static final Text SNEAK_ENABLED_COMMENT = FSitMod.getTranslation("comment", "sneak.enabled");
 	private static final Text SNEAK_ANGLE_TEXT = FSitMod.getTranslation("option", "sneak.angle");
@@ -48,7 +51,7 @@ public final class FSitModMenu implements ModMenuApi {
 
 			final ConfigCategory main = configBuilder.getOrCreateCategory(Text.literal("main"));
 
-			final SubCategoryBuilder sneakCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "sneak"));
+			final SubCategoryBuilder sneakCategory = entryBuilder.startSubCategory(SNEAK_CATEGORY_TEXT);
 			sneakCategory.add(entryBuilder.startBooleanToggle(SNEAK_ENABLED_TEXT, configSneak.isEnabled())
 							.setSaveConsumer(configSneak::setEnabled)
 							.setDefaultValue(ConfigData.DEFAULT.getSneak()::isEnabled)
@@ -65,7 +68,7 @@ public final class FSitModMenu implements ModMenuApi {
 							.setTooltip(SNEAK_DELAY_COMMENT)
 							.build());
 
-			final SubCategoryBuilder sittableCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "sittable"));
+			final SubCategoryBuilder sittableCategory = entryBuilder.startSubCategory(SITTABLE_CATEGORY_TEXT);
 			sittableCategory.add(entryBuilder.startBooleanToggle(SITTABLE_ENABLED_TEXT, configSittable.isEnabled())
 							.setSaveConsumer(configSittable::setEnabled)
 							.setDefaultValue(ConfigData.DEFAULT.getSittable()::isEnabled)
@@ -87,7 +90,7 @@ public final class FSitModMenu implements ModMenuApi {
 							.setTooltip(SITTABLE_TAGS_COMMENT)
 							.build());
 
-			final SubCategoryBuilder ridingCategory = entryBuilder.startSubCategory(FSitMod.getTranslation("category", "riding"));
+			final SubCategoryBuilder ridingCategory = entryBuilder.startSubCategory(RIDING_CATEGORY_TEXT);
 			ridingCategory.add(entryBuilder.startBooleanToggle(RIDING_ENABLED_TEXT, configRiding.isEnabled())
 							.setSaveConsumer(configRiding::setEnabled)
 							.setDefaultValue(ConfigData.DEFAULT.getRiding()::isEnabled)
