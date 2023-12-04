@@ -18,11 +18,6 @@ public class FSitCommand implements Commandish<ServerCommandSource> {
 	}
 
 	@Override
-	public boolean requires(ServerCommandSource src) {
-		return src.hasPermissionLevel(2);
-	}
-
-	@Override
 	public int executes(CommandContext<ServerCommandSource> ctx) {
 		// todo
 		return Command.SINGLE_SUCCESS;
