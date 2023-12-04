@@ -17,8 +17,6 @@ import net.minecraft.util.Identifier;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ConfigManager<T> {
 
@@ -33,8 +31,6 @@ public class ConfigManager<T> {
 	@Getter
 	private T config;
 	private Map<String, Object> configMap = new LinkedHashMap<>();
-	@Getter
-	private Set<String> configKeys;
 
 	public ConfigManager(String configName, Class<T> configClass, Map<String, String> migrationMap) {
 		this.configFile = getConfigFile(configName);
@@ -111,10 +107,6 @@ public class ConfigManager<T> {
 		TOML_WRITER.write(configMap, this.configFile);
 
 		this.configMap = flatMap(configMap, "");
-		if (this.configKeys == null) this.configKeys = this.configMap.keySet()
-						.stream()
-						.filter(key -> !key.equals("config_version"))
-						.collect(Collectors.toUnmodifiableSet());
 	}
 
 	public Object getByFlat(String key) {

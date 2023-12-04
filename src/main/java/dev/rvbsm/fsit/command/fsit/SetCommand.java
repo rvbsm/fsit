@@ -8,7 +8,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.command.Commandish;
-import dev.rvbsm.fsit.command.argument.ConfigFieldArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.tuple.Pair;
@@ -20,6 +19,11 @@ public class SetCommand implements Commandish<ServerCommandSource> {
 	@Override
 	public String name() {
 		return "set";
+	}
+
+	@Override
+	public List<Pair<String, ArgumentType<?>>> arguments() {
+		return List.of(Pair.of("key", StringArgumentType.word()), Pair.of("value", StringArgumentType.greedyString()));
 	}
 
 	@Override
@@ -46,10 +50,5 @@ public class SetCommand implements Commandish<ServerCommandSource> {
 		src.sendMessage(Text.of("Updated %s ➡ %s".formatted(key, newCfgValue)));
 
 		return Command.SINGLE_SUCCESS;
-	}
-
-	@Override
-	public List<Pair<String, ArgumentType<?>>> arguments() {
-		return List.of(Pair.of("key", ConfigFieldArgumentType.field()), Pair.of("value", StringArgumentType.greedyString()));
 	}
 }
