@@ -83,6 +83,10 @@ public class ConfigManager<T> {
 		return GSON.toJson(configData);
 	}
 
+	public String tomlify() {
+		return TOML_WRITER.write(this.mapify(this.config));
+	}
+
 	public Map<String, Object> mapify(T configData) {
 		return GSON.fromJson(this.stringify(configData), new TypeToken<Map<String, Object>>() {}.getType());
 	}
