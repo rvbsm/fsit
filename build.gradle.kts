@@ -34,7 +34,7 @@ dependencies {
 	modImplementation(libs.fabric.loader)
 //	modImplementation(libs.fabric.api)
 
-	setOf("fabric-events-interaction-v0", "fabric-networking-api-v1", "fabric-command-api-v2", "fabric-registry-sync-v0").forEach {
+	setOf("fabric-events-interaction-v0", "fabric-networking-api-v1", "fabric-command-api-v2").forEach {
 		modImplementation(include(fabricApi.module(it, libs.versions.fabric.api.get()))!!)
 	}
 
