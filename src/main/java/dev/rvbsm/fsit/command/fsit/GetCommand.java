@@ -5,12 +5,16 @@ import com.mojang.brigadier.context.CommandContext;
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.command.CommandArgument;
 import dev.rvbsm.fsit.command.Commandish;
+import dev.rvbsm.fsit.text.TextUtils;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
 import java.util.List;
 
 public class GetCommand implements Commandish<ServerCommandSource> {
+
+	private static final String UNKNOWN_FIELD_MESSAGE = "Unknown config field key: %s";
+	private static final String GET_MESSAGE = "%s ➡ %s";
 
 	@Override
 	public String name() {
@@ -32,9 +36,13 @@ public class GetCommand implements Commandish<ServerCommandSource> {
 		final ServerCommandSource src = ctx.getSource();
 		final String key = ctx.getArgument(CommandArgument.CONFIG_KEY.getName(), String.class);
 		final Object cfgValue = FSitMod.getConfigManager().getByFlat(key);
-		if (cfgValue == null) src.sendError(Text.of("Unknown config field key: %s".formatted(key)));
+		if (cfgValue == null) {
+			src.sendError(Text.of(UNKNOWN_FIELD_MESSAGE.formatted(key)));
+			return -1;
+		}
 
-		src.sendMessage(Text.of("%s ➡ %s".formatted(key, cfgValue)));
+		final String msg = TextUtils.colorizeChatEntries(GET_MESSAGE.formatted(key, cfgValue));
+		src.sendMessage(TextUtils.convertToModern(msg));
 
 		return Command.SINGLE_SUCCESS;
 	}
