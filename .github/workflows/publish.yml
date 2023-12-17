@@ -1,7 +1,7 @@
 name: Publish
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 jobs:
   publish:
@@ -14,8 +14,10 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: gradle
-      - run: ./gradlew build
+
+      - run: ./gradlew build --no-daemon
       - run: rm -f build/libs/*-shadow.jar
+
       - uses: Kir-Antipov/mc-publish@v3.2
         with:
           loaders: |
@@ -23,6 +25,8 @@ jobs:
             quilt
           game-versions: |
             1.20.2
+            1.20.3
+            1.20.4
           dependencies: |
             modmenu | suggests | *
             cloth-config | suggests | *

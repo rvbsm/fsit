@@ -2,7 +2,7 @@ name: Build
 on:
   push:
     branches:
-      - 'next/**'
+      - "next/**"
 
 jobs:
   build:
@@ -15,7 +15,9 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: gradle
-      - run: ./gradlew build
+
+      - run: ./gradlew build --no-daemon
+
       - uses: actions/upload-artifact@v3
         with:
           path: build/libs/*
