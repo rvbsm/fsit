@@ -1,14 +1,12 @@
 package dev.rvbsm.fsit.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Iterator;
 import java.util.List;
@@ -23,11 +21,15 @@ public interface Commandish<S extends CommandSource> {
 		final LiteralArgumentBuilder<S> builder = LiteralArgumentBuilder.<S>literal(this.name()).requires(this::requires);
 		this.children().stream().map(Commandish::builder).forEach(builder::then);
 
-		final Iterator<Pair<String, ArgumentType<?>>> argsIterator = this.arguments().iterator();
+		final Iterator<CommandArgument> argsIterator = this.arguments().iterator();
 		RequiredArgumentBuilder<S, ?> argsBuilder = null;
 		while (argsIterator.hasNext()) {
 			final var arg = argsIterator.next();
-			final RequiredArgumentBuilder<S, ?> argBuilder = RequiredArgumentBuilder.argument(arg.getKey(), arg.getValue());
+			final RequiredArgumentBuilder<S, ?> argBuilder = RequiredArgumentBuilder.argument(arg.getName(), arg.getType());
+			if (!arg.getSuggestions().isEmpty()) argBuilder.suggests((ctx, suggestionBuilder) -> {
+				arg.getSuggestions(ctx).forEach(suggestionBuilder::suggest);
+				return suggestionBuilder.buildFuture();
+			});
 			if (!argsIterator.hasNext()) argBuilder.executes(this::executes);
 
 			argsBuilder = argsBuilder != null ? argsBuilder.then(argBuilder) : argBuilder;
@@ -44,7 +46,7 @@ public interface Commandish<S extends CommandSource> {
 		return List.of();
 	}
 
-	default List<Pair<String, ArgumentType<?>>> arguments() {
+	default List<CommandArgument> arguments() {
 		return List.of();
 	}
 

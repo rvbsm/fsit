@@ -15,8 +15,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ConfigManager<T> {
 
@@ -31,6 +33,8 @@ public class ConfigManager<T> {
 	@Getter
 	private T config;
 	private Map<String, Object> configMap = new LinkedHashMap<>();
+	@Getter
+	private Set<String> configKeys = new HashSet<>();
 
 	public ConfigManager(String configName, Class<T> configClass, Map<String, String> migrationMap) {
 		this.configFile = getConfigFile(configName);
@@ -111,6 +115,7 @@ public class ConfigManager<T> {
 		TOML_WRITER.write(configMap, this.configFile);
 
 		this.configMap = flatMap(configMap, "");
+		this.configKeys = this.configMap.keySet();
 	}
 
 	public Object getByFlat(String key) {
