@@ -1,14 +1,12 @@
 package dev.rvbsm.fsit.command.fsit;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.command.CommandArgument;
 import dev.rvbsm.fsit.command.Commandish;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
@@ -20,8 +18,8 @@ public class GetCommand implements Commandish<ServerCommandSource> {
 	}
 
 	@Override
-	public List<Pair<String, ArgumentType<?>>> arguments() {
-		return List.of(Pair.of("key", StringArgumentType.word()));
+	public List<CommandArgument> arguments() {
+		return List.of(CommandArgument.CONFIG_KEY);
 	}
 
 	@Override
@@ -32,7 +30,7 @@ public class GetCommand implements Commandish<ServerCommandSource> {
 	@Override
 	public int executes(CommandContext<ServerCommandSource> ctx) {
 		final ServerCommandSource src = ctx.getSource();
-		final String key = ctx.getArgument("key", String.class);
+		final String key = ctx.getArgument(CommandArgument.CONFIG_KEY.getName(), String.class);
 		final Object cfgValue = FSitMod.getConfigManager().getByFlat(key);
 		if (cfgValue == null) src.sendError(Text.of("Unknown config field key: %s".formatted(key)));
 
