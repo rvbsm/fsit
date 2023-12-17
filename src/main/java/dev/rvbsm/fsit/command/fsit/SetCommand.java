@@ -7,12 +7,16 @@ import com.mojang.brigadier.context.CommandContext;
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.command.CommandArgument;
 import dev.rvbsm.fsit.command.Commandish;
+import dev.rvbsm.fsit.text.TextUtils;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
 import java.util.List;
 
 public class SetCommand implements Commandish<ServerCommandSource> {
+
+	private static final String UNKNOWN_FIELD_MESSAGE = "Unknown config field key: %s";
+	private static final String SET_MESSAGE = "Updated %s ➡ %s";
 
 	@Override
 	public String name() {
@@ -35,6 +39,10 @@ public class SetCommand implements Commandish<ServerCommandSource> {
 		final String key = ctx.getArgument(CommandArgument.CONFIG_KEY.getName(), String.class);
 		final String value = ctx.getArgument(CommandArgument.CONFIG_VALUE.getName(), String.class);
 		final Object cfgValue = FSitMod.getConfigManager().getByFlat(key);
+		if (cfgValue == null) {
+			src.sendError(Text.of(UNKNOWN_FIELD_MESSAGE.formatted(key)));
+			return -1;
+		}
 
 		final Object newCfgValue;
 		try {
@@ -45,7 +53,9 @@ public class SetCommand implements Commandish<ServerCommandSource> {
 		}
 
 		FSitMod.getConfigManager().updateByFlat(key, newCfgValue);
-		src.sendMessage(Text.of("Updated %s ➡ %s".formatted(key, newCfgValue)));
+
+		final String msg = TextUtils.colorizeChatEntries(SET_MESSAGE.formatted(key, newCfgValue));
+		src.sendMessage(TextUtils.convertToModern(msg));
 
 		return Command.SINGLE_SUCCESS;
 	}
