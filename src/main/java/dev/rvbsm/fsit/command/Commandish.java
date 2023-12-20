@@ -17,7 +17,7 @@ public interface Commandish<S extends CommandSource> {
 		dispatcher.register(this.builder());
 	}
 
-	default LiteralArgumentBuilder<S> builder() {
+	private LiteralArgumentBuilder<S> builder() {
 		final LiteralArgumentBuilder<S> builder = LiteralArgumentBuilder.<S>literal(this.name()).requires(this::requires);
 		this.children().stream().map(Commandish::builder).forEach(builder::then);
 
@@ -25,11 +25,7 @@ public interface Commandish<S extends CommandSource> {
 		RequiredArgumentBuilder<S, ?> argsBuilder = null;
 		while (argsIterator.hasNext()) {
 			final var arg = argsIterator.next();
-			final RequiredArgumentBuilder<S, ?> argBuilder = RequiredArgumentBuilder.argument(arg.getName(), arg.getType());
-			if (!arg.getSuggestions().isEmpty()) argBuilder.suggests((ctx, suggestionBuilder) -> {
-				arg.getSuggestions(ctx).forEach(suggestionBuilder::suggest);
-				return suggestionBuilder.buildFuture();
-			});
+			final RequiredArgumentBuilder<S, ?> argBuilder = arg.argumentSuggestion();
 			if (!argsIterator.hasNext()) argBuilder.executes(this::executes);
 
 			argsBuilder = argsBuilder != null ? argsBuilder.then(argBuilder) : argBuilder;

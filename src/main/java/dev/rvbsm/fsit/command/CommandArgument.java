@@ -2,16 +2,17 @@ package dev.rvbsm.fsit.command;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.rvbsm.fsit.FSitMod;
-import lombok.Getter;
 import net.minecraft.command.CommandSource;
 
 import java.util.Locale;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
-@Getter
 public enum CommandArgument {
 	CONFIG_KEY(StringArgumentType.word(), FSitMod.getConfigManager().getConfigKeys()),
 	CONFIG_VALUE(StringArgumentType.greedyString());
@@ -32,14 +33,15 @@ public enum CommandArgument {
 		return this.name().toLowerCase(Locale.ROOT);
 	}
 
-	public Set<String> getSuggestions(CommandContext<? extends CommandSource> ctx) {
-		try {
-			final String argument = ctx.getArgument(this.getName(), String.class);
-			return this.suggestions.stream()
-							.filter(suggestion -> suggestion.startsWith(argument))
-							.collect(Collectors.toUnmodifiableSet());
-		} catch (IllegalArgumentException ignored) {}
+	public <S extends CommandSource> RequiredArgumentBuilder<S, ?> argument() {
+		return RequiredArgumentBuilder.argument(this.getName(), type);
+	}
 
-		return this.suggestions;
+	public CompletableFuture<Suggestions> suggestMatching(CommandContext<? extends CommandSource> ignored, SuggestionsBuilder suggestionsBuilder) {
+		return CommandSource.suggestMatching(this.suggestions, suggestionsBuilder);
+	}
+
+	public <S extends CommandSource> RequiredArgumentBuilder<S, ?> argumentSuggestion() {
+		return this.<S>argument().suggests(this::suggestMatching);
 	}
 }
