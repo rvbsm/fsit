@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.rvbsm"
-version = gitVersion()
+version = gitVersion().let { if (it[0] == 'v') it.drop(1) else it }
 
 repositories {
 	maven("https://maven.terraformersmc.com/")
