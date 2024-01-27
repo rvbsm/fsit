@@ -19,6 +19,7 @@ public abstract class AreaEffectCloudEntityMixin extends Entity {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void tick$cleanSit(CallbackInfo ci) {
-		if (this.age > 20 && !this.hasPassengers() && this.getCustomName() == SeatEntity.CUSTOM_NAME) this.discard();
+		if (this.age > 20 && !this.hasPassengers() && this.getCustomName() != null && this.getCustomName().equals(SeatEntity.CUSTOM_NAME))
+			this.discard();
 	}
 }
