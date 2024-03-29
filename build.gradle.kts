@@ -1,88 +1,75 @@
-val gitVersion: groovy.lang.Closure<String> by extra
+import org.codehaus.groovy.runtime.ProcessGroovyMethods
 
 plugins {
-	alias(libs.plugins.fabric.loom)
-	alias(libs.plugins.shadow)
-	alias(libs.plugins.git)
+    kotlin("jvm") version libs.versions.kotlin
+    kotlin("plugin.serialization") version libs.versions.kotlin
+
+    alias(libs.plugins.fabric.loom)
 }
 
 group = "dev.rvbsm"
-version = gitVersion().let { if (it[0] == 'v') it.drop(1) else it }
+version = "git describe --tags".execute().text!!.drop(1)
 
 repositories {
-	maven("https://maven.terraformersmc.com/")
-	maven("https://maven.shedaniel.me/")
+    maven("https://maven.terraformersmc.com/releases")
+    maven("https://maven.isxander.dev/releases")
+    mavenCentral()
 }
 
 loom {
-	splitEnvironmentSourceSets()
+    splitEnvironmentSourceSets()
+    accessWidenerPath = file("src/main/resources/fsit.accesswidener")
 
-	mods.register(rootProject.name) {
-		sourceSet(sourceSets["main"])
-		sourceSet(sourceSets["client"])
-	}
-}
-
-val shadowImplementation: Configuration by configurations.creating {
-	configurations.implementation.get().extendsFrom(this)
+    mods.register(name) {
+        sourceSet("main")
+        sourceSet("client")
+    }
 }
 
 dependencies {
-	minecraft(libs.minecraft)
-	mappings("${libs.yarn.mappings.get()}:v2")
+    minecraft(libs.minecraft)
+    mappings("${libs.fabric.yarn.get()}:v2")
 
-	modImplementation(libs.fabric.loader)
-//	modImplementation(libs.fabric.api)
+    modImplementation(libs.bundles.fabric)
+    setOf(
+        "fabric-api-base",
+        "fabric-command-api-v1",
+        "fabric-events-interaction-v0",
+        "fabric-key-binding-api-v1",
+        "fabric-lifecycle-events-v1",
+        "fabric-networking-api-v1"
+    ).map { fabricApi.module(it, libs.versions.fabric.api.get()) }.forEach(::modImplementation)
 
-	setOf("fabric-events-interaction-v0", "fabric-networking-api-v1", "fabric-command-api-v2").forEach {
-		modImplementation(include(fabricApi.module(it, libs.versions.fabric.api.get()))!!)
-	}
+    modApi(libs.modmenu)
+    modApi(libs.yacl)
 
-	modApi(libs.modmenu)
-	modApi(libs.clothconfig) {
-		exclude("net.fabricmc.fabric-api")
-	}
-
-	shadowImplementation(libs.toml4j) {
-		exclude("com.google.code.gson")
-	}
-
-	compileOnly(libs.lombok)
-	annotationProcessor(libs.lombok)
+    implementation(libs.bundles.kaml)
+    include(libs.bundles.kaml)
 }
 
 tasks {
-	compileJava {
-		options.encoding = Charsets.UTF_8.name()
-		options.release.set(17)
-	}
+    processResources {
+        inputs.property("version", "$version")
+        filesMatching("fabric.mod.json") {
+            expand("version" to version)
+        }
+    }
 
-	processResources {
-		inputs.property("version", project.version)
-		filesMatching("fabric.mod.json") {
-			expand("version" to project.version)
-		}
-	}
-
-	shadowJar {
-		configurations = listOf(shadowImplementation)
-		archiveClassifier.set("shadow")
-		from(sourceSets["client"].output)
-	}
-
-	remapJar {
-		dependsOn(shadowJar)
-		inputFile.set(shadowJar.get().archiveFile)
-	}
-
-	jar {
-		from(file("LICENSE"))
-	}
+    jar {
+        from("LICENSE")
+    }
 }
 
 java {
-	withSourcesJar()
+    withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
 }
+
+kotlin {
+    jvmToolchain(17)
+}
+
+fun String.execute(): Process = ProcessGroovyMethods.execute(this)
+val Process.text: String? get() = ProcessGroovyMethods.getText(this)

@@ -1,22 +1,25 @@
 package dev.rvbsm.fsit.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.config.ConfigData;
-import dev.rvbsm.fsit.entity.ConfigHandler;
-import dev.rvbsm.fsit.entity.PlayerPose;
-import dev.rvbsm.fsit.entity.RestrictHandler;
-import dev.rvbsm.fsit.entity.SeatEntity;
-import dev.rvbsm.fsit.network.packet.PoseSyncS2CPacket;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.BlockState;
+import dev.rvbsm.fsit.api.ConfigurableEntity;
+import dev.rvbsm.fsit.api.Crawlable;
+import dev.rvbsm.fsit.config.ModConfig;
+import dev.rvbsm.fsit.entity.CrawlEntity;
+import dev.rvbsm.fsit.entity.Pose;
+import dev.rvbsm.fsit.event.UpdatePoseCallback;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -24,111 +27,141 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
-
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ConfigHandler {
+public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ConfigurableEntity, Crawlable {
+    @Shadow
+    public ServerPlayNetworkHandler networkHandler;
 
-	@Unique
-	private ConfigData config = FSitMod.getConfig();
+    @Unique
+    private @Nullable ModConfig config;
+    @Unique
+    private @Nullable CrawlEntity crawlEntity;
+    @Unique
+    private boolean wasPassengerHidden = false;
 
-	protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
-		super(entityType, world);
-	}
+    protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+        super(entityType, world);
+    }
 
-	@Shadow
-	public abstract void sendMessage(Text message, boolean overlay);
+    @Inject(method = "playerTick", at = @At("TAIL"))
+    private void tickCrawlingVanillaPlayer(CallbackInfo ci) {
+        if (this.fsit$isInPose()) {
+            if (this.getAbilities().flying || this.isSneaking()) {
+                this.fsit$resetPose();
+            }
 
-	@Override
-	public ConfigData fsit$getConfig() {
-		return this.config;
-	}
+            if (this.crawlEntity != null) {
+                this.crawlEntity.tick();
+            }
+        }
 
-	@Override
-	public void fsit$setConfig(ConfigData config) {
-		this.config = config;
-		if (this.hasPassengers() && !config.getRiding().isEnabled()) this.removeAllPassengers();
-	}
+        // note: at least it works fully server-side
+        this.playerPassengerTick();
+    }
 
-	@Override
-	public boolean fsit$hasConfig() {
-		return this.config != FSitMod.getConfig();
-	}
-
-	@Override
-	public boolean fsit$canStartRiding(PlayerEntity player) {
-		final ConfigHandler configHandler = (ConfigHandler) player;
-		final RestrictHandler restrictHandler = (RestrictHandler) player;
-		final ConfigData.RidingTable rideConfig = configHandler.fsit$getConfig().getRiding();
-
-		return !this.fsit$isRestricted(player.getUuid()) && !restrictHandler.fsit$isRestricted(this.getUuid()) && this.config.getRiding()
-						.isEnabled() && rideConfig.isEnabled() && player.distanceTo(this) <= rideConfig.getRadius();
-	}
-
-	@Override
-	public void fsit$restrictPlayer(UUID playerUUID) {
-		super.fsit$restrictPlayer(playerUUID);
-		if (this.hasPassenger((passenger -> passenger.getUuid() == playerUUID))) this.removeAllPassengers();
-	}
-
-	@Override
-	public void fsit$setPose(PlayerPose pose) {
-		super.fsit$setPose(pose);
-
-		if (this.fsit$hasConfig())
-			ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, new PoseSyncS2CPacket(pose));
-		else if (this.isPosing()) this.sendMessage(Text.of("Press Sneak key to get up"), true);
-	}
-
-	@Unique
-	private boolean preventsPosing() {
-		return this.isSpectator() || !this.isOnGround() || this.hasVehicle();
-	}
-
-	@Override
-	public void fsit$setSneaked() {
-		if (!this.isPosing() || !this.preventsPosing()) {
-			this.fsit$setPose(PlayerPose.SNEAK);
-			final Executor delayedExecutor = CompletableFuture.delayedExecutor(this.config.getSneak()
-							.getDelay(), TimeUnit.MILLISECONDS);
-			CompletableFuture.runAsync(() -> {
-				if (!this.isPosing()) this.resetPose();
-			}, delayedExecutor);
-		}
-	}
-
-	@Override
-	public void fsit$setSitting() {
-		this.fsit$setSitting(this.getPos());
-	}
-
-	@Override
-	public void fsit$setSitting(Vec3d pos) {
-		if (!this.preventsPosing()) {
-			final BlockPos blockPos = this.getBlockPos();
-			final BlockState blockBelowState = this.getWorld()
-							.getBlockState(this.getPos().y % 1 == 0 ? blockPos.down() : blockPos);
-			if (blockBelowState.isAir()) return;
-			this.fsit$setPose(PlayerPose.SIT);
-
-			final World world = this.getWorld();
-			final SeatEntity seat = new SeatEntity(world, pos);
-			world.spawnEntity(seat);
-			this.startRiding(seat, true);
-		}
-	}
-
-	@Override
-	public void fsit$setCrawling() {
-		if (!this.preventsPosing()) this.fsit$setPose(PlayerPose.CRAWL);
-	}
+    @Inject(method = "onDisconnect", at = @At("TAIL"))
+    private void dismountSeat(CallbackInfo ci) {
+        if (this.fsit$isInPose(Pose.Sitting)) {
+            this.stopRiding();
+        }
+    }
 
 
-	@Inject(method = "stopRiding", at = @At("TAIL"))
-	private void stopRiding$resetPose(CallbackInfo ci) {
-		if (this.isInPose(PlayerPose.SIT)) this.resetPose();
-	}
+    @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
+    private void dismountPlayer(Entity target, CallbackInfo ci) {
+        if (this.hasPassenger(target) && target.isPlayer()) {
+            target.stopRiding();
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "stopRiding", at = @At("TAIL"))
+    private void resetPose(CallbackInfo ci, @Local Entity entity) {
+        if (this.fsit$isInPose(Pose.Sitting)) {
+            this.fsit$resetPose();
+        }
+    }
+
+    @Override
+    protected void removePassenger(Entity passenger) {
+        super.removePassenger(passenger);
+
+        if (passenger.isPlayer()) {
+            if (this.wasPassengerHidden) {
+                this.wasPassengerHidden = false;
+                this.networkHandler.sendPacket(new EntitySpawnS2CPacket(passenger));
+            }
+            this.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(this));
+        }
+    }
+
+    @Override
+    public boolean hasPlayerRider() {
+        return false;
+    }
+
+    @Override
+    public Vec3d updatePassengerForDismount(LivingEntity passenger) {
+        return this.getPos();
+    }
+
+    @Override
+    public void fsit$setConfig(@NotNull ModConfig config) {
+        this.config = config;
+    }
+
+    @Override
+    public @NotNull ModConfig fsit$getConfig() {
+        // todo: maybe there are better ways to implement useServer?
+        return this.config != null && !this.config.getUseServer() ? this.config : FSitMod.getConfig();
+
+//        return Objects.requireNonNullElseGet(this.config, FSitMod::getConfig);
+    }
+
+    @Override
+    public boolean fsit$hasConfig() {
+        return this.config != null;
+    }
+
+    @Override
+    public void fsit$setPose(@NotNull Pose pose, @Nullable Vec3d pos) {
+        super.fsit$setPose(pose, pos);
+
+        UpdatePoseCallback.EVENT.invoker().onUpdatePose((ServerPlayerEntity) (Object) this, pose, pos);
+    }
+
+    @Override
+    public void fsit$startCrawling(@NotNull CrawlEntity crawlEntity) {
+        this.crawlEntity = crawlEntity;
+    }
+
+    @Override
+    public void fsit$stopCrawling() {
+        if (this.crawlEntity != null) {
+            this.crawlEntity.discard();
+            this.crawlEntity = null;
+        }
+    }
+
+    @Override
+    public boolean fsit$isCrawling() {
+        return this.crawlEntity != null && !this.crawlEntity.isRemoved();
+    }
+
+    @Unique
+    private void playerPassengerTick() {
+        final ServerPlayerEntity passenger = (ServerPlayerEntity) this.getFirstPassenger();
+        if (passenger != null) {
+            final boolean hidePassenger = this.isSneaking() || this.getPitch() > 0; // todo
+
+            if (hidePassenger && !this.wasPassengerHidden) {
+                this.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(passenger.getId()));
+            } else if (!hidePassenger && this.wasPassengerHidden) {
+                this.networkHandler.sendPacket(new EntitySpawnS2CPacket(passenger));
+                this.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(this));
+            }
+
+            this.wasPassengerHidden = hidePassenger;
+        }
+    }
 }

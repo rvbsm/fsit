@@ -1,14 +1,14 @@
 {
-	"required": true,
-	"package": "dev.rvbsm.fsit.mixin.client",
-	"compatibilityLevel": "JAVA_17",
-	"client": [
-		"ClientPlayerEntityMixin",
-		"ClientPlayNetworkHandlerMixin",
-		"EntityMixin",
-		"SocialInteractionsPlayerListEntryMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "dev.rvbsm.fsit.mixin.client",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "dev.rvbsm.fsit.FSitMixinPlugin",
+  "client": [
+    "ControlsOptionScreenMixin",
+    "GameOptionsMixin",
+    "SocialInteractionsPlayerListEntryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

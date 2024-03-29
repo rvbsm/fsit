@@ -1,18 +1,17 @@
 package dev.rvbsm.fsit.mixin.client;
 
 import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.entity.RestrictHandler;
-import net.minecraft.client.MinecraftClient;
+import dev.rvbsm.fsit.client.config.RestrictionList;
+import dev.rvbsm.fsit.mixin.annotation.VersionedMixin;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry;
-import net.minecraft.client.gui.screen.multiplayer.SocialInteractionsScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,71 +22,71 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 @Mixin(SocialInteractionsPlayerListEntry.class)
-public abstract class SocialInteractionsPlayerListEntryMixin {
+@VersionedMixin(">=1.20.2")
+public abstract class SocialInteractionsPlayerListEntryMixin extends ElementListWidget.Entry<SocialInteractionsPlayerListEntry> {
+    @Unique
+    private static final ButtonTextures RESTRICT_TEXTURE = new ButtonTextures(FSitMod.id("social_interactions/restrict_button"), FSitMod.id("social_interactions/restrict_button_disabled"), FSitMod.id("social_interactions/restrict_button_highlighted"));
+    @Unique
+    private static final ButtonTextures ALLOW_TEXTURE = new ButtonTextures(FSitMod.id("social_interactions/allow_button"), FSitMod.id("social_interactions/allow_button_disabled"), FSitMod.id("social_interactions/allow_button_highlighted"));
+    @Unique
+    private static final Text RESTRICT_BUTTON = FSitMod.translatable("gui", "socialInteractions.restrict");
+    @Unique
+    private static final Text ALLOW_BUTTON = FSitMod.translatable("gui", "socialInteractions.allow");
+    @Unique
+    private static final Text DISABLED_BUTTON = FSitMod.translatable("gui", "socialInteractions.disabled");
+    @Shadow
+    private @Final List<ClickableWidget> buttons;
+    @Shadow
+    private @Final UUID uuid;
+    @Unique
+    private ButtonWidget restrictButton;
+    @Unique
+    private ButtonWidget allowButton;
 
-	@Unique
-	private static final ButtonTextures RESTRICT_BUTTON_TEXTURES = new ButtonTextures(Identifier.of(FSitMod.MOD_ID, "social_interactions/restrict_button"), Identifier.of(FSitMod.MOD_ID, "social_interactions/restrict_button_disabled"), Identifier.of(FSitMod.MOD_ID, "social_interactions/restrict_button_highlighted"));
-	@Unique
-	private static final ButtonTextures ALLOW_BUTTON_TEXTURES = new ButtonTextures(Identifier.of(FSitMod.MOD_ID, "social_interactions/allow_button"), Identifier.of(FSitMod.MOD_ID, "social_interactions/allow_button_disabled"), Identifier.of(FSitMod.MOD_ID, "social_interactions/allow_button_highlighted"));
-	@Unique
-	private static final Text RESTRICT_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.restrict");
-	@Unique
-	private static final Text ALLOW_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.allow");
-	@Unique
-	private static final Text DISABLED_BUTTON_TEXT = FSitMod.getTranslation("gui", "socialInteractions.disabled");
+    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
+    protected void restrictButton(CallbackInfo ci) {
+        this.restrictButton = new TexturedButtonWidget(20, 20, RESTRICT_TEXTURE, this::restrict, RESTRICT_BUTTON);
+        this.restrictButton.active = FSitMod.getConfig().getRiding().getEnabled();
+        this.restrictButton.setTooltip(Tooltip.of(this.restrictButton.active ? RESTRICT_BUTTON : DISABLED_BUTTON));
+        buttons.add(this.restrictButton);
 
-	@Shadow
-	@Final
-	private List<ClickableWidget> buttons;
-	@Unique
-	private ButtonWidget allowButton;
-	@Unique
-	private ButtonWidget restrictButton;
+        this.allowButton = new TexturedButtonWidget(20, 20, ALLOW_TEXTURE, this::allow, ALLOW_BUTTON);
+        this.allowButton.active = FSitMod.getConfig().getRiding().getEnabled();
+        this.allowButton.setTooltip(Tooltip.of(this.allowButton.active ? ALLOW_BUTTON : DISABLED_BUTTON));
+        buttons.add(this.allowButton);
 
-	@Unique
-	private void updateButtons(boolean showRestrictButton) {
-		this.restrictButton.visible = showRestrictButton;
-		this.allowButton.visible = !showRestrictButton;
-	}
+        updateButtons(RestrictionList.isRestricted(uuid));
+    }
 
-	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
-	public void init$addRestrictButton(MinecraftClient client, SocialInteractionsScreen parent, UUID uuid, String name, Supplier<Identifier> skinTexture, boolean reportable, CallbackInfo ci) {
-		final RestrictHandler restrictHandler = (RestrictHandler) client.player;
+    @Inject(method = "render", at = @At("TAIL"))
+    public void renderButtons(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
+        if (this.restrictButton != null && this.allowButton != null) {
+            this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
+            this.restrictButton.setY(y + (entryHeight - this.restrictButton.getHeight()) / 2);
+            this.restrictButton.render(context, mouseX, mouseY, tickDelta);
+            this.allowButton.setX(x + (entryWidth - this.allowButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
+            this.allowButton.setY(y + (entryHeight - this.allowButton.getHeight()) / 2);
+            this.allowButton.render(context, mouseX, mouseY, tickDelta);
+        }
+    }
 
-		this.restrictButton = new TexturedButtonWidget(0, 0, 20, 20, RESTRICT_BUTTON_TEXTURES, button -> {
-			restrictHandler.fsit$restrictPlayer(uuid);
-			updateButtons(false);
-		}, RESTRICT_BUTTON_TEXT);
-		this.restrictButton.active = FSitMod.getConfig().getRiding().isEnabled();
-		this.restrictButton.setTooltip(Tooltip.of(this.restrictButton.active ? RESTRICT_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
-		this.restrictButton.setTooltipDelay(10);
+    @Unique
+    private void updateButtons(boolean isRestricted) {
+        this.restrictButton.visible = !isRestricted;
+        this.allowButton.visible = isRestricted;
+    }
 
-		this.allowButton = new TexturedButtonWidget(0, 0, 20, 20, ALLOW_BUTTON_TEXTURES, button -> {
-			restrictHandler.fsit$allowPlayer(uuid);
-			updateButtons(true);
-		}, ALLOW_BUTTON_TEXT);
-		this.allowButton.active = FSitMod.getConfig().getRiding().isEnabled();
-		this.allowButton.setTooltip(Tooltip.of(this.allowButton.active ? ALLOW_BUTTON_TEXT : DISABLED_BUTTON_TEXT));
-		this.allowButton.setTooltipDelay(10);
+    @Unique
+    private void restrict(ButtonWidget button) {
+        RestrictionList.add(uuid);
+        this.updateButtons(true);
+    }
 
-		this.buttons.add(this.restrictButton);
-		this.buttons.add(this.allowButton);
-
-		this.updateButtons(!restrictHandler.fsit$isRestricted(uuid));
-	}
-
-	@Inject(method = "render", at = @At("TAIL"))
-	public void render$renderRestrictButton(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
-		if (this.restrictButton != null && this.allowButton != null) {
-			this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
-			this.restrictButton.setY(y + (entryHeight - this.restrictButton.getHeight()) / 2);
-			this.restrictButton.render(context, mouseX, mouseY, tickDelta);
-			this.allowButton.setX(x + (entryWidth - this.allowButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
-			this.allowButton.setY(y + (entryHeight - this.allowButton.getHeight()) / 2);
-			this.allowButton.render(context, mouseX, mouseY, tickDelta);
-		}
-	}
+    @Unique
+    private void allow(ButtonWidget button) {
+        RestrictionList.remove(uuid);
+        this.updateButtons(false);
+    }
 }

@@ -1,0 +1,53 @@
+package dev.rvbsm.fsit.event
+
+import dev.rvbsm.fsit.entity.CrawlEntity
+import dev.rvbsm.fsit.entity.Pose
+import dev.rvbsm.fsit.entity.SeatEntity
+import dev.rvbsm.fsit.network.hasConfig
+import dev.rvbsm.fsit.network.hasCrawl
+import dev.rvbsm.fsit.network.packet.PoseUpdateS2CPacket
+import dev.rvbsm.fsit.network.removeCrawl
+import dev.rvbsm.fsit.network.sendIfPossible
+import net.fabricmc.fabric.api.event.Event
+import net.fabricmc.fabric.api.event.EventFactory
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.util.math.Vec3d
+
+fun interface UpdatePoseCallback {
+    fun onUpdatePose(player: ServerPlayerEntity, pose: Pose, pos: Vec3d?)
+
+    companion object {
+        @JvmField
+        val EVENT: Event<UpdatePoseCallback> =
+            EventFactory.createArrayBacked(UpdatePoseCallback::class.java) { listeners ->
+                UpdatePoseCallback { player, pose, pos ->
+                    for (listener in listeners) {
+                        listener.onUpdatePose(player, pose, pos)
+                    }
+                }
+            }
+    }
+
+    object Listener : UpdatePoseCallback {
+        override fun onUpdatePose(player: ServerPlayerEntity, pose: Pose, pos: Vec3d?) {
+            player.sendIfPossible(PoseUpdateS2CPacket(pose, pos ?: player.pos))
+
+            when (pose) {
+                Pose.Standing -> {
+                    if (player.hasVehicle()) player.stopRiding()
+                    else if (player.hasCrawl()) player.removeCrawl()
+                }
+
+                Pose.Sitting -> {
+                    SeatEntity.create(player, pos ?: player.pos)
+                }
+
+                Pose.Crawling -> if (!player.hasConfig()) {
+                    CrawlEntity.create(player)
+                }
+
+                else -> {}
+            }
+        }
+    }
+}

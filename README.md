@@ -2,53 +2,38 @@
 
 A _server-side_ mod that allows players to sit anywhere!
 
-_Partially [GSit][gsit] rework for Fabric._
-
-__NOTE:__
-
-Player Riding:
-___By default, when a player rides another player, his hit-box is blocking player's view.
-Install this mod on the client to prevent sight blocking.___
+_Inspired by [GSit][gsit]._
 
 ## Usage
 
-* To sit or crawl, you need to sneak twice while looking down;
-* Use stairs, slabs, or horizontal logs (configurable);
-* Ride other players;
-* By commands `/sit` and `/crawl`;
+* Interact with blocks like stairs, slabs, and horizontal logs
+* Hop on and ride other players!
+* `/sit` and `/crawl` commands for sitting and crawling actions
 
 ### Client
 
-The server will respect players' configuration if this mod is installed on the client.
-Additionally,
-they can restrict other players from riding them using [Social Interactions screen][social-interactions].
+* Manageable riders through the Social Interactions screen (1.20.2+)
+* Keybindings
 
-For other players, server configuration will be used.
+### Configuration (`config/fsit.yaml`)
 
-### Configuration (`config/fsit.toml`)
+If mod is installed on both the server and client,
+player configuration will be automatically synced (only if `use_server` is `false`).
 
-The config can be modified using [Mod Menu][modmenu] and [Cloth Config API][cloth-config] installed.
+The config can be modified with [Mod Menu][modmenu] and [YetAnotherConfigLib][yacl] installed.
 
-Use `/fsit get <key>` and `/fsit set <key> <value` to access or modify config fields.
-Reload from the file using `/fsit reload`.
-
-```toml
-config_version = 4
-
-[sneak]
-enabled = true
-angle = 66.0
-delay = 600
-
-[sittable]
-enabled = true
-radius = 2
-blocks = []
-tags = ["minecraft:slabs", "minecraft:stairs", "minecraft:logs"]
-
-[riding]
-enabled = true
-radius = 3
+```yaml
+use_server: false
+sittable:
+  enabled: true
+  radius: 2
+  materials:
+    - "#minecraft:slabs"
+    - "#minecraft:stairs"
+    - "#minecraft:logs"
+riding:
+  enabled: true
+  radius: 3
 ```
 
 ## Contributing
@@ -58,13 +43,11 @@ For major changes, please open an issue first to discuss what you would like to 
 
 ## License
 
-This project is licensed under the [MIT License][license].
-
-[license]: ./LICENSE
+This project is licensed under the [MIT License](./LICENSE).
 
 [gsit]: https://github.com/Gecolay/GSit
 
 [social-interactions]: https://minecraft.wiki/w/Social_interactions
 
 [modmenu]: [https://modrinth.com/mod/modmenu]
-[cloth-config]: [https://modrinth.com/mod/cloth-config]
+[yacl]: [https://modrinth.com/mod/yacl]

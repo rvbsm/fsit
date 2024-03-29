@@ -1,16 +1,12 @@
 {
-	"required": true,
-	"package": "dev.rvbsm.fsit.mixin",
-	"compatibilityLevel": "JAVA_17",
-	"mixins": [
-		"AreaEffectCloudEntityMixin",
-		"EntityMixin",
-		"PistonBlockEntityMixin",
-		"PlayerEntityMixin",
-		"ServerPlayerEntityMixin",
-		"ServerPlayNetworkHandlerMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "dev.rvbsm.fsit.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "PlayerEntityMixin",
+    "ServerPlayerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

@@ -1,8 +1,8 @@
 pluginManagement {
-	repositories {
-		maven("https://maven.fabricmc.net/")
-		gradlePluginPortal()
-	}
+    repositories {
+        maven("https://maven.fabricmc.net/")
+        mavenCentral()
+    }
 }
 
 rootProject.name = "fsit"

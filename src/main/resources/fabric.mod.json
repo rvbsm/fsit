@@ -1,41 +1,61 @@
 {
-	"schemaVersion": 1,
-	"id": "fsit",
-	"version": "${version}",
-	"name": "FSit",
-	"description": "Sit anywhere!",
-	"authors": [
-		"rvbsm"
-	],
-	"contact": {
-		"sources": "https://github.com/rvbsm/fsit",
-		"issues": "https://github.com/rvbsm/fsit/issues"
-	},
-	"license": "MIT",
-	"icon": "assets/fsit/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"dev.rvbsm.fsit.FSitMod"
-		],
-		"client": [
-			"dev.rvbsm.fsit.FSitModClient"
-		],
-		"server": [
-			"dev.rvbsm.fsit.FSitModServer"
-		],
-		"modmenu": [
-			"dev.rvbsm.fsit.FSitModMenu"
-		]
-	},
-	"mixins": [
-		"fsit.mixins.json",
-		{
-			"config": "fsit.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.14.0"
-	}
+  "schemaVersion": 1,
+  "id": "fsit",
+  "version": "${version}",
+  "name": "FSit",
+  "description": "Sit anywhere!",
+  "authors": [
+    "rvbsm"
+  ],
+  "contact": {
+    "sources": "https://github.com/rvbsm/fsit",
+    "issues": "https://github.com/rvbsm/fsit/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/fsit/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "dev.rvbsm.fsit.FSitMod",
+        "adapter": "kotlin"
+      }
+    ],
+    "client": [
+      {
+        "value": "dev.rvbsm.fsit.client.FSitModClient",
+        "adapter": "kotlin"
+      }
+    ],
+    "modmenu": [
+      {
+        "value": "dev.rvbsm.fsit.client.FSitModMenu",
+        "adapter": "kotlin"
+      }
+    ]
+  },
+  "mixins": [
+    "fsit.mixins.json",
+    {
+      "config": "fsit.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "accessWidener": "fsit.accesswidener",
+  "depends": {
+    "java": ">=17",
+    "minecraft": "~1.20",
+    "fabricloader": ">=0.15.0",
+    "fabric-api-base": "*",
+    "fabric-command-api-v1": "*",
+    "fabric-events-interaction-v0": "*",
+    "fabric-key-binding-api-v1": "*",
+    "fabric-lifecycle-events-v1": "*",
+    "fabric-networking-api-v1": "*",
+    "fabric-language-kotlin": ">=1.9.22"
+  },
+  "suggests": {
+    "modmenu": "*",
+    "yet_another_config_lib_v3": ">=3.2"
+  }
 }
