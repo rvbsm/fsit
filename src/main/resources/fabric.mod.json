@@ -44,7 +44,7 @@
   "accessWidener": "fsit.accesswidener",
   "depends": {
     "java": ">=17",
-    "minecraft": "~1.20",
+    "minecraft": "${mcPredicate}",
     "fabricloader": ">=0.15.0",
     "fabric-api-base": "*",
     "fabric-command-api-v1": "*",

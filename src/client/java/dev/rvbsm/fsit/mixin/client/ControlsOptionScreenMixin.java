@@ -3,7 +3,6 @@ package dev.rvbsm.fsit.mixin.client;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import dev.rvbsm.fsit.client.FSitModClient;
-import dev.rvbsm.fsit.mixin.annotation.VersionedMixin;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -15,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ControlsOptionsScreen.class)
-@VersionedMixin(">=1.20- <1.20.5-")
 abstract public class ControlsOptionScreenMixin extends GameOptionsScreen {
     public ControlsOptionScreenMixin(Screen parent, GameOptions gameOptions, Text title) {
         super(parent, gameOptions, title);

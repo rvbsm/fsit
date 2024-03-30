@@ -1,31 +1,29 @@
 [versions]
-minecraft = "1.20.2"
-fabric_yarn = "1.20.2+build.4"
 fabric_loader = "0.15.7"
-fabric_api = "0.91.6+1.20.2"
 fabric_kotlin = "1.10.19+kotlin.1.9.23"
 fabric_loom = "1.5-SNAPSHOT"
-
-modmenu = "8.0.1"
-yacl = "3.3.0-beta.1+1.20.2"
 
 kaml = "0.54.0"
 kotlin = "1.9.23"
 
-[libraries]
-minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
-fabric_yarn = { module = "net.fabricmc:yarn", version.ref = "fabric_yarn" }
-fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
-fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
-fabric_kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric_kotlin" }
+twelvemonkeys_imageio = "3.10.0"
 
-modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
-yacl = { module = "dev.isxander.yacl:yet-another-config-lib-fabric", version.ref = "yacl" }
+[libraries]
+fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
+fabric_kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric_kotlin" }
 
 kaml = { module = "com.charleskorn.kaml:kaml-jvm", version.ref = "kaml" }
 
+twelvemonkeys_imageio_core = { module = "com.twelvemonkeys.imageio:imageio-core", version.ref = "twelvemonkeys_imageio" }
+twelvemonkeys_imageio_webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "twelvemonkeys_imageio" }
+twelvemonkeys_imageio_metadata = { module = "com.twelvemonkeys.imageio:imageio-metadata", version.ref = "twelvemonkeys_imageio" }
+twelvemonkeys_common_lang = { module = "com.twelvemonkeys.common:common-lang", version.ref = "twelvemonkeys_imageio" }
+twelvemonkeys_common_io = { module = "com.twelvemonkeys.common:common-io", version.ref = "twelvemonkeys_imageio" }
+twelvemonkeys_common_image = { module = "com.twelvemonkeys.common:common-image", version.ref = "twelvemonkeys_imageio" }
+
 [bundles]
 fabric = ["fabric_loader", "fabric_kotlin"]
+twelvemonkeys_imageio = ["twelvemonkeys_imageio_core", "twelvemonkeys_imageio_webp", "twelvemonkeys_imageio_metadata", "twelvemonkeys_common_lang", "twelvemonkeys_common_io", "twelvemonkeys_common_image"]
 
 [plugins]
 fabric_loom = { id = "fabric-loom", version.ref = "fabric_loom" }

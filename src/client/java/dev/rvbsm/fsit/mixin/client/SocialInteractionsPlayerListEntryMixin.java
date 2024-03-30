@@ -2,8 +2,8 @@ package dev.rvbsm.fsit.mixin.client;
 
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.client.config.RestrictionList;
-import dev.rvbsm.fsit.mixin.annotation.VersionedMixin;
 import net.minecraft.client.gui.DrawContext;
+/*? if >=1.20.2 */
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -24,12 +24,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Mixin(SocialInteractionsPlayerListEntry.class)
-@VersionedMixin(">=1.20.2")
 public abstract class SocialInteractionsPlayerListEntryMixin extends ElementListWidget.Entry<SocialInteractionsPlayerListEntry> {
+    /*? if >=1.20.2 {*/
     @Unique
     private static final ButtonTextures RESTRICT_TEXTURE = new ButtonTextures(FSitMod.id("social_interactions/restrict_button"), FSitMod.id("social_interactions/restrict_button_disabled"), FSitMod.id("social_interactions/restrict_button_highlighted"));
     @Unique
     private static final ButtonTextures ALLOW_TEXTURE = new ButtonTextures(FSitMod.id("social_interactions/allow_button"), FSitMod.id("social_interactions/allow_button_disabled"), FSitMod.id("social_interactions/allow_button_highlighted"));
+    /*?} */
     @Unique
     private static final Text RESTRICT_BUTTON = FSitMod.translatable("gui", "socialInteractions.restrict");
     @Unique
@@ -47,6 +48,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
     protected void restrictButton(CallbackInfo ci) {
+        /*? if >=1.20.2 {*/
         this.restrictButton = new TexturedButtonWidget(20, 20, RESTRICT_TEXTURE, this::restrict, RESTRICT_BUTTON);
         this.restrictButton.active = FSitMod.getConfig().getRiding().getEnabled();
         this.restrictButton.setTooltip(Tooltip.of(this.restrictButton.active ? RESTRICT_BUTTON : DISABLED_BUTTON));
@@ -58,6 +60,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
         buttons.add(this.allowButton);
 
         updateButtons(RestrictionList.isRestricted(uuid));
+        /*?} */
     }
 
     @Inject(method = "render", at = @At("TAIL"))

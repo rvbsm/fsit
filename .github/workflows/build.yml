@@ -16,9 +16,9 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - run: ./gradlew build --no-daemon
+      - run: ./gradlew chiseledBuild --no-daemon
 
       - uses: actions/upload-artifact@v4
         with:
-          path: build/libs/*.jar
+          path: versions/**/build/libs/*.jar
           if-no-files-found: error
