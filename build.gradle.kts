@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "dev.rvbsm"
-version = "git describe --tags".execute().text!!.drop(1)
+version = "git describe --tags".execute().text!! .drop(1).trim()
 
 repositories {
     maven("https://maven.terraformersmc.com/releases")
@@ -24,6 +24,12 @@ loom {
         sourceSet("main")
         sourceSet("client")
     }
+}
+
+val transitiveInclude: Configuration by configurations.creating {
+    exclude("com.mojang")
+    exclude("org.jetbrains.kotlin")
+    exclude("org.jetbrains.kotlinx")
 }
 
 dependencies {
@@ -43,8 +49,12 @@ dependencies {
     modApi(libs.modmenu)
     modApi(libs.yacl)
 
-    implementation(libs.bundles.kaml)
-    include(libs.bundles.kaml)
+    implementation(libs.kaml)
+    transitiveInclude(libs.kaml)
+
+    transitiveInclude.incoming.artifacts.forEach {
+        include("${it.id.componentIdentifier}")
+    }
 }
 
 tasks {
@@ -65,10 +75,6 @@ java {
 
     targetCompatibility = JavaVersion.VERSION_17
     sourceCompatibility = JavaVersion.VERSION_17
-}
-
-kotlin {
-    jvmToolchain(17)
 }
 
 fun String.execute(): Process = ProcessGroovyMethods.execute(this)
