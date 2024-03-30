@@ -37,7 +37,7 @@ class CrawlEntity(private val player: ServerPlayerEntity) : Entity(EntityType.SH
     }
 
     override fun tick() {
-        if (blockPos.getManhattanDistance(player.blockPos) > 1) {
+        if (blockPos != player.blockPos.up()) {
             setPosition(crawlPos)
             player.networkHandler.sendPacket(EntityPositionS2CPacket(this))
         }
