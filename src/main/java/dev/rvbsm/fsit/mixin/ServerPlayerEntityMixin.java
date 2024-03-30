@@ -112,10 +112,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
     @Override
     public @NotNull ModConfig fsit$getConfig() {
-        // todo: maybe there are better ways to implement useServer?
-        return this.config != null && !this.config.getUseServer() ? this.config : FSitMod.getConfig();
+        if (FSitMod.getConfig().getUseServer() || this.config == null || this.config.getUseServer()) {
+            return FSitMod.getConfig();
+        }
 
-//        return Objects.requireNonNullElseGet(this.config, FSitMod::getConfig);
+        return this.config;
     }
 
     @Override
