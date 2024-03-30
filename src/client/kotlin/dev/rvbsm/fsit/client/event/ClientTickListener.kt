@@ -14,10 +14,10 @@ import org.lwjgl.glfw.GLFW
 // todo: move to external class?
 object ClientTickListener : ClientTickEvents.EndTick {
     private val sitKey = KeyBindingHelper.registerKeyBinding(StickyKeyBinding(
-        "key.fsit.seat", GLFW.GLFW_KEY_RIGHT_CONTROL, KeyBinding.GAMEPLAY_CATEGORY
+        "key.fsit.sit", GLFW.GLFW_KEY_RIGHT_CONTROL, KeyBinding.MISC_CATEGORY
     ) { FSitModClient.sitKeyMode.value.isSticky(holdTicks) })
     private val crawlKey = KeyBindingHelper.registerKeyBinding(StickyKeyBinding(
-        "key.fsit.crawl", GLFW.GLFW_KEY_RIGHT_ALT, KeyBinding.GAMEPLAY_CATEGORY
+        "key.fsit.crawl", GLFW.GLFW_KEY_RIGHT_ALT, KeyBinding.MISC_CATEGORY
     ) { FSitModClient.crawlKeyMode.value.isSticky(holdTicks) })
 
     private var holdTicks = 0
