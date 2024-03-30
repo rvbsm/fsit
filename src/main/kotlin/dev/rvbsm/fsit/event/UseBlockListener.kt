@@ -18,10 +18,12 @@ import net.minecraft.world.World
 object UseBlockListener : UseBlockCallback {
     override fun interact(player: PlayerEntity, world: World, hand: Hand, hitResult: BlockHitResult): ActionResult {
         return if (world.isClient || player.isSneaking || player.isSpectator) ActionResult.PASS
-        else if (hand != Hand.MAIN_HAND || !player.getStackInHand(hand).isEmpty) ActionResult.PASS
+        else if (!player.getStackInHand(Hand.MAIN_HAND).isEmpty || !player.getStackInHand(Hand.OFF_HAND).isEmpty) ActionResult.PASS
         else if (hitResult.side != Direction.UP || !world.isAir(hitResult.blockPos.up())) ActionResult.PASS
         else {
             val config = (player as ServerPlayerEntity).getConfig()
+            if (!config.sittable.enabled) return ActionResult.PASS
+
             val hitState = world.getBlockState(hitResult.blockPos)
 
             val isInRange = player.pos.isInRange(hitResult.pos, config.sittable.radius.toDouble())
