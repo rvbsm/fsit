@@ -9,7 +9,8 @@ object MainCommand : ModCommand<ServerCommandSource> {
     override val name = "fsit"
     override val children = setOf(ReloadCommand)
 
-    override fun builder(): LiteralArgumentBuilder<ServerCommandSource> = super.builder().apply {
-        FSitMod.config.arguments.forEach { then(it.build()) }
-    }
+    override fun builder(): LiteralArgumentBuilder<ServerCommandSource> =
+        super.builder().requires { it.hasPermissionLevel(2) }.apply {
+            FSitMod.config.arguments.forEach { then(it.build()) }
+        }
 }
