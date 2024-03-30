@@ -27,7 +27,7 @@ object UseEntityListener : UseEntityCallback, ServerLifecycleEvents.ServerStoppi
         player: PlayerEntity, world: World, hand: Hand, entity: Entity, hitResult: EntityHitResult?
     ): ActionResult {
         return if (world.isClient || player.isSneaking || player.isSpectator || hitResult == null) ActionResult.PASS
-        else if (hand != Hand.MAIN_HAND || player.getStackInHand(hand).isEmpty) ActionResult.PASS
+        else if (!player.getStackInHand(Hand.MAIN_HAND).isEmpty || !player.getStackInHand(Hand.OFF_HAND).isEmpty) ActionResult.PASS
         else if (player == entity || player.hasPassenger(entity) || !entity.isPlayer || entity.hasPassengers()) ActionResult.PASS
         else {
             val playerConfig = (player as ServerPlayerEntity).getConfig()
@@ -50,6 +50,9 @@ object UseEntityListener : UseEntityCallback, ServerLifecycleEvents.ServerStoppi
                             target?.networkHandler?.sendPacket(EntityPassengersSetS2CPacket(entity))
                         }
                     }
+                }.whenComplete { _, _ ->
+                    requests.remove(player.uuid to entity.uuid)
+                    requests.remove(entity.uuid to player.uuid)
                 }
             }
 
@@ -60,16 +63,16 @@ object UseEntityListener : UseEntityCallback, ServerLifecycleEvents.ServerStoppi
     override fun onServerStopping(server: MinecraftServer) = requests.forEach { it.value.complete(false) }
 
     private fun sendRequest(player: ServerPlayerEntity, target: ServerPlayerEntity) =
-        requests.getOrPut(player.uuid to target.uuid) {
-            ServerPlayNetworking.send(player, RidingRequestS2CPacket(target.uuid))
+        requests.computeIfAbsent(player.uuid to target.uuid) {
+            ServerPlayNetworking.send(player, RidingRequestS2CPacket(it.second))
 
-            CompletableFuture<Boolean>().completeOnTimeout(false, TIMEOUT, TimeUnit.MILLISECONDS)
+            CompletableFuture<Boolean>()/*.whenComplete { _, _ -> requests.remove(it) }*/
+                .completeOnTimeout(false, TIMEOUT, TimeUnit.MILLISECONDS)
         }
 
     private fun isAlreadyRequested(player: PlayerEntity, target: PlayerEntity) =
         requests.containsKey(player.uuid to target.uuid)
 
-    fun receiveResponse(packet: RidingResponseC2SPacket, player: PlayerEntity) = (player.uuid to packet.uuid).let {
-        requests[it]?.complete(packet.response.isAccepted)?.apply { requests.remove(it) }
-    }
+    fun receiveResponse(packet: RidingResponseC2SPacket, player: PlayerEntity) =
+        requests[player.uuid to packet.uuid]?.complete(packet.response.isAccepted)
 }
