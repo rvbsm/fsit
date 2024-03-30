@@ -25,7 +25,7 @@ enum class RestrictCommand(
     override val arguments: List<CommandArgument<FabricClientCommandSource, *>> = listOf(ProfileNameArgument)
 
     override fun executes(ctx: CommandContext<FabricClientCommandSource>): Int {
-        val profileName = ProfileNameArgument.get(ctx)
+        val profileName = ProfileNameArgument[ctx]
         val id = ctx.source.client.networkHandler?.getPlayerListEntry(profileName)?.profile?.id
             ?: throw GameProfileArgumentType.UNKNOWN_PLAYER_EXCEPTION.create()
 
