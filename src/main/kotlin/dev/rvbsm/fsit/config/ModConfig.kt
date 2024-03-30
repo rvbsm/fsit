@@ -33,11 +33,11 @@ data class ModConfig(
 ) {
     @Transient
     val arguments: Set<ConfigCommandArgument<*>> = setOf(
-        ConfigCommandArgument.of("use_server", ::useServer, BoolArgumentType.bool()),
-        ConfigCommandArgument.of("sittable.enabled", sittable::enabled, BoolArgumentType.bool()),
-        ConfigCommandArgument.of("sittable.radius", sittable::radius, LongArgumentType.longArg(0, 4)),
-        ConfigCommandArgument.of("riding.enabled", riding::enabled, BoolArgumentType.bool()),
-        ConfigCommandArgument.of("riding.radius", riding::radius, LongArgumentType.longArg(0, 4)),
+        ConfigCommandArgument.of("useServer", ::useServer, BoolArgumentType.bool()),
+        ConfigCommandArgument.of("sittableEnabled", sittable::enabled, BoolArgumentType.bool()),
+        ConfigCommandArgument.of("sittableRadius", sittable::radius, LongArgumentType.longArg(0, 4)),
+        ConfigCommandArgument.of("ridingEnabled", riding::enabled, BoolArgumentType.bool()),
+        ConfigCommandArgument.of("ridingRadius", riding::radius, LongArgumentType.longArg(0, 4)),
     )
 
     override fun toString() = yaml.encodeToString(this)
