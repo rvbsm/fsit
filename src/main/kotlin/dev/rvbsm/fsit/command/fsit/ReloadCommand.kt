@@ -3,6 +3,7 @@ package dev.rvbsm.fsit.command.fsit
 import com.mojang.brigadier.context.CommandContext
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.command.ModCommand
+import dev.rvbsm.fsit.util.literal
 import net.minecraft.server.command.ServerCommandSource
 
 object ReloadCommand : ModCommand<ServerCommandSource> {
@@ -11,6 +12,7 @@ object ReloadCommand : ModCommand<ServerCommandSource> {
     override fun executes(ctx: CommandContext<ServerCommandSource>): Int {
         FSitMod.loadConfig()
 
+        ctx.source.sendFeedback("Reloading config!"::literal, true)
         return super.executes(ctx)
     }
 }

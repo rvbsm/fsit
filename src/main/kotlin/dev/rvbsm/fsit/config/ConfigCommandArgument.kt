@@ -20,13 +20,13 @@ data class ConfigCommandArgument<T>(
 
     fun build(): LiteralArgumentBuilder<ServerCommandSource> =
         LiteralArgumentBuilder.literal<ServerCommandSource>(path).executes {
-            it.source.sendMessage("Config option $path is currently set to: ${get()}".literal())
+            it.source.sendFeedback("Config option $path is currently set to: ${get()}"::literal, false)
             Command.SINGLE_SUCCESS
         }.then(RequiredArgumentBuilder.argument<ServerCommandSource, T>("value", type).executes {
             val value = it.getArgument("value", clazz)
             set(value)
 
-            it.source.sendMessage("Config option $path is now set to: $value".literal())
+            it.source.sendFeedback("Config option $path is now set to: $value"::literal, true)
             Command.SINGLE_SUCCESS
         })
 
