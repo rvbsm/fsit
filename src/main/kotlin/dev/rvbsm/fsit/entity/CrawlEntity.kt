@@ -13,7 +13,7 @@ import net.minecraft.text.Text
 // todo: hide shulker's head somehow 😥
 class CrawlEntity(private val player: ServerPlayerEntity) : Entity(EntityType.SHULKER, player.world) {
     private val crawlPos
-        get() = player.pos.add(0.0, 1.0, 0.0)
+        get() = player.blockPos.toCenterPos()
 
     init {
         setPosition(crawlPos)
@@ -37,7 +37,7 @@ class CrawlEntity(private val player: ServerPlayerEntity) : Entity(EntityType.SH
     }
 
     override fun tick() {
-        if (blockPos != player.blockPos.up()) {
+        if (blockPos != player.blockPos.up() || age % 10 == 0) {
             setPosition(crawlPos)
             player.networkHandler.sendPacket(EntityPositionS2CPacket(this))
         }
