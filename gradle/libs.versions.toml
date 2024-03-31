@@ -4,6 +4,7 @@ fabric_kotlin = "1.10.19+kotlin.1.9.23"
 fabric_loom = "1.5-SNAPSHOT"
 
 kaml = "0.54.0"
+snakeyaml = "2.6"
 kotlin = "1.9.23"
 
 twelvemonkeys_imageio = "3.10.0"
@@ -13,6 +14,7 @@ fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_l
 fabric_kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric_kotlin" }
 
 kaml = { module = "com.charleskorn.kaml:kaml-jvm", version.ref = "kaml" }
+snakeyaml_engine = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml" }
 
 twelvemonkeys_imageio_core = { module = "com.twelvemonkeys.imageio:imageio-core", version.ref = "twelvemonkeys_imageio" }
 twelvemonkeys_imageio_webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "twelvemonkeys_imageio" }
@@ -23,6 +25,7 @@ twelvemonkeys_common_image = { module = "com.twelvemonkeys.common:common-image",
 
 [bundles]
 fabric = ["fabric_loader", "fabric_kotlin"]
+kaml = ["kaml", "snakeyaml_engine"]
 twelvemonkeys_imageio = ["twelvemonkeys_imageio_core", "twelvemonkeys_imageio_webp", "twelvemonkeys_imageio_metadata", "twelvemonkeys_common_lang", "twelvemonkeys_common_io", "twelvemonkeys_common_image"]
 
 [plugins]

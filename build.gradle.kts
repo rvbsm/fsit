@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.fabric.loom)
 }
 
-val gitVersion = "git describe --tags".execute().text!!.drop(1).trim()
+val modVersion = "git describe --tags".execute().text!!.drop(1).trim()
 val mcVersion = stonecutter.current.version
 val mcPredicate = property("version_predicate")
 val yarnBuild = property("fabric.yarn_build")
@@ -15,8 +15,8 @@ val fabricVersion = property("fabric.api")
 val modmenuVersion = property("api.modmenu")
 val yaclVersion = property("api.yacl")
 
+version = "$modVersion+$mcVersion"
 group = "dev.rvbsm"
-version = "$gitVersion+$mcVersion"
 base { archivesName = rootProject.name }
 
 repositories {
@@ -40,17 +40,11 @@ loom {
     }
 }
 
-val transitiveInclude: Configuration by configurations.creating {
-    exclude("com.mojang")
-    exclude("org.jetbrains.kotlin")
-    exclude("org.jetbrains.kotlinx")
-}
-
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
     mappings("net.fabricmc:yarn:$mcVersion+build.$yarnBuild:v2")
 
-    modImplementation(rootProject.libs.bundles.fabric)
+    modImplementation(libs.bundles.fabric)
     setOf(
         "fabric-api-base",
         "fabric-command-api-v1",
@@ -63,15 +57,11 @@ dependencies {
     modApi("com.terraformersmc:modmenu:$modmenuVersion")
 
     // Could not find com.twelvemonkeys.imageio:imageio-core:3.10.0-SNAPSHOT.
-    modApi(rootProject.libs.bundles.twelvemonkeys.imageio)
+    modApi(libs.bundles.twelvemonkeys.imageio)
     modApi("dev.isxander.yacl:yet-another-config-lib-fabric:$yaclVersion")
 
-    implementation(rootProject.libs.kaml)
-    transitiveInclude(rootProject.libs.kaml)
-
-    transitiveInclude.incoming.artifacts.forEach {
-        include("${it.id.componentIdentifier}")
-    }
+    implementation(libs.bundles.kaml)
+    include(libs.bundles.kaml)
 }
 
 tasks {
@@ -87,6 +77,13 @@ tasks {
     jar {
         from("LICENSE")
     }
+
+    if (stonecutter.current.isActive) {
+        register("buildActive") {
+            group = "project"
+            dependsOn(build)
+        }
+    }
 }
 
 java {
@@ -94,6 +91,10 @@ java {
 
     targetCompatibility = JavaVersion.VERSION_17
     sourceCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 fun String.execute(): Process = ProcessGroovyMethods.execute(this)

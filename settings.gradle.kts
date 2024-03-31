@@ -9,14 +9,14 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.3.+"
+    id("dev.kikugie.stonecutter") version "0.3.2"
 }
 
 extensions.configure<StonecutterSettings> {
-    kotlinController = true
-    centralScript = "build.gradle.kts"
+    kotlinController(true)
+    centralScript("build.gradle.kts")
     shared {
-        versions("1.20.2", "1.20.1")
+        versions("1.20.1", "1.20.2")
     }
     create(rootProject)
 }
