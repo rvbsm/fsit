@@ -3,9 +3,9 @@ package dev.rvbsm.fsit.event
 import dev.rvbsm.fsit.network.getConfig
 import dev.rvbsm.fsit.network.packet.RidingRequestS2CPacket
 import dev.rvbsm.fsit.network.packet.RidingResponseC2SPacket
+import dev.rvbsm.fsit.network.sendIfPossible
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.player.UseEntityCallback
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket
@@ -63,11 +63,12 @@ object UseEntityListener : UseEntityCallback, ServerLifecycleEvents.ServerStoppi
     override fun onServerStopping(server: MinecraftServer) = requests.forEach { it.value.complete(false) }
 
     private fun sendRequest(player: ServerPlayerEntity, target: ServerPlayerEntity) =
-        requests.computeIfAbsent(player.uuid to target.uuid) {
-            ServerPlayNetworking.send(player, RidingRequestS2CPacket(it.second))
-
+        requests.computeIfAbsent(player.uuid to target.uuid) { pair ->
             CompletableFuture<Boolean>()/*.whenComplete { _, _ -> requests.remove(it) }*/
                 .completeOnTimeout(false, TIMEOUT, TimeUnit.MILLISECONDS)
+                .also {
+                    player.sendIfPossible(RidingRequestS2CPacket(pair.second)) { it.complete(true) }
+                }
         }
 
     private fun isAlreadyRequested(player: PlayerEntity, target: PlayerEntity) =
