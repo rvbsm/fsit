@@ -2,7 +2,7 @@ package dev.rvbsm.fsit.client
 
 import com.mojang.serialization.Codec
 import dev.rvbsm.fsit.FSitMod
-import dev.rvbsm.fsit.client.command.RestrictCommand
+import dev.rvbsm.fsit.client.command.ClientMainCommand
 import dev.rvbsm.fsit.client.config.RestrictionList
 import dev.rvbsm.fsit.client.network.ClientConnectionListener
 import dev.rvbsm.fsit.client.network.FSitClientNetworking
@@ -51,9 +51,7 @@ object FSitModClient : ClientModInitializer {
         ClientPlayConnectionEvents.JOIN.register(ClientConnectionListener)
         ClientTickEvents.END_CLIENT_TICK.register(FSitKeyBindings)
 
-        enumValues<RestrictCommand>().forEach {
-            ClientCommandRegistrationCallback.EVENT.register(it::register)
-        }
+        ClientCommandRegistrationCallback.EVENT.register(ClientMainCommand::register)
     }
 
     fun saveConfig() {
