@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.client.event
+package dev.rvbsm.fsit.client.option
 
 import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.client.network.pose
@@ -11,8 +11,7 @@ import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.option.StickyKeyBinding
 import org.lwjgl.glfw.GLFW
 
-// todo: move to external class?
-object ClientTickListener : ClientTickEvents.EndTick {
+object FSitKeyBindings : ClientTickEvents.EndTick {
     private val sitKey = KeyBindingHelper.registerKeyBinding(StickyKeyBinding(
         "key.fsit.sit", GLFW.GLFW_KEY_RIGHT_CONTROL, KeyBinding.MISC_CATEGORY
     ) { FSitModClient.sitKeyMode.value.isSticky(holdTicks) })
@@ -33,8 +32,6 @@ object ClientTickListener : ClientTickEvents.EndTick {
         val player = client.player ?: return
 
         if (player.abilities.flying || player.isSneaking) {
-//            if (seatKey.isPressed) seatKey.isPressed = FSitMod.config.client!!.keyBehavior.isSticky(holdTicks)
-//            if (crawlKey.isPressed) crawlKey.isPressed = FSitMod.config.client!!.keyBehavior.isSticky(holdTicks)
             if (sitKey.isPressed) sitKey.isPressed = FSitModClient.sitKeyMode.value.isSticky(holdTicks)
             if (crawlKey.isPressed) crawlKey.isPressed = FSitModClient.crawlKeyMode.value.isSticky(holdTicks)
         }

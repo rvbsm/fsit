@@ -3,11 +3,11 @@ package dev.rvbsm.fsit.client
 import com.mojang.serialization.Codec
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.command.RestrictCommand
-import dev.rvbsm.fsit.client.config.KeyBindingMode
 import dev.rvbsm.fsit.client.config.RestrictionList
-import dev.rvbsm.fsit.client.event.ClientTickListener
 import dev.rvbsm.fsit.client.network.ClientConnectionListener
 import dev.rvbsm.fsit.client.network.FSitClientNetworking
+import dev.rvbsm.fsit.client.option.FSitKeyBindings
+import dev.rvbsm.fsit.client.option.KeyBindingMode
 import dev.rvbsm.fsit.network.packet.ConfigUpdateC2SPacket
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -49,7 +49,7 @@ object FSitModClient : ClientModInitializer {
         FSitClientNetworking.register()
 
         ClientPlayConnectionEvents.JOIN.register(ClientConnectionListener)
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickListener)
+        ClientTickEvents.END_CLIENT_TICK.register(FSitKeyBindings)
 
         enumValues<RestrictCommand>().forEach {
             ClientCommandRegistrationCallback.EVENT.register(it::register)

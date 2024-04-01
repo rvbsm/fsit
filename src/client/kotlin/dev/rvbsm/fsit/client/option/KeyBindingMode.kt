@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.client.config
+package dev.rvbsm.fsit.client.option
 
 import net.minecraft.util.TranslatableOption
 import net.minecraft.util.function.ValueLists
