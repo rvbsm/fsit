@@ -66,10 +66,10 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     @Inject(method = "render", at = @At("TAIL"))
     public void renderButtons(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
         if (this.restrictButton != null && this.allowButton != null) {
-            this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
+            this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - 48);
             this.restrictButton.setY(y + (entryHeight - this.restrictButton.getHeight()) / 2);
             this.restrictButton.render(context, mouseX, mouseY, tickDelta);
-            this.allowButton.setX(x + (entryWidth - this.allowButton.getWidth() - 4) - 24 * (this.buttons.size() - 2));
+            this.allowButton.setX(x + (entryWidth - this.allowButton.getWidth() - 4) - 48);
             this.allowButton.setY(y + (entryHeight - this.allowButton.getHeight()) / 2);
             this.allowButton.render(context, mouseX, mouseY, tickDelta);
         }
