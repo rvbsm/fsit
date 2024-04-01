@@ -7,6 +7,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.tree.LiteralCommandNode
 import dev.rvbsm.fsit.command.argument.CommandArgument
+import dev.rvbsm.fsit.util.lowercaseFirst
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.command.CommandRegistryAccess
@@ -27,7 +28,7 @@ interface ModCommand<S> where S : CommandSource {
         dispatcher.register(builder())
 
     fun builder(): LiteralArgumentBuilder<S> {
-        val builder = LiteralArgumentBuilder.literal<S>(name.lowercase()).requires(::requires)
+        val builder = LiteralArgumentBuilder.literal<S>(name.lowercaseFirst()).requires(::requires)
         children.forEach { builder.then(it.builder()) }
 
         return arguments.foldRight<CommandArgument<S, *>, RequiredArgumentBuilder<S, *>?>(null) { argument, acc ->

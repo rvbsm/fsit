@@ -10,3 +10,5 @@ fun String.id(namespace: String = "") = if (namespace.isNotEmpty()) {
 
 fun String.translatable(vararg args: Any): MutableText = Text.translatable(this, args)
 fun String.literal(): MutableText = Text.literal(this)
+
+fun String.lowercaseFirst() = replaceFirstChar { it.lowercase() }
