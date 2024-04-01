@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.command.fsit
+package dev.rvbsm.fsit.command
 
 import com.mojang.brigadier.context.CommandContext
 import dev.rvbsm.fsit.FSitMod

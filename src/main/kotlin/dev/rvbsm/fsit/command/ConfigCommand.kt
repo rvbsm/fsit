@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.command.fsit
+package dev.rvbsm.fsit.command
 
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.arguments.BoolArgumentType
@@ -7,7 +7,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
 import dev.rvbsm.fsit.FSitMod
-import dev.rvbsm.fsit.command.ModCommand
 import dev.rvbsm.fsit.util.literal
 import net.minecraft.server.command.ServerCommandSource
 import kotlin.reflect.KMutableProperty
