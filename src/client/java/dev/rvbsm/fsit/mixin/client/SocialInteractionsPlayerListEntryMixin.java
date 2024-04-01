@@ -30,7 +30,10 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     private static final ButtonTextures RESTRICT_TEXTURE = new ButtonTextures(FSitMod.id("social_interactions/restrict_button"), FSitMod.id("social_interactions/restrict_button_disabled"), FSitMod.id("social_interactions/restrict_button_highlighted"));
     @Unique
     private static final ButtonTextures ALLOW_TEXTURE = new ButtonTextures(FSitMod.id("social_interactions/allow_button"), FSitMod.id("social_interactions/allow_button_disabled"), FSitMod.id("social_interactions/allow_button_highlighted"));
-    /*?} */
+    /*?} else {*//*
+    @Unique
+    private static final net.minecraft.util.Identifier RESTRICT_TEXTURE = FSitMod.id("textures/gui/restrict_button.png");
+    *//*?} */
     @Unique
     private static final Text RESTRICT_BUTTON = FSitMod.translatable("gui", "socialInteractions.restrict");
     @Unique
@@ -50,17 +53,23 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     protected void restrictButton(CallbackInfo ci) {
         /*? if >=1.20.2 {*/
         this.restrictButton = new TexturedButtonWidget(20, 20, RESTRICT_TEXTURE, this::restrict, RESTRICT_BUTTON);
+        /*?} else {*//*
+        this.restrictButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, RESTRICT_TEXTURE, this::restrict);
+        *//*?} */
         this.restrictButton.active = FSitMod.getConfig().getRiding().getEnabled();
         this.restrictButton.setTooltip(Tooltip.of(this.restrictButton.active ? RESTRICT_BUTTON : DISABLED_BUTTON));
         buttons.add(this.restrictButton);
 
+        /*? if >=1.20.2 {*/
         this.allowButton = new TexturedButtonWidget(20, 20, ALLOW_TEXTURE, this::allow, ALLOW_BUTTON);
+        /*?} else {*//*
+        this.allowButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, RESTRICT_TEXTURE, this::allow);
+        *//*?} */
         this.allowButton.active = FSitMod.getConfig().getRiding().getEnabled();
         this.allowButton.setTooltip(Tooltip.of(this.allowButton.active ? ALLOW_BUTTON : DISABLED_BUTTON));
         buttons.add(this.allowButton);
 
         updateButtons(RestrictionList.isRestricted(uuid));
-        /*?} */
     }
 
     @Inject(method = "render", at = @At("TAIL"))
