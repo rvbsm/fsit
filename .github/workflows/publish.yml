@@ -15,7 +15,7 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - run: ./gradlew build --no-daemon
+      - run: ./gradlew chiseledBuild --no-daemon
 
       - uses: Kir-Antipov/mc-publish@v3.3
         with:
@@ -28,3 +28,23 @@ jobs:
 
           modrinth-id: J5NAzRqK
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          files: |
+            versions/1.20.1/build/libs/!(*-@(dev|sources|javadoc)).jar
+            versions/1.20.1/build/libs/*-@(dev|sources|javadoc).jar
+
+      - uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          loaders: |
+            fabric
+            quilt
+          dependencies: |
+            modmenu | suggests | *
+            yacl | suggests | *
+
+          modrinth-id: J5NAzRqK
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          files: |
+            versions/1.20.2/build/libs/!(*-@(dev|sources|javadoc)).jar
+            versions/1.20.2/build/libs/*-@(dev|sources|javadoc).jar

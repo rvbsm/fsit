@@ -1,7 +1,7 @@
 name: Build
 on:
   push:
-    branches: [next/**]
+    branches: [dev]
     paths-ignore: ["*.md"]
 
 jobs:
