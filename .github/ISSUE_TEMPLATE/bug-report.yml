@@ -24,30 +24,16 @@ body:
     validations:
       required: true
 
-  - type: dropdown
+  - type: input
     attributes:
       label: 📦 Version
       description: What version of mod are you running?
-      options:
-        - 1.5.1
-        - 1.5.0
-        - 1.4.2
-        - 1.4.1
-        - 1.4.0
-        - 1.3.2
-      default: 0
     validations:
       required: true
-  - type: dropdown
+  - type: input
     attributes:
       label: ⛏ Minecraft Version
       description: What version of Minecraft are you using?
-      options:
-        - 1.20.3
-        - 1.20.2
-        - 1.20.1
-        - '1.20'
-      default: 0
     validations:
       required: true
 

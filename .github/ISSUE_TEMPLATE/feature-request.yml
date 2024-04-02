@@ -19,8 +19,6 @@ body:
     attributes:
       label: 💡 Describe the solution you'd like to see
       description: Please describe the solution you would like to see. Adding example usage is a good way to provide context.
-    validations:
-      required: true
 
   - type: textarea
     attributes:
