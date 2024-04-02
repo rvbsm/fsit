@@ -1,8 +1,8 @@
 name: Build
 on:
   push:
-    branches: [dev]
-    paths-ignore: ["*.md"]
+    branches: [ dev ]
+    paths-ignore: [ "*.md" ]
 
 jobs:
   build:

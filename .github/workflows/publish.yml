@@ -1,7 +1,7 @@
 name: Publish
 on:
-  release:
-    types: [published]
+  push:
+    tags: [ "v*" ]
 
 jobs:
   publish:
@@ -16,6 +16,11 @@ jobs:
           cache: gradle
 
       - run: ./gradlew chiseledBuild --no-daemon
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: versions/*/build/libs/*.jar
 
       - uses: Kir-Antipov/mc-publish@v3.3
         with:
