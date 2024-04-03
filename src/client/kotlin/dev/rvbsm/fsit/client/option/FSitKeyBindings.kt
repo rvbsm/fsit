@@ -24,7 +24,7 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
 
     // note: idk what is happening here 💀
     override fun onEndTick(client: MinecraftClient) {
-        if (!FSitModClient.isServerFSitCompatible) return
+//        if (!FSitModClient.isServerFSitCompatible) return
 
         if (wasUpdatedFromKeybinding && sitKey.isPressed && crawlKey.isPressed) {
             sitKey.isPressed = FSitModClient.sitKeyMode.value.isSticky(holdTicks)
