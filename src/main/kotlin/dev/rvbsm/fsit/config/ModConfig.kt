@@ -3,8 +3,6 @@ package dev.rvbsm.fsit.config
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlNamingStrategy
-import com.mojang.brigadier.arguments.BoolArgumentType
-import com.mojang.brigadier.arguments.LongArgumentType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
@@ -58,7 +56,7 @@ data class ModConfig(
         )
     ) {
         init {
-            require(radius in 0..4) { "sittable.radius is needed to be in 0..4" }
+            require(radius in 1..4) { "sittable.radius is needed to be in 1..4" }
         }
     }
 
@@ -68,7 +66,7 @@ data class ModConfig(
         var radius: Long = 3,
     ) {
         init {
-            require(radius in 0..4) { "riding.radius is needed to be in 0..4" }
+            require(radius in 1..4) { "riding.radius is needed to be in 1..4" }
         }
     }
 }

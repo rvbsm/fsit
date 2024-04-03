@@ -37,7 +37,7 @@ object FSitModMenu : ModMenuApi {
     private fun booleanOption(path: String, field: KMutableProperty<Boolean>, default: Boolean) =
         optionBuilder(path, TickBoxControllerBuilder::create, field, default).build()
 
-    private fun longOption(path: String, field: KMutableProperty<Long>, default: Long, range: LongRange = 0..4L) =
+    private fun longOption(path: String, field: KMutableProperty<Long>, default: Long, range: LongRange = 1..4L) =
         optionBuilder(
             path,
             { LongSliderControllerBuilder.create(it).range(range.first, range.last).step(range.step) },
