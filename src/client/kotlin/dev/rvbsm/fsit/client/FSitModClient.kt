@@ -22,6 +22,9 @@ object FSitModClient : ClientModInitializer {
     private val logger = LoggerFactory.getLogger(FSitModClient::class.java)
 
     @JvmStatic
+    val isServerFSitCompatible get() = ClientPlayNetworking.canSend(ConfigUpdateC2SPacket.pType)
+
+    @JvmStatic
     val sitKeyMode = SimpleOption(
         "key.fsit.sit",
         SimpleOption.emptyTooltip(),
@@ -54,9 +57,7 @@ object FSitModClient : ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register(ClientMainCommand::register)
     }
 
-    fun saveConfig() {
-        FSitMod.saveConfig()
-
+    fun saveConfig() = FSitMod.saveConfig().also {
         sendIfPossible(ConfigUpdateC2SPacket(FSitMod.config))
     }
 
