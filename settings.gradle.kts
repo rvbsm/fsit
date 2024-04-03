@@ -2,9 +2,9 @@ import dev.kikugie.stonecutter.gradle.StonecutterSettings
 
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         maven("https://maven.fabricmc.net/")
         maven("https://maven.kikugie.dev/releases")
-        mavenCentral()
     }
 }
 

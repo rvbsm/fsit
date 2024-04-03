@@ -1,13 +1,16 @@
 [versions]
+kotlin = "1.9.23"
+
 fabric_loader = "0.15.7"
 fabric_kotlin = "1.10.19+kotlin.1.9.23"
 fabric_loom = "1.5-SNAPSHOT"
 
 kaml = "0.54.0"
 snakeyaml = "2.6"
-kotlin = "1.9.23"
 
 twelvemonkeys_imageio = "3.10.0"
+
+palantir_git = "3.0.0"
 
 [libraries]
 fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
@@ -30,3 +33,4 @@ twelvemonkeys_imageio = ["twelvemonkeys_imageio_core", "twelvemonkeys_imageio_we
 
 [plugins]
 fabric_loom = { id = "fabric-loom", version.ref = "fabric_loom" }
+git = { id = "com.palantir.git-version", version.ref = "palantir_git" }

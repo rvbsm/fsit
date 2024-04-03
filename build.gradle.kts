@@ -1,13 +1,14 @@
-import org.codehaus.groovy.runtime.ProcessGroovyMethods
-
 plugins {
     kotlin("jvm") version libs.versions.kotlin
     kotlin("plugin.serialization") version libs.versions.kotlin
 
     alias(libs.plugins.fabric.loom)
+    alias(libs.plugins.git)
 }
 
-val modVersion = "git describe --tags".execute().text!!.drop(1).trim()
+val gitVersion: groovy.lang.Closure<String> by extra
+
+val modVersion = gitVersion()
 val mcVersion = stonecutter.current.version
 val mcPredicate = property("version_predicate")
 val yarnBuild = property("fabric.yarn_build")
@@ -20,9 +21,9 @@ group = "dev.rvbsm"
 base { archivesName = rootProject.name }
 
 repositories {
+    mavenCentral()
     maven("https://maven.terraformersmc.com/releases")
     maven("https://maven.isxander.dev/releases")
-    mavenCentral()
 }
 
 loom {
@@ -96,6 +97,3 @@ java {
 kotlin {
     jvmToolchain(17)
 }
-
-fun String.execute(): Process = ProcessGroovyMethods.execute(this)
-val Process.text: String? get() = ProcessGroovyMethods.getText(this)
