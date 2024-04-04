@@ -30,6 +30,7 @@ jobs:
             fabric
             quilt
           dependencies: |
+            fabric-language-kotlin | depends | *
             modmenu | suggests | *
             yacl | suggests | *
 
@@ -46,6 +47,7 @@ jobs:
             fabric
             quilt
           dependencies: |
+            fabric-language-kotlin | depends | *
             modmenu | suggests | *
             yacl | suggests | *
 
