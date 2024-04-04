@@ -13,10 +13,11 @@ enum class PoseCommand(private val pose: Pose) : ModCommand<ServerCommandSource>
     /*Lay(Pose.Laying),
     Spin(Pose.Spinning)*/;
 
-    override fun requires(src: ServerCommandSource): Boolean = src.isExecutedByPlayer
+    override fun requires(src: ServerCommandSource) = src.isExecutedByPlayer
 
     override fun executes(ctx: CommandContext<ServerCommandSource>): Int {
         val player = ctx.source.player ?: return -1
+        if (player.hasVehicle()) return -1
 
         if (player.isInPose()) {
             player.resetPose()

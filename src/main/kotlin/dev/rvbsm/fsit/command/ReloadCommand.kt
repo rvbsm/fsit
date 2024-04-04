@@ -2,7 +2,6 @@ package dev.rvbsm.fsit.command
 
 import com.mojang.brigadier.context.CommandContext
 import dev.rvbsm.fsit.FSitMod
-import dev.rvbsm.fsit.command.ModCommand
 import dev.rvbsm.fsit.util.literal
 import net.minecraft.server.command.ServerCommandSource
 

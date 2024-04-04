@@ -32,6 +32,7 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
         }
 
         val player = client.player ?: return
+        if (player.hasVehicle()) return
 
         if (player.abilities.flying || player.isSneaking) {
             if (sitKey.isPressed) sitKey.isPressed = FSitModClient.sitKeyMode.value.isSticky(holdTicks)
