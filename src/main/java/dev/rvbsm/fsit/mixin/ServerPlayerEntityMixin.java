@@ -65,6 +65,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
         }
     }
 
+    @Inject(method = "copyFrom", at = @At("TAIL"))
+    private void copyConfig(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
+        final ConfigurableEntity configurablePlayer = (ConfigurableEntity) oldPlayer;
+        if (configurablePlayer.fsit$hasConfig()) {
+            this.config = configurablePlayer.fsit$getConfig();
+        }
+    }
 
     @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
     private void dismountPlayer(Entity target, CallbackInfo ci) {
