@@ -16,7 +16,7 @@ import net.minecraft.util.math.Vec3d
 fun interface UpdatePoseCallback {
     fun onUpdatePose(player: ServerPlayerEntity, pose: Pose, pos: Vec3d?)
 
-    companion object {
+    companion object : UpdatePoseCallback {
         @JvmField
         val EVENT: Event<UpdatePoseCallback> =
             EventFactory.createArrayBacked(UpdatePoseCallback::class.java) { listeners ->
@@ -26,9 +26,7 @@ fun interface UpdatePoseCallback {
                     }
                 }
             }
-    }
 
-    object Listener : UpdatePoseCallback {
         override fun onUpdatePose(player: ServerPlayerEntity, pose: Pose, pos: Vec3d?) {
             player.sendIfPossible(PoseUpdateS2CPacket(pose, pos ?: player.pos))
 

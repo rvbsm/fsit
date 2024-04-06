@@ -32,7 +32,7 @@ object FSitMod : ModInitializer {
 
         UseBlockCallback.EVENT.register(UseBlockListener)
         UseEntityCallback.EVENT.register(UseEntityListener)
-        UpdatePoseCallback.EVENT.register(UpdatePoseCallback.Listener)
+        UpdatePoseCallback.EVENT.register(UpdatePoseCallback)
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerLifecycleListener)
 
         CommandRegistrationCallback.EVENT.register(MainCommand::register)
