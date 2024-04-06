@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNamingStrategy
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.registry.tag.BlockTags
 import java.nio.file.Path
@@ -20,27 +22,31 @@ private val configPath = FabricLoader.getInstance().configDir
 private val yamlConf = YamlConfiguration(strictMode = false, yamlNamingStrategy = YamlNamingStrategy.SnakeCase)
 private val yaml = Yaml(configuration = yamlConf)
 
-// todo: migration from TOML
+private val json = Json { ignoreUnknownKeys = true; namingStrategy = JsonNamingStrategy.SnakeCase }
+
 @Serializable
 data class ModConfig(
-    @Transient private val path: Path = configPath, // hm
+    @Transient private val path: Path? = null,
 
     var useServer: Boolean = false,
     val sittable: Sittable = Sittable(),
     val riding: Riding = Riding(),
 ) {
-    override fun toString() = yaml.encodeToString(this)
-    internal fun write() = path.writeText("$this")
+    override fun toString() = toYaml()
+    fun toYaml() = yaml.encodeToString(this)
+    fun toJson() = json.encodeToString(this)
+    internal fun write() = path?.writeText("$this")
 
     companion object {
         @Transient
         val default = ModConfig()
 
-        private fun fromString(string: String) = yaml.decodeFromString<ModConfig>(string)
+        fun fromYaml(string: String) = yaml.decodeFromString<ModConfig>(string)
+        fun fromJson(string: String) = json.decodeFromString<ModConfig>(string)
 
         internal fun read(id: String) = configPath.resolve("$id.yaml").let {
             if (it.exists() && it.fileSize() > 0) {
-                fromString(it.readText()).copy(path = it)
+                fromYaml(it.readText()).copy(path = it)
             } else {
                 default.copy(path = it)
             }
