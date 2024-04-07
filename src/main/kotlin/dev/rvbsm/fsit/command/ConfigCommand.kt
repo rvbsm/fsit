@@ -17,10 +17,10 @@ enum class ConfigCommand(
     private val clazz: Class<*>,
 ) : ModCommand<ServerCommandSource> {
     UseServer(FSitMod.config::useServer, BoolArgumentType.bool(), Boolean::class.java),
-    SittableEnabled(FSitMod.config.sittable::enabled, BoolArgumentType.bool(), Boolean::class.java),
-    SittableRadius(FSitMod.config.sittable::radius, LongArgumentType.longArg(1, 4), Long::class.java),
-    RidingEnabled(FSitMod.config.riding::enabled, BoolArgumentType.bool(), Boolean::class.java),
-    RidingRadius(FSitMod.config.riding::radius, LongArgumentType.longArg(1, 4), Long::class.java);
+    SittableEnabled(FSitMod.config.sitting.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
+    SittableRadius(FSitMod.config.sitting.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java),
+    RidingEnabled(FSitMod.config.riding.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
+    RidingRadius(FSitMod.config.riding.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java);
 
     override fun requires(src: ServerCommandSource) = src.hasPermissionLevel(2)
 

@@ -22,12 +22,12 @@ object UseBlockListener : UseBlockCallback {
         else if (hitResult.side != Direction.UP || !world.isAir(hitResult.blockPos.up())) ActionResult.PASS
         else {
             val config = (player as ServerPlayerEntity).getConfig()
-            if (!config.sittable.enabled) return ActionResult.PASS
+            if (!config.sitting.onUse.enabled) return ActionResult.PASS
 
             val hitState = world.getBlockState(hitResult.blockPos)
 
-            val isInRange = player.pos.isInRange(hitResult.pos, config.sittable.radius.toDouble())
-            val isMaterialMatch = config.sittable.materials.any { it.corresponds(hitState) }
+            val isInRange = player.pos.isInRange(hitResult.pos, config.sitting.onUse.range.toDouble())
+            val isMaterialMatch = config.sitting.onUse.blocks.any { it.test(hitState) }
 
             return if (isInRange && isMaterialMatch) {
                 val isSittableSide = when {

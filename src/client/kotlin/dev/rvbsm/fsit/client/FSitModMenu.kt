@@ -91,29 +91,33 @@ object FSitModMenu : ModMenuApi {
                     optionGroup(
                         "sittable",
                         booleanOption(
-                            "sittable.enabled", FSitMod.config.sittable::enabled, ModConfig.default.sittable.enabled
+                            "sittable.enabled",
+                            FSitMod.config.sitting.onUse::enabled,
+                            ModConfig.default.sitting.onUse.enabled
                         ),
                         longOption(
-                            "sittable.radius", FSitMod.config.sittable::radius, ModConfig.default.sittable.radius
+                            "sittable.radius",
+                            FSitMod.config.sitting.onUse::range,
+                            ModConfig.default.sitting.onUse.range
                         ),
                     )
                 ).group(
                     containerOption(
                         "sittable.blocks",
-                        FSitMod.config.sittable.materials,
+                        FSitMod.config.sitting.onUse.blocks,
                         Iterable<BlockContainer>::getEntries,
                         Iterable<Block>::asEntries,
-                        ModConfig.default.sittable.materials.getEntries(),
+                        ModConfig.default.sitting.onUse.blocks.getEntries(),
                         Blocks.AIR,
                         RegistryHelper.Simple(Registries.BLOCK),
                     )
                 ).group(
                     containerOption(
                         "sittable.tags",
-                        FSitMod.config.sittable.materials,
+                        FSitMod.config.sitting.onUse.blocks,
                         Iterable<BlockContainer>::getTags,
                         Iterable<TagKey<Block>>::asTags,
-                        ModConfig.default.sittable.materials.getTags(),
+                        ModConfig.default.sitting.onUse.blocks.getTags(),
                         BlockTags.SLABS,
                         RegistryHelper.Tag(Registries.BLOCK),
                     )
@@ -121,9 +125,15 @@ object FSitModMenu : ModMenuApi {
                     optionGroup(
                         "riding",
                         booleanOption(
-                            "riding.enabled", FSitMod.config.riding::enabled, ModConfig.default.riding.enabled
+                            "riding.enabled",
+                            FSitMod.config.riding.onUse::enabled,
+                            ModConfig.default.riding.onUse.enabled
                         ),
-                        longOption("riding.radius", FSitMod.config.riding::radius, ModConfig.default.riding.radius),
+                        longOption(
+                            "riding.radius",
+                            FSitMod.config.riding.onUse::range,
+                            ModConfig.default.riding.onUse.range
+                        ),
                     )
                 ).build()
             ).save(FSitModClient::saveConfig).build().generateScreen(screen)

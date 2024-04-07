@@ -33,8 +33,8 @@ object UseEntityListener : UseEntityCallback, ServerLifecycleEvents.ServerStoppi
             val playerConfig = (player as ServerPlayerEntity).getConfig()
             val targetConfig = (entity as ServerPlayerEntity).getConfig()
 
-            if (!playerConfig.riding.enabled || !targetConfig.riding.enabled) return ActionResult.PASS
-            else if (!player.isInRange(entity, playerConfig.riding.radius.toDouble())) return ActionResult.PASS
+            if (!playerConfig.riding.onUse.enabled || !targetConfig.riding.onUse.enabled) return ActionResult.PASS
+            else if (!player.isInRange(entity, playerConfig.riding.onUse.range.toDouble())) return ActionResult.PASS
 
             if (!isAlreadyRequested(player, entity)) {
                 val playerRequest = sendRequest(player, entity)
