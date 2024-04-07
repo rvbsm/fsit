@@ -3,6 +3,8 @@ package dev.rvbsm.fsit.config
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlNamingStrategy
+import dev.rvbsm.fsit.config.container.BlockContainer
+import dev.rvbsm.fsit.config.container.asContainer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
@@ -57,9 +59,9 @@ data class ModConfig(
     data class Sittable(
         var enabled: Boolean = true,
         var radius: Long = 2,
-        var materials: MutableSet<@Serializable(Material.Serializer::class) Material> = mutableSetOf(
-            BlockTags.SLABS.asMaterial(), BlockTags.STAIRS.asMaterial(), BlockTags.LOGS.asMaterial()
-        )
+        var materials: MutableSet<@Serializable(BlockContainer.Serializer::class) BlockContainer> = mutableSetOf(
+            BlockTags.SLABS.asContainer(), BlockTags.STAIRS.asContainer(), BlockTags.LOGS.asContainer()
+        ),
     ) {
         init {
             require(radius in 1..4) { "sittable.radius is needed to be in 1..4" }

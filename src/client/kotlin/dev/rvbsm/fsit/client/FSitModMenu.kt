@@ -10,6 +10,7 @@ import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.controller.RegistryControllerBuilder
 import dev.rvbsm.fsit.client.controller.RegistryHelper
 import dev.rvbsm.fsit.config.*
+import dev.rvbsm.fsit.config.container.*
 import dev.rvbsm.fsit.util.literal
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
@@ -64,19 +65,19 @@ object FSitModMenu : ModMenuApi {
             .binding(default, getter, setter).initial(initial)
     }
 
-    private inline fun <T : ItemConvertible, W : Any, reified M : Material> materialOption(
+    private inline fun <T : ItemConvertible, W : Any, reified C : Container, reified E : C> containerOption(
         path: String,
-        materials: MutableSet<Material>,
-        noinline getConverter: (Iterable<Material>) -> List<W>,
-        noinline setConverter: (List<W>) -> Iterable<M>,
+        containers: MutableSet<C>,
+        noinline getConverter: (Iterable<C>) -> List<W>,
+        noinline setConverter: (List<W>) -> Iterable<E>,
         default: List<W>,
         initial: W,
         registryHelper: RegistryHelper<T, W>,
     ) = listOptionBuilder(
         path,
         { RegistryControllerBuilder(it, registryHelper) },
-        { getConverter(materials) },
-        { materials.updateWith<M>(setConverter(it)) },
+        { getConverter(containers) },
+        { containers.updateWith<C, E>(setConverter(it)) },
         default,
         initial,
     ).build()
@@ -97,21 +98,21 @@ object FSitModMenu : ModMenuApi {
                         ),
                     )
                 ).group(
-                    materialOption(
+                    containerOption(
                         "sittable.blocks",
                         FSitMod.config.sittable.materials,
-                        Iterable<Material>::getBlocks,
-                        Iterable<Block>::asBlockEntries,
-                        ModConfig.default.sittable.materials.getBlocks(),
+                        Iterable<BlockContainer>::getEntries,
+                        Iterable<Block>::asEntries,
+                        ModConfig.default.sittable.materials.getEntries(),
                         Blocks.AIR,
                         RegistryHelper.Simple(Registries.BLOCK),
                     )
                 ).group(
-                    materialOption(
+                    containerOption(
                         "sittable.tags",
                         FSitMod.config.sittable.materials,
-                        Iterable<Material>::getTags,
-                        Iterable<TagKey<Block>>::asTagEntries,
+                        Iterable<BlockContainer>::getTags,
+                        Iterable<TagKey<Block>>::asTags,
                         ModConfig.default.sittable.materials.getTags(),
                         BlockTags.SLABS,
                         RegistryHelper.Tag(Registries.BLOCK),
