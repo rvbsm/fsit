@@ -4,6 +4,7 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import dev.isxander.yacl3.api.*
 import dev.isxander.yacl3.api.controller.ControllerBuilder
+import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder
 import dev.isxander.yacl3.api.controller.LongSliderControllerBuilder
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import dev.rvbsm.fsit.FSitMod
@@ -46,9 +47,21 @@ object FSitModMenu : ModMenuApi {
             default
         ).build()
 
-    private fun optionGroup(path: String, vararg options: Option<*>): OptionGroup {
+    private fun doubleOption(path: String, field: KMutableProperty<Double>, default: Double, range: LongRange = 1..4L) =
+        optionBuilder(
+            path,
+            {
+                DoubleSliderControllerBuilder.create(it).range(range.first.toDouble(), range.last.toDouble())
+                    .step(range.step.toDouble())
+            },
+            field,
+            default,
+        ).build()
+
+    private fun optionGroup(path: String, vararg options: Option<*>, isCollapsed: Boolean = false): OptionGroup {
         val name = FSitMod.translatable("group", path)
-        return OptionGroup.createBuilder().name(name).apply { options.forEach { option(it) } }.build()
+        return OptionGroup.createBuilder().name(name).apply { options.forEach { option(it) } }.collapsed(isCollapsed)
+            .build()
     }
 
     private fun <T : Any> listOptionBuilder(
@@ -80,7 +93,7 @@ object FSitModMenu : ModMenuApi {
         { containers.updateWith<C, E>(setConverter(it)) },
         default,
         initial,
-    ).build()
+    ).collapsed(true).build()
 
     override fun getModConfigScreenFactory(): ConfigScreenFactory<*> {
         return ConfigScreenFactory { screen ->
@@ -89,48 +102,76 @@ object FSitModMenu : ModMenuApi {
                     booleanOption("use_server", FSitMod.config::useServer, ModConfig.default.useServer)
                 ).group(
                     optionGroup(
-                        "sittable",
+                        "sitting",
                         booleanOption(
-                            "sittable.enabled",
+                            "sitting.seats_gravity",
+                            FSitMod.config.sitting::seatsGravity,
+                            ModConfig.default.sitting.seatsGravity
+                        ),
+                    )
+                ).group(
+                    optionGroup(
+                        "sitting.on_use",
+                        booleanOption(
+                            "sitting.on_use.enabled",
                             FSitMod.config.sitting.onUse::enabled,
                             ModConfig.default.sitting.onUse.enabled
                         ),
                         longOption(
-                            "sittable.radius",
+                            "sitting.on_use.range",
                             FSitMod.config.sitting.onUse::range,
                             ModConfig.default.sitting.onUse.range
                         ),
                     )
                 ).group(
                     containerOption(
-                        "sittable.blocks",
+                        "sitting.on_use.blocks",
                         FSitMod.config.sitting.onUse.blocks,
                         Iterable<BlockContainer>::getEntries,
                         Iterable<Block>::asEntries,
                         ModConfig.default.sitting.onUse.blocks.getEntries(),
                         Blocks.AIR,
                         RegistryHelper.Simple(Registries.BLOCK),
-                    )
+                    ),
                 ).group(
                     containerOption(
-                        "sittable.tags",
+                        "sitting.on_use.tags",
                         FSitMod.config.sitting.onUse.blocks,
                         Iterable<BlockContainer>::getTags,
                         Iterable<TagKey<Block>>::asTags,
                         ModConfig.default.sitting.onUse.blocks.getTags(),
                         BlockTags.SLABS,
                         RegistryHelper.Tag(Registries.BLOCK),
+                    ),
+                ).group(
+                    optionGroup(
+                        "sitting.on_double_sneak",
+                        booleanOption(
+                            "sitting.on_double_sneak.enabled",
+                            FSitMod.config.sitting.onDoubleSneak::enabled,
+                            ModConfig.default.sitting.onDoubleSneak.enabled
+                        ),
+                        doubleOption(
+                            "sitting.on_double_sneak.min_pitch",
+                            FSitMod.config.sitting.onDoubleSneak::minPitch,
+                            ModConfig.default.sitting.onDoubleSneak.minPitch
+                        ),
+                        longOption(
+                            "sitting.on_double_sneak.delay",
+                            FSitMod.config.sitting.onDoubleSneak::delay,
+                            ModConfig.default.sitting.onDoubleSneak.delay
+                        ),
                     )
                 ).group(
                     optionGroup(
                         "riding",
                         booleanOption(
-                            "riding.enabled",
+                            "riding.on_use.enabled",
                             FSitMod.config.riding.onUse::enabled,
                             ModConfig.default.riding.onUse.enabled
                         ),
                         longOption(
-                            "riding.radius",
+                            "riding.on_use.range",
                             FSitMod.config.riding.onUse::range,
                             ModConfig.default.riding.onUse.range
                         ),
