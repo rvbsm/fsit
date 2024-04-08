@@ -38,7 +38,7 @@ internal object FSitConfigMigrator {
                     config.sitting.onUse.blocks.updateWith(it)
                 }
             }
-        }.let { logger.info("Migrated 'sittable' to 'sitting'") }
+        }?.let { logger.info("Migrated 'sittable' to 'sitting'") }
 
         yamlConfig.get<YamlMap>("riding")?.let { yamlRiding ->
             yamlRiding.get<YamlScalar>("enabled")?.let { config.riding.onUse.enabled = it.toBoolean() }?.let {
