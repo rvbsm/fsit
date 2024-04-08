@@ -32,7 +32,7 @@ fun interface UpdatePoseCallback {
 
             when (pose) {
                 Pose.Standing -> {
-                    if (player.hasVehicle()) player.stopRiding()
+                    if (player.vehicle is SeatEntity) player.stopRiding()
                     else if (player.hasCrawl()) player.removeCrawl()
                 }
 
