@@ -33,7 +33,7 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
 
         if ((sitKey.isPressed && crawlKey.isPressed) || player.abilities.flying || player.isSneaking) {
             sitKey.isPressed = sitKey.isPressed && FSitModClient.sitKeyMode.value.isSticky(holdTicks)
-            crawlKey.isPressed = crawlKey.isPressed && FSitModClient.sitKeyMode.value.isSticky(holdTicks)
+            crawlKey.isPressed = crawlKey.isPressed && FSitModClient.crawlKeyMode.value.isSticky(holdTicks)
         }
 
         val pose = when {
