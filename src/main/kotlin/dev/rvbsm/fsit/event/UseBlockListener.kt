@@ -51,6 +51,4 @@ object UseBlockListener : UseBlockCallback {
 
 // note: meh
 val ItemStack.willSkipInteraction
-    get() = isEmpty
-            || (isFood && (holder as? PlayerEntity)?.canConsume(item.foodComponent!!.isAlwaysEdible) == false)
-            || isOf(Items.TOTEM_OF_UNDYING)
+    get() = isEmpty || isFood || isOf(Items.TOTEM_OF_UNDYING)
