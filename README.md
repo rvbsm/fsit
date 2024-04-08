@@ -24,16 +24,23 @@ The config can be modified with [Mod Menu][modmenu] and [YetAnotherConfigLib][ya
 
 ```yaml
 use_server: false
-sittable:
-  enabled: true
-  radius: 2
-  materials:
-    - "#minecraft:slabs"
-    - "#minecraft:stairs"
-    - "#minecraft:logs"
+sitting:
+  seats_gravity: true
+  on_use:
+    enabled: true
+    range: 2
+    blocks:
+      - "#slabs"
+      - "#stairs"
+      - "#logs"
+  on_double_sneak:
+    enabled: false
+    min_pitch: 66.6
+    delay: 600
 riding:
-  enabled: true
-  radius: 3
+  on_use:
+    enabled: true
+    range: 3
 ```
 
 ## Contributing
