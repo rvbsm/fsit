@@ -28,11 +28,11 @@ abstract public class PlayerEntityMixin extends LivingEntity implements Poseable
     @Shadow
     public abstract PlayerAbilities getAbilities();
 
-    @Redirect(method = "updateSwimming", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;updateSwimming()V"))
-    private void updateCrawling(LivingEntity livingEntity) {
-        if (this.fsit$isInPose(Pose.Crawling)) {
-            this.setSwimming(true);
-        } else super.updateSwimming();
+    @Shadow public abstract boolean isSwimming();
+
+    @Redirect(method = "updatePose", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSwimming()Z"))
+    private boolean isCrawling(PlayerEntity player) {
+        return this.isSwimming() || this.fsit$isInPose(Pose.Crawling);
     }
 
     @Override
