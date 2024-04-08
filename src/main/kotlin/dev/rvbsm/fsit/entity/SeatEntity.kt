@@ -1,5 +1,6 @@
 package dev.rvbsm.fsit.entity
 
+import dev.rvbsm.fsit.network.getConfig
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.entity.*
 import net.minecraft.nbt.NbtCompound
@@ -7,7 +8,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 
-class SeatEntity(player: ServerPlayerEntity, pos: Vec3d) : Entity(EntityType.BLOCK_DISPLAY, player.world) {
+class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(EntityType.BLOCK_DISPLAY, player.world) {
     init {
         setPosition(pos)
         calculateDimensions()
@@ -27,9 +28,10 @@ class SeatEntity(player: ServerPlayerEntity, pos: Vec3d) : Entity(EntityType.BLO
 
     override fun tick() {
         if (!world.isClient && !isRemoved) {
-            // todo: optional gravity?
-            velocity = velocity.add(0.0, -0.04, 0.0)
-            move(MovementType.SELF, velocity)
+            if (player.getConfig().sitting.seatsGravity) {
+                velocity = velocity.add(0.0, -0.04, 0.0)
+                move(MovementType.SELF, velocity)
+            }
 
             if (firstPassenger == null) {
                 discard()
