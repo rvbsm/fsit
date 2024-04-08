@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback
 import net.minecraft.block.enums.BlockHalf
 import net.minecraft.block.enums.SlabType
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
@@ -18,7 +20,7 @@ import net.minecraft.world.World
 object UseBlockListener : UseBlockCallback {
     override fun interact(player: PlayerEntity, world: World, hand: Hand, hitResult: BlockHitResult): ActionResult {
         return if (world.isClient || player.isSneaking || player.isSpectator) ActionResult.PASS
-        else if (!player.getStackInHand(Hand.MAIN_HAND).isEmpty || !player.getStackInHand(Hand.OFF_HAND).isEmpty) ActionResult.PASS
+        else if (!player.getStackInHand(Hand.MAIN_HAND).willSkipInteraction || !player.getStackInHand(Hand.OFF_HAND).willSkipInteraction) ActionResult.PASS
         else if (hitResult.side != Direction.UP || !world.isAir(hitResult.blockPos.up())) ActionResult.PASS
         else {
             val config = (player as ServerPlayerEntity).getConfig()
@@ -39,9 +41,16 @@ object UseBlockListener : UseBlockCallback {
 
                 if (isSittableSide) {
                     player.setPose(Pose.Sitting, hitResult.pos)
+
                     ActionResult.SUCCESS
                 } else ActionResult.PASS
             } else ActionResult.PASS
         }
     }
 }
+
+// note: meh
+val ItemStack.willSkipInteraction
+    get() = isEmpty
+            || (isFood && (holder as? PlayerEntity)?.canConsume(item.foodComponent!!.isAlwaysEdible) == false)
+            || isOf(Items.TOTEM_OF_UNDYING)
