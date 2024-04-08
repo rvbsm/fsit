@@ -54,39 +54,34 @@ internal object FSitConfigMigrator {
         val jsonObject = jsonElement.jsonObject
 
         jsonObject["sittable"]?.jsonObject?.let { jsonSittable ->
-            jsonSittable["enabled"]?.jsonPrimitive?.let { config.sitting.onUse.enabled = it.boolean }?.let {
-                logger.info("Migrated 'sittable.enabled' to 'sitting.on_use.enabled'")
-            }
-            jsonSittable["radius"]?.jsonPrimitive?.let { config.sitting.onUse.range = it.long }?.let {
-                logger.info("Migrated 'sittable.radius' to 'sitting.on_use.range'")
-            }
+            jsonSittable["enabled"]?.jsonPrimitive?.let { config.sitting.onUse.enabled = it.boolean }
+            jsonSittable["radius"]?.jsonPrimitive?.let { config.sitting.onUse.range = it.long }
             jsonSittable["blocks"]?.jsonArray?.let { jsonBlocks ->
                 jsonBlocks.map { BlockContainer.BlockEntry.fromString(it.jsonPrimitive.content) }.let {
-                    logger.info("Migrated 'sittable.blocks' to 'sitting.on_use.blocks'")
                     config.sitting.onUse.blocks.updateWith(it)
                 }
             }
-            jsonSittable["tags"]?.jsonArray?.let { yamlTags ->
-                yamlTags.map { BlockContainer.TagEntry.fromString('#' + it.jsonPrimitive.content) }.let {
-                    logger.info("Migrated 'sittable.tags' to 'sitting.on_use.blocks'")
+            jsonSittable["tags"]?.jsonArray?.let { jsonTags ->
+                jsonTags.map { BlockContainer.TagEntry.fromString('#' + it.jsonPrimitive.content) }.let {
                     config.sitting.onUse.blocks.updateWith(it)
                 }
             }
-            jsonSittable["materials"]?.jsonArray?.let { yamlMaterials ->
-                yamlMaterials.map { BlockContainer.fromString(it.jsonPrimitive.content) }.let {
-                    logger.info("Migrated 'sittable.materials' to 'sitting.on_use.blocks'")
+            jsonSittable["materials"]?.jsonArray?.let { jsonMaterials ->
+                jsonMaterials.map { BlockContainer.fromString(it.jsonPrimitive.content) }.let {
                     config.sitting.onUse.blocks.updateWith(it)
                 }
             }
-        }.let { logger.info("Migrated 'sittable' to 'sitting'") }
+        }
 
-        jsonObject["riding"]?.jsonObject?.let { yamlRiding ->
-            yamlRiding["enabled"]?.jsonPrimitive?.let { config.riding.onUse.enabled = it.boolean }?.let {
-                logger.info("Migrated 'sittable.enabled' to 'sitting.on_use.enabled'")
-            }
-            yamlRiding["radius"]?.jsonPrimitive?.let { config.riding.onUse.range = it.long }?.let {
-                logger.info("Migrated 'sittable.radius' to 'sitting.on_use.range'")
-            }
+        jsonObject["riding"]?.jsonObject?.let { jsonRiding ->
+            jsonRiding["enabled"]?.jsonPrimitive?.let { config.riding.onUse.enabled = it.boolean }
+            jsonRiding["radius"]?.jsonPrimitive?.let { config.riding.onUse.range = it.long }
+        }
+
+        jsonObject["sneak"]?.jsonObject?.let { jsonSneak ->
+            jsonSneak["enabled"]?.jsonPrimitive?.let { config.sitting.onDoubleSneak.enabled = it.boolean }
+            jsonSneak["angle"]?.jsonPrimitive?.let { config.sitting.onDoubleSneak.minPitch = it.double }
+            jsonSneak["delay"]?.jsonPrimitive?.let { config.sitting.onDoubleSneak.delay = it.long }
         }
     }
 }
