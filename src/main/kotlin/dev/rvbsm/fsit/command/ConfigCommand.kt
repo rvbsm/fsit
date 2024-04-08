@@ -2,6 +2,7 @@ package dev.rvbsm.fsit.command
 
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.arguments.BoolArgumentType
+import com.mojang.brigadier.arguments.DoubleArgumentType
 import com.mojang.brigadier.arguments.LongArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
@@ -17,10 +18,13 @@ enum class ConfigCommand(
     private val clazz: Class<*>,
 ) : ModCommand<ServerCommandSource> {
     UseServer(FSitMod.config::useServer, BoolArgumentType.bool(), Boolean::class.java),
-    SittableEnabled(FSitMod.config.sitting.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
-    SittableRadius(FSitMod.config.sitting.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java),
-    RidingEnabled(FSitMod.config.riding.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
-    RidingRadius(FSitMod.config.riding.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java);
+    SitOnUse(FSitMod.config.sitting.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
+    SitOnUseRange(FSitMod.config.sitting.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java),
+    SitOnSneak(FSitMod.config.sitting.onDoubleSneak::enabled, BoolArgumentType.bool(), Boolean::class.java),
+    SitOnSneakMinPitch(FSitMod.config.sitting.onDoubleSneak::minPitch, DoubleArgumentType.doubleArg(-90.0, 90.0), Double::class.java),
+    SitOnSneakDelay(FSitMod.config.sitting.onDoubleSneak::delay, LongArgumentType.longArg(100, 2000), Long::class.java),
+    RideOnUseEnabled(FSitMod.config.riding.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
+    RideOnUseRange(FSitMod.config.riding.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java);
 
     override fun requires(src: ServerCommandSource) = src.hasPermissionLevel(2)
 
