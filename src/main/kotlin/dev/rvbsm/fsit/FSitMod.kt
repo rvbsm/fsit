@@ -3,10 +3,7 @@ package dev.rvbsm.fsit
 import dev.rvbsm.fsit.command.MainCommand
 import dev.rvbsm.fsit.command.PoseCommand
 import dev.rvbsm.fsit.config.ModConfig
-import dev.rvbsm.fsit.event.ServerLifecycleListener
-import dev.rvbsm.fsit.event.UpdatePoseCallback
-import dev.rvbsm.fsit.event.UseBlockListener
-import dev.rvbsm.fsit.event.UseEntityListener
+import dev.rvbsm.fsit.event.*
 import dev.rvbsm.fsit.network.FSitServerNetworking
 import dev.rvbsm.fsit.util.id
 import dev.rvbsm.fsit.util.translatable
@@ -32,8 +29,10 @@ object FSitMod : ModInitializer {
 
         UseBlockCallback.EVENT.register(UseBlockListener)
         UseEntityCallback.EVENT.register(UseEntityListener)
-        UpdatePoseCallback.EVENT.register(UpdatePoseCallback)
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerLifecycleListener)
+
+        ClientCommandCallback.EVENT.register(ClientCommandCallback)
+        UpdatePoseCallback.EVENT.register(UpdatePoseCallback)
 
         CommandRegistrationCallback.EVENT.register(MainCommand::register)
         enumValues<PoseCommand>().forEach {

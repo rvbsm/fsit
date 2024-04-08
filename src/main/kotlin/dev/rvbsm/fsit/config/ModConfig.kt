@@ -36,6 +36,8 @@ data class ModConfig(
     init {
         require(sitting.onUse.range in 1..4) { "sitting.on_use.range is needed to be in 1..4" }
         require(riding.onUse.range in 1..4) { "riding.on_use.range is needed to be in 1..4" }
+        require(sitting.onDoubleSneak.minPitch in -90.0..90.0) { "sitting.on_double_sneak.min_pitch is needed to be in -90..90" }
+        require(sitting.onDoubleSneak.delay in 100..2000) { "sitting.on_double_sneak.delay is needed to be in 100..2000" }
     }
 
     override fun toString() = toYaml()
@@ -77,7 +79,7 @@ data class Sitting(
     )
 
     @Serializable
-    data class DoubleSneak(var enabled: Boolean = true, var minPitch: Double = 66.6)
+    data class DoubleSneak(var enabled: Boolean = false, var minPitch: Double = 66.6, var delay: Long = 600)
 }
 
 @Serializable
