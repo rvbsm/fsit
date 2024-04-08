@@ -47,16 +47,17 @@ object FSitModMenu : ModMenuApi {
             default
         ).build()
 
-    private fun doubleOption(path: String, field: KMutableProperty<Double>, default: Double, range: LongRange = 1..4L) =
-        optionBuilder(
-            path,
-            {
-                DoubleSliderControllerBuilder.create(it).range(range.first.toDouble(), range.last.toDouble())
-                    .step(range.step.toDouble())
-            },
-            field,
-            default,
-        ).build()
+    private fun doubleOption(
+        path: String,
+        field: KMutableProperty<Double>,
+        default: Double,
+        range: ClosedFloatingPointRange<Double> = 0.0..100.0
+    ) = optionBuilder(
+        path,
+        { DoubleSliderControllerBuilder.create(it).range(range.start, range.endInclusive).step(0.1) },
+        field,
+        default,
+    ).build()
 
     private fun optionGroup(path: String, vararg options: Option<*>, isCollapsed: Boolean = false): OptionGroup {
         val name = FSitMod.translatable("group", path)
@@ -154,12 +155,14 @@ object FSitModMenu : ModMenuApi {
                         doubleOption(
                             "sitting.on_double_sneak.min_pitch",
                             FSitMod.config.sitting.onDoubleSneak::minPitch,
-                            ModConfig.default.sitting.onDoubleSneak.minPitch
+                            ModConfig.default.sitting.onDoubleSneak.minPitch,
+                            -90.0..90.0,
                         ),
                         longOption(
                             "sitting.on_double_sneak.delay",
                             FSitMod.config.sitting.onDoubleSneak::delay,
-                            ModConfig.default.sitting.onDoubleSneak.delay
+                            ModConfig.default.sitting.onDoubleSneak.delay,
+                            100..2000L,
                         ),
                     )
                 ).group(
