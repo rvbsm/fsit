@@ -39,7 +39,7 @@ object FSitModMenu : ModMenuApi {
     private fun booleanOption(path: String, field: KMutableProperty<Boolean>, default: Boolean) =
         optionBuilder(path, TickBoxControllerBuilder::create, field, default).build()
 
-    private fun longOption(path: String, field: KMutableProperty<Long>, default: Long, range: LongRange = 1..4L) =
+    private fun longOption(path: String, field: KMutableProperty<Long>, default: Long, range: LongProgression = 1..4L) =
         optionBuilder(
             path,
             { LongSliderControllerBuilder.create(it).range(range.first, range.last).step(range.step) },
@@ -54,7 +54,7 @@ object FSitModMenu : ModMenuApi {
         range: ClosedFloatingPointRange<Double> = 0.0..100.0
     ) = optionBuilder(
         path,
-        { DoubleSliderControllerBuilder.create(it).range(range.start, range.endInclusive).step(0.1) },
+        { DoubleSliderControllerBuilder.create(it).range(range.start, range.endInclusive).step(1.0) },
         field,
         default,
     ).build()
@@ -162,7 +162,7 @@ object FSitModMenu : ModMenuApi {
                             "sitting.on_double_sneak.delay",
                             FSitMod.config.sitting.onDoubleSneak::delay,
                             ModConfig.default.sitting.onDoubleSneak.delay,
-                            100..2000L,
+                            100..2000L step 25,
                         ),
                     )
                 ).group(
