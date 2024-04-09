@@ -5,6 +5,7 @@
   "mixins": [
     "PlayerEntityMixin",
     "ServerPlayerEntityMixin",
+    "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {

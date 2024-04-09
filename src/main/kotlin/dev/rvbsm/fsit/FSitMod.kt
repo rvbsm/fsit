@@ -10,7 +10,6 @@ import dev.rvbsm.fsit.util.translatable
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import net.fabricmc.fabric.api.event.player.UseBlockCallback
 import net.fabricmc.fabric.api.event.player.UseEntityCallback
 import org.slf4j.LoggerFactory
 
@@ -27,10 +26,10 @@ object FSitMod : ModInitializer {
 
         FSitServerNetworking.register()
 
-        UseBlockCallback.EVENT.register(UseBlockListener)
         UseEntityCallback.EVENT.register(UseEntityListener)
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerLifecycleListener)
 
+        PassedUseBlockCallback.EVENT.register(PassedUseBlockCallback)
         ClientCommandCallback.EVENT.register(ClientCommandCallback)
         UpdatePoseCallback.EVENT.register(UpdatePoseCallback)
 
