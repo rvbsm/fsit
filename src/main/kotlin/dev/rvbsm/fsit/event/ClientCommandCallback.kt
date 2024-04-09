@@ -29,21 +29,18 @@ fun interface ClientCommandCallback {
 
         override fun onClientMode(player: ServerPlayerEntity, mode: ClientCommandC2SPacket.Mode) {
             if (mode != ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY) return
-            val playerConfig = player.getConfig()
+            val config = player.getConfig()
+                .takeIf { it.sitting.onDoubleSneak.enabled && player.pitch > it.sitting.onDoubleSneak.minPitch }
+                ?: return
 
-            if (playerConfig.sitting.onDoubleSneak.enabled && player.pitch > playerConfig.sitting.onDoubleSneak.minPitch) {
-                if (player.uuid !in sneaks) {
-                    sneaks[player.uuid] = scope.launch {
-                        delay(playerConfig.sitting.onDoubleSneak.delay)
-
-                        sneaks.remove(player.uuid)
-                    }
-                } else {
-                    sneaks[player.uuid]?.cancel()
+            if (player.uuid !in sneaks) {
+                sneaks[player.uuid] = scope.launch {
+                    delay(config.sitting.onDoubleSneak.delay)
                     sneaks.remove(player.uuid)
-
-                    player.setPose(Pose.Sitting)
                 }
+            } else {
+                sneaks.remove(player.uuid)?.cancel()
+                player.setPose(Pose.Sitting)
             }
         }
     }
