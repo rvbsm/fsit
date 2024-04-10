@@ -8,7 +8,7 @@ plugins {
 
 val gitVersion: groovy.lang.Closure<String> by extra
 
-val modVersion = gitVersion()
+val modVersion = gitVersion().let { if (it.first() == 'v') it.drop(1) else it }
 val mcVersion = stonecutter.current.version
 val mcPredicate = property("version_predicate")
 val yarnBuild = property("fabric.yarn_build")
