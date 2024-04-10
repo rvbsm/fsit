@@ -18,6 +18,7 @@ enum class ConfigCommand(
     private val clazz: Class<*>,
 ) : ModCommand<ServerCommandSource> {
     UseServer(FSitMod.config::useServer, BoolArgumentType.bool(), Boolean::class.java),
+    SeatsGravity(FSitMod.config.sitting::seatsGravity, BoolArgumentType.bool(), Boolean::class.java),
     SitOnUse(FSitMod.config.sitting.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
     SitOnUseRange(FSitMod.config.sitting.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java),
     SitOnSneak(FSitMod.config.sitting.onDoubleSneak::enabled, BoolArgumentType.bool(), Boolean::class.java),
