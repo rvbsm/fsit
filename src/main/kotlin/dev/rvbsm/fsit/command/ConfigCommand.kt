@@ -23,7 +23,7 @@ enum class ConfigCommand(
     SitOnSneak(FSitMod.config.sitting.onDoubleSneak::enabled, BoolArgumentType.bool(), Boolean::class.java),
     SitOnSneakMinPitch(FSitMod.config.sitting.onDoubleSneak::minPitch, DoubleArgumentType.doubleArg(-90.0, 90.0), Double::class.java),
     SitOnSneakDelay(FSitMod.config.sitting.onDoubleSneak::delay, LongArgumentType.longArg(100, 2000), Long::class.java),
-    RideOnUseEnabled(FSitMod.config.riding.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
+    RideOnUse(FSitMod.config.riding.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
     RideOnUseRange(FSitMod.config.riding.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java);
 
     override fun requires(src: ServerCommandSource) = src.hasPermissionLevel(2)
