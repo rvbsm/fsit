@@ -6,7 +6,7 @@ _Inspired by [GSit][gsit]._
 
 ![2024-04-10_20 17 24](https://github.com/rvbsm/fsit/assets/39232658/b500c9d5-7f50-4afd-b293-85f2772d393c)
 
-![2024-04-10_20 08 41](https://github.com/rvbsm/fsit/assets/39232658/a5f2914f-afaa-4c4e-8870-7ada65fa9cdd)
+![2023-08-05_22 04 21](https://github.com/rvbsm/fsit/assets/39232658/9d35e564-8527-4b62-827b-4b8d31dfafd6)
 
 ![2023-09-10_14 03 01](https://github.com/rvbsm/fsit/assets/39232658/344aba3c-d7f1-40d7-a9bb-500ccacfdfcb)
 
