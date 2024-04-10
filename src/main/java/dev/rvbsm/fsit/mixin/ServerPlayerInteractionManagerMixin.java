@@ -17,10 +17,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ServerPlayerInteractionManager.class)
 public abstract class ServerPlayerInteractionManagerMixin {
 
+    // fixme: no main hand swinging 😢
     @Inject(method = "interactBlock", at = @At(value = "RETURN"), cancellable = true)
     private void onSkipBlockInteraction(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
-        if (cir.getReturnValue() == ActionResult.PASS) {
-            final ActionResult result = PassedUseBlockCallback.EVENT.invoker().interactBlock(player, world, hand, hitResult);
+        if (cir.getReturnValue() == ActionResult.PASS && hand == Hand.OFF_HAND) {
+            final ActionResult result = PassedUseBlockCallback.EVENT.invoker().interactBlock(player, world, hitResult);
 
             cir.setReturnValue(result);
         }

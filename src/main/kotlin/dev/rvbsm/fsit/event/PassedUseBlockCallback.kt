@@ -16,15 +16,15 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 fun interface PassedUseBlockCallback {
-    fun interactBlock(player: ServerPlayerEntity, world: World, hand: Hand, hitResult: BlockHitResult): ActionResult
+    fun interactBlock(player: ServerPlayerEntity, world: World, hitResult: BlockHitResult): ActionResult
 
     companion object : PassedUseBlockCallback {
         @JvmField
         val EVENT: Event<PassedUseBlockCallback> =
             EventFactory.createArrayBacked(PassedUseBlockCallback::class.java) { listeners ->
-                PassedUseBlockCallback { player, world, hand, hitResult ->
+                PassedUseBlockCallback { player, world, hitResult ->
                     for (listener in listeners) {
-                        val result = listener.interactBlock(player, world, hand, hitResult)
+                        val result = listener.interactBlock(player, world, hitResult)
 
                         if (result != ActionResult.PASS) {
                             return@PassedUseBlockCallback result
@@ -36,7 +36,7 @@ fun interface PassedUseBlockCallback {
             }
 
         override fun interactBlock(
-            player: ServerPlayerEntity, world: World, hand: Hand, hitResult: BlockHitResult
+            player: ServerPlayerEntity, world: World, hitResult: BlockHitResult
         ): ActionResult {
             return if (hitResult.side != Direction.UP || !world.isAir(hitResult.blockPos.up())) ActionResult.PASS
             else if (player.shouldCancelInteraction()) ActionResult.PASS
