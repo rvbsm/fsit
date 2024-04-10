@@ -4,6 +4,12 @@ A _server-side_ mod that allows players to sit anywhere!
 
 _Inspired by [GSit][gsit]._
 
+![2024-04-10_20 17 24](https://github.com/rvbsm/fsit/assets/39232658/b500c9d5-7f50-4afd-b293-85f2772d393c)
+
+![2024-04-10_20 08 41](https://github.com/rvbsm/fsit/assets/39232658/a5f2914f-afaa-4c4e-8870-7ada65fa9cdd)
+
+![2023-09-10_14 03 01](https://github.com/rvbsm/fsit/assets/39232658/344aba3c-d7f1-40d7-a9bb-500ccacfdfcb)
+
 ## Usage
 
 * Interact with blocks like stairs, slabs, and horizontal logs
@@ -14,6 +20,10 @@ _Inspired by [GSit][gsit]._
 
 * Manageable riders through the Social Interactions screen (1.20.2+)
 * Keybindings
+
+![2024-04-10_21 53 42](https://github.com/rvbsm/fsit/assets/39232658/5c9187d3-1faf-4f94-868c-887bc40a1761)
+
+![2024-04-10_21 54 32](https://github.com/rvbsm/fsit/assets/39232658/cfa90e8e-4790-4030-8ae0-36d5ed3d9354)
 
 ### Configuration (`config/fsit.yaml`)
 
