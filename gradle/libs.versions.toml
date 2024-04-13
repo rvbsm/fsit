@@ -8,8 +8,6 @@ fabric_loom = "1.6-SNAPSHOT"
 kaml = "0.54.0"
 snakeyaml = "2.6"
 
-twelvemonkeys_imageio = "3.10.0"
-
 palantir_git = "3.0.0"
 
 [libraries]
@@ -19,17 +17,9 @@ fabric_kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = 
 kaml = { module = "com.charleskorn.kaml:kaml-jvm", version.ref = "kaml" }
 snakeyaml_engine = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml" }
 
-twelvemonkeys_imageio_core = { module = "com.twelvemonkeys.imageio:imageio-core", version.ref = "twelvemonkeys_imageio" }
-twelvemonkeys_imageio_webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "twelvemonkeys_imageio" }
-twelvemonkeys_imageio_metadata = { module = "com.twelvemonkeys.imageio:imageio-metadata", version.ref = "twelvemonkeys_imageio" }
-twelvemonkeys_common_lang = { module = "com.twelvemonkeys.common:common-lang", version.ref = "twelvemonkeys_imageio" }
-twelvemonkeys_common_io = { module = "com.twelvemonkeys.common:common-io", version.ref = "twelvemonkeys_imageio" }
-twelvemonkeys_common_image = { module = "com.twelvemonkeys.common:common-image", version.ref = "twelvemonkeys_imageio" }
-
 [bundles]
 fabric = ["fabric_loader", "fabric_kotlin"]
 kaml = ["kaml", "snakeyaml_engine"]
-twelvemonkeys_imageio = ["twelvemonkeys_imageio_core", "twelvemonkeys_imageio_webp", "twelvemonkeys_imageio_metadata", "twelvemonkeys_common_lang", "twelvemonkeys_common_io", "twelvemonkeys_common_image"]
 
 [plugins]
 fabric_loom = { id = "fabric-loom", version.ref = "fabric_loom" }

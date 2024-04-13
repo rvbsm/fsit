@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version libs.versions.kotlin
     kotlin("plugin.serialization") version libs.versions.kotlin
@@ -10,21 +12,16 @@ val gitVersion: groovy.lang.Closure<String> by extra
 
 val modVersion = gitVersion().let { if (it.first() == 'v') it.drop(1) else it }
 val mcVersion = stonecutter.current.version
-val mcPredicate = property("version_predicate")
-val yarnBuild = property("fabric.yarn_build")
-val fabricVersion = property("fabric.api")
-val modmenuVersion = property("api.modmenu")
-val yaclVersion = property("api.yacl")
+val mcPredicate = property("minecraft.predicate")!!
+val fabricYarnBuild = property("fabric.yarn_build")!!
+val fabricVersion = "${property("fabric.api")}+${stonecutter.current.project}"
+val modmenuVersion = property("api.modmenu")!!
+val yaclVersion = property("api.yacl")!!
+val javaVersion = "${property("java.version")}".toInt(10)
 
 version = "$modVersion+$mcVersion"
 group = "dev.rvbsm"
-base { archivesName = rootProject.name }
-
-repositories {
-    mavenCentral()
-    maven("https://maven.terraformersmc.com/releases")
-    maven("https://maven.isxander.dev/releases")
-}
+base.archivesName = rootProject.name
 
 loom {
     accessWidenerPath = rootProject.file("src/main/resources/fsit.accesswidener")
@@ -39,11 +36,24 @@ loom {
         ideConfigGenerated(true)
         runDir = "../../run"
     }
+
+    mixin {
+        useLegacyMixinAp = false
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven("https://maven.terraformersmc.com/releases")
+    maven("https://maven.isxander.dev/releases")
+    maven("https://maven.isxander.dev/snapshots")
+    maven("https://maven.quiltmc.org/repository/release")
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
-    mappings("net.fabricmc:yarn:$mcVersion+build.$yarnBuild:v2")
+    mappings("net.fabricmc:yarn:$mcVersion+build.$fabricYarnBuild:v2")
 
     modImplementation(libs.bundles.fabric)
     setOf(
@@ -53,13 +63,14 @@ dependencies {
         "fabric-key-binding-api-v1",
         "fabric-lifecycle-events-v1",
         "fabric-networking-api-v1"
-    ).map { fabricApi.module(it, "$fabricVersion+$mcVersion") }.forEach(::modImplementation)
+    ).map { fabricApi.module(it, fabricVersion) }.forEach(::modImplementation)
+    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
     modApi("com.terraformersmc:modmenu:$modmenuVersion")
 
-    // Could not find com.twelvemonkeys.imageio:imageio-core:3.10.0-SNAPSHOT.
-    modApi(libs.bundles.twelvemonkeys.imageio)
-    modApi("dev.isxander.yacl:yet-another-config-lib-fabric:$yaclVersion")
+    modApi("dev.isxander.yacl:yet-another-config-lib-fabric:$yaclVersion") {
+        exclude("net.fabricmc.fabric-api", "fabric-api")
+    }
 
     implementation(libs.bundles.kaml)
     include(libs.bundles.kaml)
@@ -79,6 +90,14 @@ tasks {
         from("LICENSE")
     }
 
+    withType(JavaCompile::class.java).configureEach {
+        options.release = javaVersion
+    }
+
+    withType(KotlinCompile::class.java).configureEach {
+        kotlinOptions.jvmTarget = "$javaVersion"
+    }
+
     if (stonecutter.current.isActive) {
         register("buildActive") {
             group = "project"
@@ -90,10 +109,10 @@ tasks {
 java {
     withSourcesJar()
 
-    targetCompatibility = JavaVersion.VERSION_17
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = enumValues<JavaVersion>()[javaVersion - 1]
+    targetCompatibility = enumValues<JavaVersion>()[javaVersion - 1]
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(javaVersion)
 }
