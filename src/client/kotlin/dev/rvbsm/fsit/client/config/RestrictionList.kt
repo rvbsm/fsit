@@ -3,7 +3,7 @@ package dev.rvbsm.fsit.client.config
 import dev.rvbsm.fsit.FSitMod.MOD_ID
 import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.config.serialization.UUIDSerializer
-import dev.rvbsm.fsit.network.packet.RidingResponseC2SPacket
+import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -25,7 +25,7 @@ object RestrictionList {
 
         MinecraftClient.getInstance().player?.takeIf { player ->
             player.hasPassenger { it.uuid == uuid }
-        }?.also { FSitModClient.sendIfPossible(RidingResponseC2SPacket(uuid, false)) }
+        }?.also { FSitModClient.sendIfPossible(RidingResponseC2SPayload(uuid, false)) }
     }
 
     @JvmStatic

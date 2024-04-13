@@ -1,12 +1,9 @@
 package dev.rvbsm.fsit.network
 
 import dev.rvbsm.fsit.event.UseEntityListener
-import dev.rvbsm.fsit.network.packet.ConfigUpdateC2SPacket
-import dev.rvbsm.fsit.network.packet.PoseRequestC2SPacket
-import dev.rvbsm.fsit.network.packet.RidingResponseC2SPacket
-import net.fabricmc.fabric.api.networking.v1.PacketSender
+import dev.rvbsm.fsit.network.FSitServerNetworking.receive
+import dev.rvbsm.fsit.network.packet.*
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import org.slf4j.LoggerFactory
 
@@ -14,25 +11,34 @@ object FSitServerNetworking {
     private val logger = LoggerFactory.getLogger(FSitServerNetworking::class.java)
 
     fun register() {
-        ServerPlayNetworking.registerGlobalReceiver(ConfigUpdateC2SPacket.pType, ::onReceiveConfig)
-        ServerPlayNetworking.registerGlobalReceiver(PoseRequestC2SPacket.pType, ::onReceivePoseRequest)
-        ServerPlayNetworking.registerGlobalReceiver(RidingResponseC2SPacket.pType, ::onReceiveRidingResponse)
+        ServerPlayNetworking.registerGlobalReceiver(ConfigUpdateC2SPayload.packetId, ConfigUpdateC2SPayload::receive)
+        ServerPlayNetworking.registerGlobalReceiver(PoseRequestC2SPayload.packetId, PoseRequestC2SPayload::receive)
+        ServerPlayNetworking.registerGlobalReceiver(RidingResponseC2SPayload.packetId, RidingResponseC2SPayload::receive)
     }
 
-    private fun onReceiveConfig(packet: ConfigUpdateC2SPacket, player: PlayerEntity, sender: PacketSender) {
-        (player as ServerPlayerEntity).setConfig(packet.config)
+    internal fun ConfigUpdateC2SPayload.receive(player: ServerPlayerEntity) {
+        player.setConfig(config)
     }
 
-    private fun onReceiveRidingResponse(packet: RidingResponseC2SPacket, player: PlayerEntity, sender: PacketSender) {
-        // todo: should it has an independent packet?
-        if (!packet.response.isAccepted && player.hasPassenger { it.uuid == packet.uuid }) {
+    internal fun PoseRequestC2SPayload.receive(player: ServerPlayerEntity) {
+        player.setPose(pose)
+    }
+
+    internal fun RidingResponseC2SPayload.receive(player: ServerPlayerEntity) {
+        if (!response.isAccepted && player.hasPassenger { it.uuid == uuid }) {
             player.removeAllPassengers()
         }
 
-        UseEntityListener.receiveResponse(packet, player)
-    }
-
-    private fun onReceivePoseRequest(packet: PoseRequestC2SPacket, player: PlayerEntity, sender: PacketSender) {
-        (player as ServerPlayerEntity).setPose(packet.pose)
+        UseEntityListener.receiveResponse(this, player)
     }
 }
+
+/*? if >=1.20.5- {*//*
+private fun ConfigUpdateC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
+private fun PoseRequestC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
+private fun RidingResponseC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
+*//*?} else {*/
+private fun ConfigUpdateC2SPayload.receive(player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender) = receive(player)
+private fun PoseRequestC2SPayload.receive(player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender) = receive(player)
+private fun RidingResponseC2SPayload.receive(player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender) = receive(player)
+/*?} */

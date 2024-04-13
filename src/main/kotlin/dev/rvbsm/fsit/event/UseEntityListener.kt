@@ -1,8 +1,8 @@
 package dev.rvbsm.fsit.event
 
 import dev.rvbsm.fsit.network.getConfig
-import dev.rvbsm.fsit.network.packet.RidingRequestS2CPacket
-import dev.rvbsm.fsit.network.packet.RidingResponseC2SPacket
+import dev.rvbsm.fsit.network.packet.RidingRequestS2CPayload
+import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
 import dev.rvbsm.fsit.network.sendIfPossible
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.player.UseEntityCallback
@@ -67,13 +67,13 @@ object UseEntityListener : UseEntityCallback, ServerLifecycleEvents.ServerStoppi
             CompletableFuture<Boolean>()/*.whenComplete { _, _ -> requests.remove(it) }*/
                 .completeOnTimeout(false, TIMEOUT, TimeUnit.MILLISECONDS)
                 .also {
-                    player.sendIfPossible(RidingRequestS2CPacket(pair.second)) { it.complete(true) }
+                    player.sendIfPossible(RidingRequestS2CPayload(pair.second)) { it.complete(true) }
                 }
         }
 
     private fun isAlreadyRequested(player: PlayerEntity, target: PlayerEntity) =
         requests.containsKey(player.uuid to target.uuid)
 
-    fun receiveResponse(packet: RidingResponseC2SPacket, player: PlayerEntity) =
+    fun receiveResponse(packet: RidingResponseC2SPayload, player: PlayerEntity) =
         requests[player.uuid to packet.uuid]?.complete(packet.response.isAccepted)
 }

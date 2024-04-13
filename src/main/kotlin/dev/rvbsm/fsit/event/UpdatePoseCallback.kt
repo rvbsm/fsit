@@ -5,7 +5,7 @@ import dev.rvbsm.fsit.entity.Pose
 import dev.rvbsm.fsit.entity.SeatEntity
 import dev.rvbsm.fsit.network.hasConfig
 import dev.rvbsm.fsit.network.hasCrawl
-import dev.rvbsm.fsit.network.packet.PoseUpdateS2CPacket
+import dev.rvbsm.fsit.network.packet.PoseUpdateS2CPayload
 import dev.rvbsm.fsit.network.removeCrawl
 import dev.rvbsm.fsit.network.sendIfPossible
 import net.fabricmc.fabric.api.event.Event
@@ -28,7 +28,7 @@ fun interface UpdatePoseCallback {
             }
 
         override fun onUpdatePose(player: ServerPlayerEntity, pose: Pose, pos: Vec3d?) {
-            player.sendIfPossible(PoseUpdateS2CPacket(pose, pos ?: player.pos))
+            player.sendIfPossible(PoseUpdateS2CPayload(pose, pos ?: player.pos))
 
             when (pose) {
                 Pose.Standing -> {

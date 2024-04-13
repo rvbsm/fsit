@@ -1,6 +1,5 @@
 package dev.rvbsm.fsit.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import dev.rvbsm.fsit.event.PassedUseBlockCallback;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;

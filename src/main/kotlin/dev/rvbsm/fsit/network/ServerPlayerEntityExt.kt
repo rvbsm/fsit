@@ -3,17 +3,19 @@ package dev.rvbsm.fsit.network
 import dev.rvbsm.fsit.api.ConfigurableEntity
 import dev.rvbsm.fsit.api.Crawlable
 import dev.rvbsm.fsit.api.Poseable
+import dev.rvbsm.fsit.compat.CustomPayload
 import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.entity.CrawlEntity
 import dev.rvbsm.fsit.entity.Pose
-import net.fabricmc.fabric.api.networking.v1.FabricPacket
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
 
-internal fun <T> ServerPlayerEntity.sendIfPossible(packet: T, orAction: () -> Unit = {}) where T : FabricPacket {
-    if (ServerPlayNetworking.canSend(this, packet.type)) {
-        ServerPlayNetworking.send(this, packet)
+internal fun <T> ServerPlayerEntity.sendIfPossible(
+    payload: T, orAction: () -> Unit = {}
+) where T : CustomPayload {
+    if (ServerPlayNetworking.canSend(this, payload.id)) {
+        ServerPlayNetworking.send(this, payload)
     } else orAction()
 }
 

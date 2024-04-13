@@ -4,7 +4,7 @@ import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.client.network.pose
 import dev.rvbsm.fsit.client.network.setPose
 import dev.rvbsm.fsit.entity.Pose
-import dev.rvbsm.fsit.network.packet.PoseRequestC2SPacket
+import dev.rvbsm.fsit.network.packet.PoseRequestC2SPayload
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.MinecraftClient
@@ -51,7 +51,7 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
 
         if (pose != currentPose) {
             player.setPose(pose)
-            FSitModClient.sendIfPossible(PoseRequestC2SPacket(pose))
+            FSitModClient.sendIfPossible(PoseRequestC2SPayload(pose))
         }
     }
 }
