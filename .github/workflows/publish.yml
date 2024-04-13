@@ -17,7 +17,9 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - run: ./gradlew chiseledBuild --no-daemon
+      - uses: Wandalen/wretry.action@master
+        with:
+          command: ./gradlew chiseledBuild
 
       - uses: softprops/action-gh-release@v2
         with:

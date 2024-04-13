@@ -18,7 +18,7 @@ jobs:
 
       - uses: Wandalen/wretry.action@master
         with:
-          command: ./gradlew chiseledBuild --no-daemon
+          command: ./gradlew chiseledBuild
 
       - uses: actions/upload-artifact@v4
         with:
