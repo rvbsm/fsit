@@ -28,7 +28,7 @@ object UseEntityListener : UseEntityCallback, ServerLifecycleEvents.ServerStoppi
     ): ActionResult {
         return if (world.isClient || player.isSneaking || player.isSpectator || hitResult == null) ActionResult.PASS
         else if (!player.getStackInHand(Hand.MAIN_HAND).isEmpty || !player.getStackInHand(Hand.OFF_HAND).isEmpty) ActionResult.PASS
-        else if (player == entity || player.hasPassenger(entity) || !entity.isPlayer || entity.hasPassengers()) ActionResult.PASS
+        else if (!player.canStartRiding(entity)) ActionResult.PASS
         else {
             val playerConfig = (player as ServerPlayerEntity).getConfig()
             val targetConfig = (entity as ServerPlayerEntity).getConfig()
@@ -76,4 +76,7 @@ object UseEntityListener : UseEntityCallback, ServerLifecycleEvents.ServerStoppi
 
     fun receiveResponse(packet: RidingResponseC2SPayload, player: PlayerEntity) =
         requests[player.uuid to packet.uuid]?.complete(packet.response.isAccepted)
+
+    private fun PlayerEntity.canStartRiding(entity: Entity) =
+        entity.isPlayer && id != entity.id && uuid != entity.uuid && !hasPassenger(entity) && !entity.hasPassengers()
 }
