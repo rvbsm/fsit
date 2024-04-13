@@ -16,7 +16,9 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - run: ./gradlew chiseledBuild --no-daemon
+      - uses: Wandalen/wretry.action@master
+        with:
+          command: ./gradlew chiseledBuild --no-daemon
 
       - uses: actions/upload-artifact@v4
         with:
