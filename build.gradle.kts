@@ -6,6 +6,7 @@ plugins {
 
     alias(libs.plugins.fabric.loom)
     alias(libs.plugins.git)
+    alias(libs.plugins.machete)
 }
 
 val gitVersion: groovy.lang.Closure<String> by extra
@@ -40,6 +41,10 @@ loom {
     mixin {
         useLegacyMixinAp = false
     }
+}
+
+machete {
+    json.enabled = false
 }
 
 repositories {

@@ -9,6 +9,7 @@ kaml = "0.54.0"
 snakeyaml = "2.6"
 
 palantir_git = "3.0.0"
+machete = "2.0.1"
 
 [libraries]
 fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
@@ -24,3 +25,4 @@ kaml = ["kaml", "snakeyaml_engine"]
 [plugins]
 fabric_loom = { id = "fabric-loom", version.ref = "fabric_loom" }
 git = { id = "com.palantir.git-version", version.ref = "palantir_git" }
+machete = { id = "io.github.p03w.machete", version.ref = "machete" }
