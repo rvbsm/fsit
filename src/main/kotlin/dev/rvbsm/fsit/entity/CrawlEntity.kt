@@ -26,7 +26,11 @@ class CrawlEntity(private val player: ServerPlayerEntity) : Entity(EntityType.SH
         customName = Text.literal("FSit_CrawlEntity")
     }
 
+    /*? if >=1.20.5- {*//*
+    override fun initDataTracker(builder: net.minecraft.entity.data.DataTracker.Builder) = Unit
+    *//*?} else {*/
     override fun initDataTracker() = Unit
+    /*?} */
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) = Unit
 
