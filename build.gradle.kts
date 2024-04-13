@@ -58,12 +58,14 @@ dependencies {
     modImplementation(libs.bundles.fabric)
     setOf(
         "fabric-api-base",
-        "fabric-command-api-v1",
+        "fabric-command-api-v2",
         "fabric-events-interaction-v0",
         "fabric-key-binding-api-v1",
         "fabric-lifecycle-events-v1",
         "fabric-networking-api-v1"
     ).map { fabricApi.module(it, fabricVersion) }.forEach(::modImplementation)
+
+    // fabric-resource-loader-v0: @Mixin target net.minecraft.class_60 was not found
     modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
     modApi("com.terraformersmc:modmenu:$modmenuVersion")
