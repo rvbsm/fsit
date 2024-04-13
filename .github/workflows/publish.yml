@@ -59,3 +59,21 @@ jobs:
           files: |
             versions/1.20.2/build/libs/!(*-@(dev|sources|javadoc)).jar
             versions/1.20.2/build/libs/*-@(dev|sources|javadoc).jar
+
+      - uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          version: ${{ github.ref_name }}+1.20.5
+          loaders: |
+            fabric
+            quilt
+          dependencies: |
+            fabric-language-kotlin | depends | *
+            modmenu | suggests | *
+            yacl | suggests | *
+
+          modrinth-id: J5NAzRqK
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          files: |
+            versions/1.20.5/build/libs/!(*-@(dev|sources|javadoc)).jar
+            versions/1.20.5/build/libs/*-@(dev|sources|javadoc).jar

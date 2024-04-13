@@ -28,3 +28,8 @@ jobs:
           name: 1.20.2
           path: versions/1.20.2/build/libs/*.jar
           if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 1.20.5
+          path: versions/1.20.5/build/libs/*.jar
+          if-no-files-found: error
