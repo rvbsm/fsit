@@ -47,6 +47,6 @@ enum class ConfigCommand(
         return super.executes(ctx)
     }
 
-    fun set(value: Any) = property.setter.call(value).also { FSitMod.saveConfig() }
-    fun get() = property.getter.call()
+    private fun set(value: Any) = property.setter.call(value).also { FSitMod.saveConfig() }
+    private fun get() = property.getter.call()
 }

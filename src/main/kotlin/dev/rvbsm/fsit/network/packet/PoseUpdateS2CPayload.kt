@@ -1,8 +1,8 @@
 package dev.rvbsm.fsit.network.packet
 
 import dev.rvbsm.fsit.FSitMod
-import dev.rvbsm.fsit.entity.Pose
 import dev.rvbsm.fsit.compat.CustomPayload
+import dev.rvbsm.fsit.entity.Pose
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.util.math.Vec3d
 
@@ -19,7 +19,8 @@ data class PoseUpdateS2CPayload(val pose: Pose, val pos: Vec3d) : CustomPayload(
 
         /*? if >=1.20.5- {*//*
         val packetId = net.minecraft.network.packet.CustomPayload.Id<PoseUpdateS2CPayload>(id)
-        val packetCodec = net.minecraft.network.packet.CustomPayload.codecOf(PoseUpdateS2CPayload::write, ::PoseUpdateS2CPayload)
+        val packetCodec =
+            net.minecraft.network.packet.CustomPayload.codecOf(PoseUpdateS2CPayload::write, ::PoseUpdateS2CPayload)
 
         init {
             net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playS2C().register(packetId, packetCodec)

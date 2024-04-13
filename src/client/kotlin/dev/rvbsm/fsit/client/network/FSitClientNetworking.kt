@@ -31,6 +31,13 @@ object FSitClientNetworking {
 fun PoseUpdateS2CPayload.receive(context: ClientPlayNetworking.Context) = receive(context.player())
 fun RidingRequestS2CPayload.receive(context: ClientPlayNetworking.Context) = receive()
 *//*?} else {*/
-fun PoseUpdateS2CPayload.receive(player: ClientPlayerEntity, sender: net.fabricmc.fabric.api.networking.v1.PacketSender) = receive(player)
-fun RidingRequestS2CPayload.receive(player: ClientPlayerEntity, sender: net.fabricmc.fabric.api.networking.v1.PacketSender) = receive()
+fun PoseUpdateS2CPayload.receive(
+    player: ClientPlayerEntity,
+    responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
+) = receive(player)
+
+fun RidingRequestS2CPayload.receive(
+    player: ClientPlayerEntity,
+    responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
+) = receive()
 /*?} */

@@ -19,7 +19,8 @@ data class RidingResponseC2SPayload(val uuid: UUID, val response: ResponseType) 
 
         /*? if >=1.20.5- {*//*
         val packetId = net.minecraft.network.packet.CustomPayload.Id<RidingResponseC2SPayload>(id)
-        val packetCodec = net.minecraft.network.packet.CustomPayload.codecOf(RidingResponseC2SPayload::write, ::RidingResponseC2SPayload)
+        val packetCodec =
+            net.minecraft.network.packet.CustomPayload.codecOf(RidingResponseC2SPayload::write, ::RidingResponseC2SPayload)
 
         init {
             net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playC2S().register(packetId, packetCodec)

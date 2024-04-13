@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.compat
 
 abstract class CustomPayload(@JvmField val id: Id) :
-    /*? if >=1.20.5- {*//*
+/*? if >=1.20.5- {*//*
     net.minecraft.network.packet.CustomPayload {
     override fun getId() = id
 
@@ -9,12 +9,12 @@ abstract class CustomPayload(@JvmField val id: Id) :
     *//*?} else {*/
     net.fabricmc.fabric.api.networking.v1.FabricPacket {
     override fun getType() = id
-    /*?} */
+/*?} */
 }
 
 private typealias Id =
-        /*? if >=1.20.5- {*//*
+/*? if >=1.20.5- {*//*
         net.minecraft.network.packet.CustomPayload.Id<*>
-        *//*?} else {*/
+*//*?} else {*/
         net.fabricmc.fabric.api.networking.v1.PacketType<*>
-        /*?} */
+/*?} */

@@ -6,7 +6,8 @@ import org.jetbrains.annotations.NotNull;
 public interface ConfigurableEntity {
     void fsit$setConfig(@NotNull ModConfig config);
 
-    @NotNull ModConfig fsit$getConfig();
+    @NotNull
+    ModConfig fsit$getConfig();
 
     boolean fsit$hasConfig();
 }
