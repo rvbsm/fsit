@@ -74,7 +74,7 @@ fun interface PassedUseBlockCallback {
         /** adapted from [net.minecraft.entity.Entity.isInsideWall] */
         private fun World.willSuffocate(entity: Entity, pos: Vec3d): Boolean {
             val box = Box.of(
-                pos.add(0.0, entity.standingEyeHeight.toDouble(), 0.0),
+                pos.add(0.0, entity.standingEyeHeight.toDouble() - 0.5, 0.0),
                 entity.width.toDouble(), 1.0e-6, entity.width.toDouble(),
             )
 
