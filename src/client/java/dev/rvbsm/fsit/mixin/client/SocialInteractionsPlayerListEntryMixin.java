@@ -49,7 +49,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     private ButtonWidget allowButton;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
-    protected void restrictButton(CallbackInfo ci) {
+    protected void restrictButtons(CallbackInfo ci) {
         if (FSitModClient.isServerFSitCompatible()) {
             /*? if >=1.20.2 {*/
             this.restrictButton = new TexturedButtonWidget(20, 20, RESTRICT_TEXTURE, this::restrict, RESTRICT_BUTTON);
@@ -72,7 +72,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    public void renderButtons(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
+    public void renderRestrictButtons(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
         if (this.restrictButton != null && this.allowButton != null) {
             this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - 48);
             this.restrictButton.setY(y + (entryHeight - this.restrictButton.getHeight()) / 2);
