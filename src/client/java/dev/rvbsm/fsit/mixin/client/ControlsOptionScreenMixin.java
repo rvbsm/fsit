@@ -6,11 +6,13 @@ import dev.rvbsm.fsit.client.FSitModClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
-import net.minecraft.client.option.*;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ControlsOptionsScreen.class)
 abstract public class ControlsOptionScreenMixin extends GameOptionsScreen {
@@ -19,12 +21,13 @@ abstract public class ControlsOptionScreenMixin extends GameOptionsScreen {
     }
 
     /*? if >=1.20.5- {*//*
-    @Redirect(method = "getOptions", at = @At("RETURN"))
-    private static SimpleOption<?>[] withFSitOptions(GameOptions gameOptions, CallbackInfoReturnable<SimpleOption<?>[]> cir) {
-        final java.util.List<SimpleOption<?>> options = java.util.Arrays.asList(cir.getReturnValue());
-        options.add(2, FSitModClient.getSitKeyMode());
-        options.add(3, FSitModClient.getCrawlKeyMode());
-        return options.toArray(SimpleOption[]::new);
+    @Inject(method = "getOptions", at = @At("RETURN"), cancellable = true)
+    private static void withFSitOptions(GameOptions gameOptions, CallbackInfoReturnable<net.minecraft.client.option.SimpleOption<?>[]> cir) {
+        net.minecraft.client.option.SimpleOption<?>[] options = cir.getReturnValue();
+        options = org.apache.commons.lang3.ArrayUtils.insert(2, options, FSitModClient.getSitKeyMode());
+        options = org.apache.commons.lang3.ArrayUtils.insert(3, options, FSitModClient.getCrawlKeyMode());
+
+        cir.setReturnValue(options);
     }
     *//*?} else {*/
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/option/ControlsOptionsScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 3))
