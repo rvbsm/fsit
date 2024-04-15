@@ -41,13 +41,11 @@ object UseEntityListener : UseEntityCallback, ServerLifecycleEvents.ServerStoppi
                 val targetRequest = sendRequest(entity, player)
 
                 playerRequest.thenAcceptBothAsync(targetRequest) { playerResult, targetResult ->
-                    if (playerResult && targetResult) {
-                        // note: if the player disconnects before the target accepts a ride, vice versa
-                        val rider = world.server?.playerManager?.getPlayer(player.uuid)
-                        val target = world.server?.playerManager?.getPlayer(entity.uuid)
+                    // note: if the player disconnects before the target accepts a ride, vice versa
+                    if (playerResult && player.isAlive && targetResult && entity.isAlive) {
                         world.server?.execute {
-                            rider?.startRiding(entity)
-                            target?.networkHandler?.sendPacket(EntityPassengersSetS2CPacket(entity))
+                            player.startRiding(entity)
+                            entity.networkHandler?.sendPacket(EntityPassengersSetS2CPacket(entity))
                         }
                     }
                 }.whenComplete { _, _ ->
