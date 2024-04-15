@@ -73,6 +73,7 @@ data class Sitting(
     data class Use(
         var enabled: Boolean = true,
         var range: Long = 2,
+        var suffocationCheck: Boolean = true,
         val blocks: MutableSet<BlockContainer> = mutableSetOf(
             BlockTags.SLABS.asContainer(), BlockTags.STAIRS.asContainer(), BlockTags.LOGS.asContainer(),
         ),

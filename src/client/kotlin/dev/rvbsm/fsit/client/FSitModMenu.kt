@@ -107,7 +107,7 @@ object FSitModMenu : ModMenuApi {
                         booleanOption(
                             "sitting.seats_gravity",
                             FSitMod.config.sitting::seatsGravity,
-                            ModConfig.default.sitting.seatsGravity
+                            ModConfig.default.sitting.seatsGravity,
                         ),
                     )
                 ).group(
@@ -116,14 +116,19 @@ object FSitModMenu : ModMenuApi {
                         booleanOption(
                             "sitting.on_use.enabled",
                             FSitMod.config.sitting.onUse::enabled,
-                            ModConfig.default.sitting.onUse.enabled
+                            ModConfig.default.sitting.onUse.enabled,
                         ),
                         longOption(
                             "sitting.on_use.range",
                             FSitMod.config.sitting.onUse::range,
-                            ModConfig.default.sitting.onUse.range
+                            ModConfig.default.sitting.onUse.range,
                         ),
-                    )
+                        booleanOption(
+                            "sitting.on_use.suffocation_check",
+                            FSitMod.config.sitting.onUse::suffocationCheck,
+                            ModConfig.default.sitting.onUse.suffocationCheck,
+                        ),
+                    ),
                 ).group(
                     containerOption(
                         "sitting.on_use.blocks",
@@ -150,7 +155,7 @@ object FSitModMenu : ModMenuApi {
                         booleanOption(
                             "sitting.on_double_sneak.enabled",
                             FSitMod.config.sitting.onDoubleSneak::enabled,
-                            ModConfig.default.sitting.onDoubleSneak.enabled
+                            ModConfig.default.sitting.onDoubleSneak.enabled,
                         ),
                         doubleOption(
                             "sitting.on_double_sneak.min_pitch",
@@ -164,21 +169,21 @@ object FSitModMenu : ModMenuApi {
                             ModConfig.default.sitting.onDoubleSneak.delay,
                             100..2000L step 25,
                         ),
-                    )
+                    ),
                 ).group(
                     optionGroup(
                         "riding",
                         booleanOption(
                             "riding.on_use.enabled",
                             FSitMod.config.riding.onUse::enabled,
-                            ModConfig.default.riding.onUse.enabled
+                            ModConfig.default.riding.onUse.enabled,
                         ),
                         longOption(
                             "riding.on_use.range",
                             FSitMod.config.riding.onUse::range,
-                            ModConfig.default.riding.onUse.range
+                            ModConfig.default.riding.onUse.range,
                         ),
-                    )
+                    ),
                 ).build()
             ).save(FSitModClient::saveConfig).build().generateScreen(screen)
         }

@@ -51,7 +51,7 @@ fun interface PassedUseBlockCallback {
                 !player.pos.isInRange(hitResult.pos, onUseConfig.range.toDouble()) ||
                 !hitState.isSittableSide() ||
                 !onUseConfig.blocks.any { it.test(hitState) } ||
-                world.willSuffocate(player, hitResult.pos)
+                (onUseConfig.suffocationCheck && world.willSuffocate(player, hitResult.pos))
             ) return ActionResult.PASS
 
             player.setPose(Pose.Sitting, hitResult.pos)
