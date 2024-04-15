@@ -7,11 +7,17 @@ import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.block.enums.BlockHalf
 import net.minecraft.block.enums.SlabType
+import net.minecraft.entity.Entity
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
+import net.minecraft.util.function.BooleanBiFunction
 import net.minecraft.util.hit.BlockHitResult
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.World
 
 fun interface PassedUseBlockCallback {
@@ -37,7 +43,7 @@ fun interface PassedUseBlockCallback {
         override fun interactBlock(
             player: ServerPlayerEntity, world: World, hitResult: BlockHitResult
         ): ActionResult {
-            return if (hitResult.side != Direction.UP || !world.isAir(hitResult.blockPos.up())) ActionResult.PASS
+            return if (hitResult.side != Direction.UP || world.willSuffocate(player, hitResult.pos)) ActionResult.PASS
             else if (player.shouldCancelInteraction()) ActionResult.PASS
             else {
                 val config = player.getConfig()
@@ -62,6 +68,24 @@ fun interface PassedUseBlockCallback {
                         ActionResult.SUCCESS
                     } else ActionResult.PASS
                 } else ActionResult.PASS
+            }
+        }
+
+        /** adapted from [net.minecraft.entity.Entity.isInsideWall] */
+        private fun World.willSuffocate(entity: Entity, pos: Vec3d): Boolean {
+            val box = Box.of(
+                pos.add(0.0, entity.standingEyeHeight.toDouble(), 0.0),
+                entity.width.toDouble(), 1.0e-6, entity.width.toDouble(),
+            )
+
+            return BlockPos.stream(box).anyMatch isInsideBlock@{
+                val blockState = getBlockState(it)
+
+                !blockState.isAir && blockState.shouldSuffocate(this, it) && VoxelShapes.matchesAnywhere(
+                    blockState.getCollisionShape(this, it).offset(it.x.toDouble(), it.y.toDouble(), it.z.toDouble()),
+                    VoxelShapes.cuboid(box),
+                    BooleanBiFunction.AND,
+                )
             }
         }
     }
