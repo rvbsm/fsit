@@ -1,6 +1,7 @@
 package dev.rvbsm.fsit.config
 
 import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlComment
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlNamingStrategy
 import dev.rvbsm.fsit.config.container.BlockContainer
@@ -29,6 +30,7 @@ data class ModConfig(
     @Transient private val path: Path? = null,
 
     // todo: show on the client somehow that server's `use_server` is true
+    @YamlComment("Whether to use the server-side configuration.")
     var useServer: Boolean = false,
     val sitting: Sitting = Sitting(),
     val riding: Riding = Riding(),
@@ -67,27 +69,45 @@ data class ModConfig(
 
 @Serializable
 data class Sitting(
+    @YamlComment("Apply gravity to seats.")
     var seatsGravity: Boolean = true,
+    @YamlComment("Whether players can initiate sitting while in midair.")
     var allowMidAir: Boolean = false,
     val onUse: Use = Use(),
-    val onDoubleSneak: DoubleSneak = DoubleSneak()
+    val onDoubleSneak: DoubleSneak = DoubleSneak(),
 ) {
     @Serializable
     data class Use(
+        @YamlComment("Allows sitting on specific blocks by interacting with them.")
         var enabled: Boolean = true,
+        @YamlComment("The surrounding distance where players can interact to sit on blocks.")
         var range: Long = 2,
+        @YamlComment("Prevents players from sitting in places where they would suffocate.")
         var suffocationCheck: Boolean = true,
+        @YamlComment("List of blocks and block types (e.g., \"oak_log\", \"#logs\") players can sit on.")
         val blocks: MutableSet<BlockContainer> = mutableSetOf(
             BlockTags.SLABS.asContainer(), BlockTags.STAIRS.asContainer(), BlockTags.LOGS.asContainer(),
         ),
     )
 
     @Serializable
-    data class DoubleSneak(var enabled: Boolean = false, var minPitch: Double = 66.6, var delay: Long = 600)
+    data class DoubleSneak(
+        @YamlComment("Allows sitting on blocks by double sneaking while looking down.")
+        var enabled: Boolean = false,
+        @YamlComment("The minimum pitch angle (degrees) required for double sneak sit.")
+        var minPitch: Double = 66.6,
+        @YamlComment("The window between sneaks to sit down (in milliseconds).")
+        var delay: Long = 600,
+    )
 }
 
 @Serializable
 data class Riding(var onUse: Use = Use()) {
     @Serializable
-    data class Use(var enabled: Boolean = true, var range: Long = 3)
+    data class Use(
+        @YamlComment("Enables riding on other players.")
+        var enabled: Boolean = true,
+        @YamlComment("The distance around a player where players can interact to ride them.")
+        var range: Long = 3,
+    )
 }
