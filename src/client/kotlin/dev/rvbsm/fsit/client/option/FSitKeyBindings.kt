@@ -1,5 +1,6 @@
 package dev.rvbsm.fsit.client.option
 
+import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.client.network.pose
 import dev.rvbsm.fsit.client.network.setPose
@@ -29,7 +30,8 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
 
         val player = client.player ?: return
         val currentPose = player.pose()
-        if (currentPose == Pose.Standing && player.hasVehicle()) return
+        val canSitMidAir = FSitMod.config.sitting.allowMidAir || player.isOnGround
+        if (currentPose == Pose.Standing && (player.hasVehicle() || !canSitMidAir)) return
 
         if ((sitKey.isPressed && crawlKey.isPressed) || player.abilities.flying || player.isSneaking) {
             sitKey.isPressed = sitKey.isPressed && FSitModClient.sitKeyMode.value.isSticky(holdTicks)

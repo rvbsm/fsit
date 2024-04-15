@@ -3,10 +3,8 @@ package dev.rvbsm.fsit.event
 import dev.rvbsm.fsit.entity.CrawlEntity
 import dev.rvbsm.fsit.entity.Pose
 import dev.rvbsm.fsit.entity.SeatEntity
-import dev.rvbsm.fsit.network.hasConfig
-import dev.rvbsm.fsit.network.hasCrawl
+import dev.rvbsm.fsit.network.*
 import dev.rvbsm.fsit.network.packet.PoseUpdateS2CPayload
-import dev.rvbsm.fsit.network.removeCrawl
 import dev.rvbsm.fsit.network.sendIfPossible
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
@@ -28,8 +26,6 @@ fun interface UpdatePoseCallback {
             }
 
         override fun onUpdatePose(player: ServerPlayerEntity, pose: Pose, pos: Vec3d?) {
-            player.sendIfPossible(PoseUpdateS2CPayload(pose, pos ?: player.pos))
-
             when (pose) {
                 Pose.Standing -> {
                     if (player.vehicle is SeatEntity) player.stopRiding()
@@ -37,6 +33,10 @@ fun interface UpdatePoseCallback {
                 }
 
                 Pose.Sitting -> {
+                    if (!player.getConfig().sitting.allowMidAir && !player.isOnGround) {
+                        return player.setPose(Pose.Standing, pos)
+                    }
+
                     SeatEntity.create(player, pos ?: player.pos)
                 }
 
@@ -46,6 +46,8 @@ fun interface UpdatePoseCallback {
 
                 else -> {}
             }
+
+            player.sendIfPossible(PoseUpdateS2CPayload(pose, pos ?: player.pos))
         }
     }
 }

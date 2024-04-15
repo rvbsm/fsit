@@ -67,7 +67,10 @@ data class ModConfig(
 
 @Serializable
 data class Sitting(
-    var seatsGravity: Boolean = true, val onUse: Use = Use(), val onDoubleSneak: DoubleSneak = DoubleSneak()
+    var seatsGravity: Boolean = true,
+    var allowMidAir: Boolean = false,
+    val onUse: Use = Use(),
+    val onDoubleSneak: DoubleSneak = DoubleSneak()
 ) {
     @Serializable
     data class Use(

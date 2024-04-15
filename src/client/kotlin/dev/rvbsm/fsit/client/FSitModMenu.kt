@@ -109,7 +109,12 @@ object FSitModMenu : ModMenuApi {
                             FSitMod.config.sitting::seatsGravity,
                             ModConfig.default.sitting.seatsGravity,
                         ),
-                    )
+                        booleanOption(
+                            "sitting.allow_mid_air",
+                            FSitMod.config.sitting::allowMidAir,
+                            ModConfig.default.sitting.allowMidAir,
+                        ),
+                    ),
                 ).group(
                     optionGroup(
                         "sitting.on_use",
