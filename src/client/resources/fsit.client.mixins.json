@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "ClientPlayerEntityMixin",
-    "ControlsOptionScreenMixin",
+    "ControlsOptionsScreenMixin",
     "GameOptionsMixin",
     "SocialInteractionsPlayerListEntryMixin"
   ],

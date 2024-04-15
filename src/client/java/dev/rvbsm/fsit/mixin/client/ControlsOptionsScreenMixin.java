@@ -11,12 +11,11 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.*;
 
 @Mixin(ControlsOptionsScreen.class)
-abstract public class ControlsOptionScreenMixin extends GameOptionsScreen {
-    public ControlsOptionScreenMixin(Screen parent, GameOptions gameOptions, Text title) {
+abstract public class ControlsOptionsScreenMixin extends GameOptionsScreen {
+    public ControlsOptionsScreenMixin(Screen parent, GameOptions gameOptions, Text title) {
         super(parent, gameOptions, title);
     }
 
