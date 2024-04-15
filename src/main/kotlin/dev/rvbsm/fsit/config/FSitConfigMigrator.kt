@@ -42,10 +42,10 @@ internal object FSitConfigMigrator {
 
         yamlConfig.get<YamlMap>("riding")?.let { yamlRiding ->
             yamlRiding.get<YamlScalar>("enabled")?.let { config.riding.onUse.enabled = it.toBoolean() }?.let {
-                logger.info("Migrated 'sittable.enabled' to 'sitting.on_use.enabled'")
+                logger.info("Migrated 'riding.enabled' to 'riding.on_use.enabled'")
             }
             yamlRiding.get<YamlScalar>("radius")?.let { config.riding.onUse.range = it.toLong() }?.let {
-                logger.info("Migrated 'sittable.radius' to 'sitting.on_use.range'")
+                logger.info("Migrated 'riding.radius' to 'riding.on_use.range'")
             }
         }
     }
