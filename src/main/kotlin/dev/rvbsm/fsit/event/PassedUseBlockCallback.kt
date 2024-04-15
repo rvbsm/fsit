@@ -5,6 +5,7 @@ import dev.rvbsm.fsit.network.getConfig
 import dev.rvbsm.fsit.network.setPose
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
+import net.minecraft.block.BlockState
 import net.minecraft.block.enums.BlockHalf
 import net.minecraft.block.enums.SlabType
 import net.minecraft.entity.Entity
@@ -40,35 +41,29 @@ fun interface PassedUseBlockCallback {
                 }
             }
 
-        override fun interactBlock(
-            player: ServerPlayerEntity, world: World, hitResult: BlockHitResult
-        ): ActionResult {
-            return if (hitResult.side != Direction.UP || world.willSuffocate(player, hitResult.pos)) ActionResult.PASS
-            else if (player.shouldCancelInteraction()) ActionResult.PASS
-            else {
-                val config = player.getConfig()
-                if (!config.sitting.onUse.enabled) return ActionResult.PASS
+        override fun interactBlock(player: ServerPlayerEntity, world: World, hitResult: BlockHitResult): ActionResult {
+            if (player.shouldCancelInteraction() || hitResult.side != Direction.UP) return ActionResult.PASS
 
-                val hitState = world.getBlockState(hitResult.blockPos)
+            val onUseConfig = player.getConfig().sitting.onUse
+            val hitState = world.getBlockState(hitResult.blockPos)
 
-                val isInRange = player.pos.isInRange(hitResult.pos, config.sitting.onUse.range.toDouble())
-                val isMaterialMatch = config.sitting.onUse.blocks.any { it.test(hitState) }
+            if (!onUseConfig.enabled ||
+                !player.pos.isInRange(hitResult.pos, onUseConfig.range.toDouble()) ||
+                !hitState.isSittableSide() ||
+                !onUseConfig.blocks.any { it.test(hitState) } ||
+                world.willSuffocate(player, hitResult.pos)
+            ) return ActionResult.PASS
 
-                return if (isInRange && isMaterialMatch) {
-                    val isSittableSide = when {
-                        hitState.contains(Properties.AXIS) -> hitState.get(Properties.AXIS) != Direction.Axis.Y
-                        hitState.contains(Properties.BLOCK_HALF) -> hitState.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM
-                        hitState.contains(Properties.SLAB_TYPE) -> hitState.get(Properties.SLAB_TYPE) == SlabType.BOTTOM
-                        else -> true
-                    }
+            player.setPose(Pose.Sitting, hitResult.pos)
+            return ActionResult.SUCCESS
+        }
 
-                    if (isSittableSide) {
-                        player.setPose(Pose.Sitting, hitResult.pos)
-
-                        ActionResult.SUCCESS
-                    } else ActionResult.PASS
-                } else ActionResult.PASS
-            }
+        // todo: configurable block properties?
+        private fun BlockState.isSittableSide() = when {
+            contains(Properties.AXIS) -> get(Properties.AXIS) != Direction.Axis.Y
+            contains(Properties.BLOCK_HALF) -> get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM
+            contains(Properties.SLAB_TYPE) -> get(Properties.SLAB_TYPE) == SlabType.BOTTOM
+            else -> true
         }
 
         /** adapted from [net.minecraft.entity.Entity.isInsideWall] */
