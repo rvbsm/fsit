@@ -11,6 +11,7 @@ import net.minecraft.util.math.Vec3d
 class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(EntityType.BLOCK_DISPLAY, player.world) {
     init {
         setPosition(pos)
+        velocity = player.velocity
         calculateDimensions()
 
         isInvisible = true
