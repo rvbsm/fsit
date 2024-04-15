@@ -13,7 +13,7 @@ val gitVersion: groovy.lang.Closure<String> by extra
 
 val modVersion = gitVersion().let { if (it.first() == 'v') it.drop(1) else it }
 val mcVersion = stonecutter.current.version
-val mcPredicate = property("minecraft.predicate")!!
+val mcTarget = property("minecraft.target")!!
 val fabricYarnBuild = property("fabric.yarn_build")!!
 val fabricVersion = "${property("fabric.api")}+${stonecutter.current.project}"
 val modmenuVersion = property("api.modmenu")!!
@@ -86,10 +86,10 @@ dependencies {
 tasks {
     processResources {
         inputs.property("version", "$version")
-        inputs.property("mcPredicate", "$mcPredicate")
+        inputs.property("mcPredicate", "$mcTarget")
 
         filesMatching("fabric.mod.json") {
-            expand("version" to version, "mcPredicate" to mcPredicate)
+            expand("version" to version, "mcPredicate" to mcTarget)
         }
     }
 
