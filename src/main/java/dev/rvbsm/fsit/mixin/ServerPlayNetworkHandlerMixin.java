@@ -4,6 +4,8 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import dev.rvbsm.fsit.event.ClientCommandCallback;
 import dev.rvbsm.fsit.event.PassedUseBlockCallback;
+import dev.rvbsm.fsit.event.PassedUseEntityCallback;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -12,6 +14,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,5 +42,32 @@ public abstract class ServerPlayNetworkHandlerMixin {
         }
 
         return interactionActionResult;
+    }
+
+    @Mixin(targets = "net.minecraft.server.network.ServerPlayNetworkHandler$1")
+    public static abstract class PlayerInteractEntityC2SPacketHandler {
+        @Shadow(aliases = "field_28963")
+        @Final
+        ServerPlayNetworkHandler this$ServerPlayNetworkHandler;
+
+        @Shadow(aliases = "field_28962")
+        @Final
+        Entity entity;
+
+        @Shadow(aliases = "field_39991")
+        @Final
+        ServerWorld world;
+
+        // note: idk why there are errors here. mcdev being dumb
+        @ModifyVariable(method = "processInteract", at = @At("STORE"))
+        private ActionResult interactPlayer(ActionResult interactionActionResult, @Local LocalRef<Hand> handRef) {
+            if (handRef.get() == Hand.OFF_HAND && interactionActionResult == ActionResult.PASS) {
+                handRef.set(Hand.MAIN_HAND);
+
+                return PassedUseEntityCallback.EVENT.invoker().interactEntity(this$ServerPlayNetworkHandler.player, world, entity);
+            }
+
+            return interactionActionResult;
+        }
     }
 }

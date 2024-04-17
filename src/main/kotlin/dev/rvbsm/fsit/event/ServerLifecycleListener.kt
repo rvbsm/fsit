@@ -5,6 +5,6 @@ import net.minecraft.server.MinecraftServer
 
 object ServerLifecycleListener : ServerLifecycleEvents.ServerStopping {
     override fun onServerStopping(server: MinecraftServer) {
-        UseEntityListener.onServerStopping(server)
+        PassedUseEntityCallback.onServerStopping(server)
     }
 }

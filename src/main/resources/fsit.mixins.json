@@ -5,7 +5,8 @@
   "mixins": [
     "PlayerEntityMixin",
     "ServerPlayerEntityMixin",
-    "ServerPlayNetworkHandlerMixin"
+    "ServerPlayNetworkHandlerMixin",
+    "ServerPlayNetworkHandlerMixin$PlayerInteractEntityC2SPacketHandler"
   ],
   "injectors": {
     "defaultRequire": 1

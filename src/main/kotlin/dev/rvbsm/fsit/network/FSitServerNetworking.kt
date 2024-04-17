@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.network
 
-import dev.rvbsm.fsit.event.UseEntityListener
+import dev.rvbsm.fsit.event.PassedUseEntityCallback.Companion.completeRequest
 import dev.rvbsm.fsit.network.FSitServerNetworking.receive
 import dev.rvbsm.fsit.network.packet.ConfigUpdateC2SPayload
 import dev.rvbsm.fsit.network.packet.PoseRequestC2SPayload
@@ -34,7 +34,7 @@ object FSitServerNetworking {
             player.removeAllPassengers()
         }
 
-        UseEntityListener.receiveResponse(this, player)
+        completeRequest(player)
     }
 }
 
