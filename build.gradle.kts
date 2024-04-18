@@ -64,7 +64,6 @@ dependencies {
     setOf(
         "fabric-api-base",
         "fabric-command-api-v2",
-        "fabric-events-interaction-v0",
         "fabric-key-binding-api-v1",
         "fabric-lifecycle-events-v1",
         "fabric-networking-api-v1"
