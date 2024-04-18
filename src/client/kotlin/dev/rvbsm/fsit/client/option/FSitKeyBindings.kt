@@ -34,8 +34,7 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
         if (currentPose == Pose.Standing && (player.hasVehicle() || !canSitMidAir)) return
 
         if ((sitKey.isPressed && crawlKey.isPressed) || player.abilities.flying || player.isSneaking) {
-            sitKey.isPressed = sitKey.isPressed && FSitModClient.sitKeyMode.value.isSticky(holdTicks)
-            crawlKey.isPressed = crawlKey.isPressed && FSitModClient.crawlKeyMode.value.isSticky(holdTicks)
+            reset()
         }
 
         val pose = when {
@@ -55,5 +54,10 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
             player.setPose(pose)
             FSitModClient.sendIfPossible(PoseRequestC2SPayload(pose))
         }
+    }
+
+    fun reset() {
+        sitKey.isPressed = sitKey.isPressed && FSitModClient.sitKeyMode.value.isSticky(holdTicks)
+        crawlKey.isPressed = crawlKey.isPressed && FSitModClient.crawlKeyMode.value.isSticky(holdTicks)
     }
 }

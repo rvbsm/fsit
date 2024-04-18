@@ -3,6 +3,7 @@ package dev.rvbsm.fsit.client.network
 import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.client.config.RestrictionList
 import dev.rvbsm.fsit.client.network.FSitClientNetworking.receive
+import dev.rvbsm.fsit.client.option.FSitKeyBindings
 import dev.rvbsm.fsit.network.packet.PoseUpdateS2CPayload
 import dev.rvbsm.fsit.network.packet.RidingRequestS2CPayload
 import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
@@ -19,7 +20,10 @@ object FSitClientNetworking {
     }
 
     internal fun PoseUpdateS2CPayload.receive(player: ClientPlayerEntity) {
-        player.setPose(pose)
+        if (player.pose() != pose) {
+            player.setPose(pose)
+            FSitKeyBindings.reset()
+        }
     }
 
     internal fun RidingRequestS2CPayload.receive() {
