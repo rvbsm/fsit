@@ -17,7 +17,6 @@ internal fun <T> ServerPlayerEntity.sendIfPossible(payload: T, orAction: () -> U
     } else orAction()
 }
 
-// todo: prevent mid-air posing 🤨?
 fun ServerPlayerEntity.setPose(pose: Pose, pos: Vec3d? = null) = (this as Poseable).`fsit$setPose`(pose, pos)
 fun ServerPlayerEntity.resetPose() = (this as Poseable).`fsit$resetPose`()
 fun ServerPlayerEntity.isInPose() = (this as Poseable).`fsit$isInPose`()
