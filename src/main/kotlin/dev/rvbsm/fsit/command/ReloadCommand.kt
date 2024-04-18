@@ -8,6 +8,8 @@ import net.minecraft.server.command.ServerCommandSource
 object ReloadCommand : ModCommand<ServerCommandSource> {
     override val name = "reload"
 
+    override fun requires(src: ServerCommandSource) = src.hasPermissionLevel(2)
+
     override fun executes(ctx: CommandContext<ServerCommandSource>): Int {
         FSitMod.loadConfig()
 
