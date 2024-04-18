@@ -4,11 +4,14 @@
   "category.fsit.on_double_sneak": "Sneak Interactions",
 
   "group.fsit.sitting": "Sitting",
+  "group.fsit.riding": "Riding",
   "description.fsit.sitting": "Sitting features.",
+  "description.fsit.riding": "Riding features.",
 
   "option.fsit.use_server": "Use Server Configuration",
   "option.fsit.sitting.seats_gravity": "Apply gravity to seats",
   "option.fsit.sitting.allow_mid_air": "Allow sitting in the air",
+  "option.fsit.riding.hide_rider": "Hide Rider",
   "option.fsit.on_use.sitting": "Sit on Blocks",
   "option.fsit.on_use.riding": "Ride players",
   "option.fsit.on_use.range": "Interaction Range",
@@ -22,6 +25,7 @@
   "description.fsit.use_server": "Whether to use the server-side configuration.",
   "description.fsit.sitting.seats_gravity": "Controls whether seats are affected by gravity.",
   "description.fsit.sitting.allow_mid_air": "Allows to sit even if not standing on a solid block.",
+  "description.fsit.riding.hide_rider": "Whether to hide a rider when not looking at him.",
   "description.fsit.on_use.sitting": "Allows sitting on specific blocks by interacting with them.",
   "description.fsit.on_use.riding": "Enables riding on other players.",
   "description.fsit.on_use.range": "The maximum distance to a target to interact.",

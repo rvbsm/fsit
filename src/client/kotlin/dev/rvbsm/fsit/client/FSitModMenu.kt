@@ -28,11 +28,14 @@ object FSitModMenu : ModMenuApi {
     private val categoryOnDoubleSneak = FSitMod.translatable("category", "on_double_sneak")
 
     private val groupSitting = FSitMod.translatable("group", "sitting")
+    private val groupRiding = FSitMod.translatable("group", "riding")
     private val descriptionSitting = FSitMod.translatable("description", "sitting")
+    private val descriptionRiding = FSitMod.translatable("description", "riding")
 
     private val optionUseServer = FSitMod.translatable("option", "use_server")
     private val optionSittingSeatsGravity = FSitMod.translatable("option", "sitting.seats_gravity")
     private val optionSittingAllowMidAir = FSitMod.translatable("option", "sitting.allow_mid_air")
+    private val optionRidingHideRider = FSitMod.translatable("option", "riding.hide_rider")
     private val optionOnUseSitting = FSitMod.translatable("option", "on_use.sitting")
     private val optionOnUseRiding = FSitMod.translatable("option", "on_use.riding")
     private val optionOnUseRange = FSitMod.translatable("option", "on_use.range")
@@ -47,6 +50,7 @@ object FSitModMenu : ModMenuApi {
     private val descriptionUseServer = FSitMod.translatable("description", "use_server")
     private val descriptionSittingSeatsGravity = FSitMod.translatable("description", "sitting.seats_gravity")
     private val descriptionSittingAllowMidAir = FSitMod.translatable("description", "sitting.allow_mid_air")
+    private val descriptionRidingHideRider = FSitMod.translatable("description", "riding.hide_rider")
     private val descriptionOnUseSitting = FSitMod.translatable("description", "on_use.sitting")
     private val descriptionOnUseRiding = FSitMod.translatable("description", "on_use.riding")
     private val descriptionOnUseRange = FSitMod.translatable("description", "on_use.range")
@@ -93,6 +97,22 @@ object FSitModMenu : ModMenuApi {
                                 .binding(ModConfig.default.sitting.allowMidAir,
                                     { FSitMod.config.sitting.allowMidAir },
                                     { FSitMod.config.sitting.allowMidAir = it }
+                                ).build()
+                            )
+                        ).build()
+                    ).group(OptionGroup.createBuilder().name(groupRiding)
+                        .description(OptionDescription.createBuilder()
+                            .text(descriptionRiding)
+                            .build()
+                        ).options(listOf(
+                            Option.createBuilder<Boolean>().name(optionRidingHideRider)
+                                .description { OptionDescription.createBuilder()
+                                    .text(descriptionRidingHideRider)
+                                    .build()
+                                }.controller(TickBoxControllerBuilder::create)
+                                .binding(ModConfig.default.riding.hideRider,
+                                    { FSitMod.config.riding.hideRider },
+                                    { FSitMod.config.riding.hideRider = it }
                                 ).build()
                             )
                         ).build()

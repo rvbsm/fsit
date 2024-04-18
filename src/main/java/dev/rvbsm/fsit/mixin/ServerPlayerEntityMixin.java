@@ -158,7 +158,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     @Unique
     private void playerPassengerTick() {
         final ServerPlayerEntity passenger = (ServerPlayerEntity) this.getFirstPassenger();
-        if (passenger != null) {
+        if (passenger != null && fsit$getConfig().getRiding().getHideRider()) {
             final boolean hidePassenger = this.isSneaking() || this.getPitch() > 0; // todo
 
             if (hidePassenger && !this.wasPassengerHidden) {
