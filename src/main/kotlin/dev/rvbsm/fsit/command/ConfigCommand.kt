@@ -11,6 +11,7 @@ import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.config.MutablePropertyProvider
 import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.lowercaseFirst
 import net.minecraft.server.command.ServerCommandSource
 
 enum class ConfigCommand(
@@ -41,14 +42,14 @@ enum class ConfigCommand(
     )
 
     override fun executes(ctx: CommandContext<ServerCommandSource>): Int {
-        ctx.source.sendFeedback("Config option $name is currently set to: ${get()}"::literal, false)
+        ctx.source.sendFeedback("Config option ${name.lowercaseFirst()} is currently set to: ${get()}"::literal, false)
 
         return super.executes(ctx)
     }
 
     private fun executeSet(ctx: CommandContext<ServerCommandSource>): Int {
         val value = ctx.getArgument("value", clazz).also { set(it) }
-        ctx.source.sendFeedback("Config option $name is now set to: $value"::literal, true)
+        ctx.source.sendFeedback("Config option ${name.lowercaseFirst()} is now set to: $value"::literal, true)
 
         return super.executes(ctx)
     }
