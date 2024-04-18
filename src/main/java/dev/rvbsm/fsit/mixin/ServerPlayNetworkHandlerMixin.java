@@ -46,17 +46,17 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
     @Mixin(targets = "net.minecraft.server.network.ServerPlayNetworkHandler$1")
     public static abstract class PlayerInteractEntityC2SPacketHandler {
-        @Shadow(aliases = "field_28963")
+        @Shadow
         @Final
-        ServerPlayNetworkHandler this$ServerPlayNetworkHandler;
+        ServerPlayNetworkHandler field_28963;
 
-        @Shadow(aliases = "field_28962")
+        @Shadow
         @Final
-        Entity entity;
+        Entity field_28962;
 
-        @Shadow(aliases = "field_39991")
+        @Shadow
         @Final
-        ServerWorld world;
+        ServerWorld field_39991;
 
         // note: idk why there are errors here. mcdev being dumb
         @ModifyVariable(method = "processInteract", at = @At("STORE"))
@@ -64,7 +64,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
             if (handRef.get() == Hand.OFF_HAND && interactionActionResult == ActionResult.PASS) {
                 handRef.set(Hand.MAIN_HAND);
 
-                return PassedUseEntityCallback.EVENT.invoker().interactEntity(this$ServerPlayNetworkHandler.player, world, entity);
+                return PassedUseEntityCallback.EVENT.invoker().interactEntity(field_28963.player, field_39991, field_28962);
             }
 
             return interactionActionResult;
