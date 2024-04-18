@@ -3,194 +3,199 @@ package dev.rvbsm.fsit.client
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import dev.isxander.yacl3.api.*
-import dev.isxander.yacl3.api.controller.ControllerBuilder
 import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder
 import dev.isxander.yacl3.api.controller.LongSliderControllerBuilder
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import dev.rvbsm.fsit.FSitMod
-import dev.rvbsm.fsit.client.controller.RegistryControllerBuilder
-import dev.rvbsm.fsit.client.controller.RegistryHelper
-import dev.rvbsm.fsit.config.*
+import dev.rvbsm.fsit.client.gui.controller.RegistryController
+import dev.rvbsm.fsit.client.gui.controller.RegistryHelper
+import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.config.container.*
 import dev.rvbsm.fsit.util.literal
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
-import net.minecraft.item.ItemConvertible
 import net.minecraft.registry.Registries
 import net.minecraft.registry.tag.BlockTags
 import net.minecraft.registry.tag.TagKey
 import org.slf4j.LoggerFactory
-import kotlin.reflect.KMutableProperty
 
 // todo: make it look better 👽
 object FSitModMenu : ModMenuApi {
     private val logger = LoggerFactory.getLogger(FSitModMenu::class.java)
 
-    private inline fun <reified T : Any> optionBuilder(
-        path: String, noinline controller: (Option<T>) -> ControllerBuilder<T>, field: KMutableProperty<T>, default: T
-    ): Option.Builder<T> {
-        val name = FSitMod.translatable("option", path)
-        val desc = FSitMod.translatable("description", path)
+    private val categoryGeneral = FSitMod.translatable("category", "general")
+    private val categoryOnUse = FSitMod.translatable("category", "on_use")
+    private val categoryOnDoubleSneak = FSitMod.translatable("category", "on_double_sneak")
 
-        return Option.createBuilder<T>().name(name).description(OptionDescription.of(desc)).controller(controller)
-            .binding(default, field.getter::call, field.setter::call)
-    }
+    private val groupSitting = FSitMod.translatable("group", "sitting")
+    private val descriptionSitting = FSitMod.translatable("description", "sitting")
 
-    private fun booleanOption(path: String, field: KMutableProperty<Boolean>, default: Boolean) =
-        optionBuilder(path, TickBoxControllerBuilder::create, field, default).build()
+    private val optionUseServer = FSitMod.translatable("option", "use_server")
+    private val optionSittingSeatsGravity = FSitMod.translatable("option", "sitting.seats_gravity")
+    private val optionSittingAllowMidAir = FSitMod.translatable("option", "sitting.allow_mid_air")
+    private val optionOnUseSitting = FSitMod.translatable("option", "on_use.sitting")
+    private val optionOnUseRiding = FSitMod.translatable("option", "on_use.riding")
+    private val optionOnUseRange = FSitMod.translatable("option", "on_use.range")
+    private val optionOnUseSuffocationCheck = FSitMod.translatable("option", "on_use.suffocation_check")
+    private val optionOnUseBlocks = FSitMod.translatable("option", "on_use.blocks")
+    private val optionOnUseTags = FSitMod.translatable("option", "on_use.tags")
+    private val optionOnDoubleSneakSitting = FSitMod.translatable("option", "on_double_sneak.sitting")
+    private val optionOnDoubleSneakCrawling = FSitMod.translatable("option", "on_double_sneak.crawling")
+    private val optionOnDoubleSneakMinPitch = FSitMod.translatable("option", "on_double_sneak.min_pitch")
+    private val optionOnDoubleSneakDelay = FSitMod.translatable("option", "on_double_sneak.delay")
 
-    private fun longOption(path: String, field: KMutableProperty<Long>, default: Long, range: LongProgression = 1..4L) =
-        optionBuilder(
-            path,
-            { LongSliderControllerBuilder.create(it).range(range.first, range.last).step(range.step) },
-            field,
-            default
-        ).build()
-
-    private fun doubleOption(
-        path: String,
-        field: KMutableProperty<Double>,
-        default: Double,
-        range: ClosedFloatingPointRange<Double> = 0.0..100.0
-    ) = optionBuilder(
-        path,
-        { DoubleSliderControllerBuilder.create(it).range(range.start, range.endInclusive).step(1.0) },
-        field,
-        default,
-    ).build()
-
-    private fun optionGroup(path: String, vararg options: Option<*>, isCollapsed: Boolean = false): OptionGroup {
-        val name = FSitMod.translatable("group", path)
-        return OptionGroup.createBuilder().name(name).apply { options.forEach { option(it) } }.collapsed(isCollapsed)
-            .build()
-    }
-
-    private fun <T : Any> listOptionBuilder(
-        path: String,
-        controller: (Option<T>) -> ControllerBuilder<T>,
-        getter: () -> List<T>,
-        setter: (List<T>) -> Unit,
-        default: List<T>,
-        initial: T,
-    ): ListOption.Builder<T> {
-        val name = FSitMod.translatable("option", path)
-        val desc = FSitMod.translatable("description", path)
-        return ListOption.createBuilder<T>().name(name).description(OptionDescription.of(desc)).controller(controller)
-            .binding(default, getter, setter).initial(initial)
-    }
-
-    private inline fun <T : ItemConvertible, W : Any, reified C : Container, reified E : C> containerOption(
-        path: String,
-        containers: MutableSet<C>,
-        noinline getConverter: (Iterable<C>) -> List<W>,
-        noinline setConverter: (List<W>) -> Iterable<E>,
-        default: List<W>,
-        initial: W,
-        registryHelper: RegistryHelper<T, W>,
-    ) = listOptionBuilder(
-        path,
-        { RegistryControllerBuilder(it, registryHelper) },
-        { getConverter(containers) },
-        { containers.updateWith<C, E>(setConverter(it)) },
-        default,
-        initial,
-    ).collapsed(true).build()
+    private val descriptionUseServer = FSitMod.translatable("description", "use_server")
+    private val descriptionSittingSeatsGravity = FSitMod.translatable("description", "sitting.seats_gravity")
+    private val descriptionSittingAllowMidAir = FSitMod.translatable("description", "sitting.allow_mid_air")
+    private val descriptionOnUseSitting = FSitMod.translatable("description", "on_use.sitting")
+    private val descriptionOnUseRiding = FSitMod.translatable("description", "on_use.riding")
+    private val descriptionOnUseRange = FSitMod.translatable("description", "on_use.range")
+    private val descriptionOnUseSuffocationCheck = FSitMod.translatable("description", "on_use.suffocation_check")
+    private val descriptionOnUseBlocks = FSitMod.translatable("description", "on_use.blocks")
+    private val descriptionOnUseTags = FSitMod.translatable("description", "on_use.tags")
+    private val descriptionOnDoubleSneakSitting = FSitMod.translatable("description", "on_double_sneak.sitting")
+    private val descriptionOnDoubleSneakCrawling = FSitMod.translatable("description", "on_double_sneak.crawling")
+    private val descriptionOnDoubleSneakMinPitch = FSitMod.translatable("description", "on_double_sneak.min_pitch")
+    private val descriptionOnDoubleSneakDelay = FSitMod.translatable("description", "on_double_sneak.delay")
 
     override fun getModConfigScreenFactory(): ConfigScreenFactory<*> {
         return ConfigScreenFactory { screen ->
-            YetAnotherConfigLib.createBuilder().title("FSit".literal()).category(
-                ConfigCategory.createBuilder().name("Main".literal()).option(
-                    booleanOption("use_server", FSitMod.config::useServer, ModConfig.default.useServer)
-                ).group(
-                    optionGroup(
-                        "sitting",
-                        booleanOption(
-                            "sitting.seats_gravity",
-                            FSitMod.config.sitting::seatsGravity,
-                            ModConfig.default.sitting.seatsGravity,
-                        ),
-                        booleanOption(
-                            "sitting.allow_mid_air",
-                            FSitMod.config.sitting::allowMidAir,
-                            ModConfig.default.sitting.allowMidAir,
-                        ),
-                    ),
-                ).group(
-                    optionGroup(
-                        "sitting.on_use",
-                        booleanOption(
-                            "sitting.on_use.enabled",
-                            FSitMod.config.sitting.onUse::enabled,
-                            ModConfig.default.sitting.onUse.enabled,
-                        ),
-                        longOption(
-                            "sitting.on_use.range",
-                            FSitMod.config.sitting.onUse::range,
-                            ModConfig.default.sitting.onUse.range,
-                        ),
-                        booleanOption(
-                            "sitting.on_use.suffocation_check",
-                            FSitMod.config.sitting.onUse::suffocationCheck,
-                            ModConfig.default.sitting.onUse.suffocationCheck,
-                        ),
-                    ),
-                ).group(
-                    containerOption(
-                        "sitting.on_use.blocks",
-                        FSitMod.config.sitting.onUse.blocks,
-                        Iterable<BlockContainer>::getEntries,
-                        Iterable<Block>::asEntries,
-                        ModConfig.default.sitting.onUse.blocks.getEntries(),
-                        Blocks.AIR,
-                        RegistryHelper.Simple(Registries.BLOCK),
-                    ),
-                ).group(
-                    containerOption(
-                        "sitting.on_use.tags",
-                        FSitMod.config.sitting.onUse.blocks,
-                        Iterable<BlockContainer>::getTags,
-                        Iterable<TagKey<Block>>::asTags,
-                        ModConfig.default.sitting.onUse.blocks.getTags(),
-                        BlockTags.SLABS,
-                        RegistryHelper.Tag(Registries.BLOCK),
-                    ),
-                ).group(
-                    optionGroup(
-                        "sitting.on_double_sneak",
-                        booleanOption(
-                            "sitting.on_double_sneak.enabled",
-                            FSitMod.config.sitting.onDoubleSneak::enabled,
-                            ModConfig.default.sitting.onDoubleSneak.enabled,
-                        ),
-                        doubleOption(
-                            "sitting.on_double_sneak.min_pitch",
-                            FSitMod.config.sitting.onDoubleSneak::minPitch,
-                            ModConfig.default.sitting.onDoubleSneak.minPitch,
-                            -90.0..90.0,
-                        ),
-                        longOption(
-                            "sitting.on_double_sneak.delay",
-                            FSitMod.config.sitting.onDoubleSneak::delay,
-                            ModConfig.default.sitting.onDoubleSneak.delay,
-                            100..2000L step 25,
-                        ),
-                    ),
-                ).group(
-                    optionGroup(
-                        "riding",
-                        booleanOption(
-                            "riding.on_use.enabled",
-                            FSitMod.config.riding.onUse::enabled,
-                            ModConfig.default.riding.onUse.enabled,
-                        ),
-                        longOption(
-                            "riding.on_use.range",
-                            FSitMod.config.riding.onUse::range,
-                            ModConfig.default.riding.onUse.range,
-                        ),
-                    ),
-                ).build()
-            ).save(FSitModClient::saveConfig).build().generateScreen(screen)
+            YetAnotherConfigLib.createBuilder().title("FSit".literal())
+                .category(ConfigCategory.createBuilder().name(categoryGeneral)
+                    .option(Option.createBuilder<Boolean>().name(optionUseServer)
+                        .description { OptionDescription.createBuilder()
+                            .text(descriptionUseServer)
+                            .build()
+                        }.controller(TickBoxControllerBuilder::create)
+                        .binding(ModConfig.default.useServer,
+                            { FSitMod.config.useServer },
+                            { FSitMod.config.useServer = it }
+                        ).build()
+                    ).group(OptionGroup.createBuilder().name(groupSitting)
+                        .description(OptionDescription.createBuilder()
+                            .text(descriptionSitting)
+                            .build()
+                        ).options(listOf(
+                            Option.createBuilder<Boolean>().name(optionSittingSeatsGravity)
+                                .description { OptionDescription.createBuilder()
+                                    .text(descriptionSittingSeatsGravity)
+                                    .build()
+                                }.controller(TickBoxControllerBuilder::create)
+                                .binding(ModConfig.default.sitting.seatsGravity,
+                                    { FSitMod.config.sitting.seatsGravity },
+                                    { FSitMod.config.sitting.seatsGravity = it }
+                                ).build(),
+                            Option.createBuilder<Boolean>().name(optionSittingAllowMidAir)
+                                .description { OptionDescription.createBuilder()
+                                    .text(descriptionSittingAllowMidAir)
+                                    .build()
+                                }.controller(TickBoxControllerBuilder::create)
+                                .binding(ModConfig.default.sitting.allowMidAir,
+                                    { FSitMod.config.sitting.allowMidAir },
+                                    { FSitMod.config.sitting.allowMidAir = it }
+                                ).build()
+                            )
+                        ).build()
+                    ).build()
+                ).category(ConfigCategory.createBuilder().name(categoryOnUse)
+                    .options(listOf(
+                        Option.createBuilder<Boolean>().name(optionOnUseSitting)
+                            .description { OptionDescription.createBuilder()
+                                .text(descriptionOnUseSitting)
+                                .build()
+                            }.controller(TickBoxControllerBuilder::create)
+                            .binding(ModConfig.default.onUse.sitting,
+                                { FSitMod.config.onUse.sitting },
+                                { FSitMod.config.onUse.sitting = it }
+                            ).build(),
+                        Option.createBuilder<Boolean>().name(optionOnUseRiding)
+                            .description { OptionDescription.createBuilder()
+                                .text(descriptionOnUseRiding)
+                                .build()
+                            }.controller(TickBoxControllerBuilder::create)
+                            .binding(ModConfig.default.onUse.riding,
+                                { FSitMod.config.onUse.riding },
+                                { FSitMod.config.onUse.riding = it }
+                            ).build(),
+                        Option.createBuilder<Long>().name(optionOnUseRange)
+                            .description { OptionDescription.createBuilder()
+                                .text(descriptionOnUseRange)
+                                .build()
+                            }.controller { LongSliderControllerBuilder.create(it).range(1, 4).step(1) }
+                            .binding(ModConfig.default.onUse.range,
+                                { FSitMod.config.onUse.range },
+                                { FSitMod.config.onUse.range = it }
+                            ).build(),
+                        Option.createBuilder<Boolean>().name(optionOnUseSuffocationCheck)
+                            .description { OptionDescription.createBuilder()
+                                .text(descriptionOnUseSuffocationCheck)
+                                .build()
+                            }.controller(TickBoxControllerBuilder::create)
+                            .binding(ModConfig.default.onUse.suffocationCheck,
+                                { FSitMod.config.onUse.suffocationCheck },
+                                { FSitMod.config.onUse.suffocationCheck = it }
+                            ).build(),
+                        )
+                    ).group(ListOption.createBuilder<Block>().name(optionOnUseBlocks)
+                        .description(OptionDescription.createBuilder()
+                            .text(descriptionOnUseBlocks)
+                            .build()
+                        ).customController { RegistryController(it, RegistryHelper.Simple(Registries.BLOCK)) }
+                        .binding(ModConfig.default.onUse.blocks.getEntries(),
+                            FSitMod.config.onUse.blocks::getEntries
+                        ) { FSitMod.config.onUse.blocks.updateWith(it.asEntries()) }.initial(Blocks.AIR)
+                        .build()
+                    ).group(ListOption.createBuilder<TagKey<Block>>().name(optionOnUseTags)
+                        .description(OptionDescription.createBuilder()
+                            .text(descriptionOnUseTags)
+                            .build()
+                        ).customController { RegistryController(it, RegistryHelper.Tag(Registries.BLOCK)) }
+                        .binding(ModConfig.default.onUse.blocks.getTags(),
+                            FSitMod.config.onUse.blocks::getTags
+                        ) { FSitMod.config.onUse.blocks.updateWith(it.asTags()) }.initial(BlockTags.FENCES)
+                        .build()
+                    ).build()
+                ).category(ConfigCategory.createBuilder().name(categoryOnDoubleSneak)
+                    .options(listOf(
+                        Option.createBuilder<Boolean>().name(optionOnDoubleSneakSitting)
+                            .description { OptionDescription.createBuilder()
+                                .text(descriptionOnDoubleSneakSitting)
+                                .build()
+                            }.controller(TickBoxControllerBuilder::create)
+                            .binding(ModConfig.default.onDoubleSneak.sitting,
+                                { FSitMod.config.onDoubleSneak.sitting },
+                                { FSitMod.config.onDoubleSneak.sitting = it }
+                            ).build(),
+                        Option.createBuilder<Boolean>().name(optionOnDoubleSneakCrawling)
+                            .description { OptionDescription.createBuilder()
+                                .text(descriptionOnDoubleSneakCrawling)
+                                .build()
+                            }.controller(TickBoxControllerBuilder::create)
+                            .binding(ModConfig.default.onDoubleSneak.crawling,
+                                { FSitMod.config.onDoubleSneak.crawling },
+                                { FSitMod.config.onDoubleSneak.crawling = it }
+                            ).build(),
+                        Option.createBuilder<Double>().name(optionOnDoubleSneakMinPitch)
+                            .description { OptionDescription.createBuilder()
+                                .text(descriptionOnDoubleSneakMinPitch)
+                                .build()
+                            }.controller { DoubleSliderControllerBuilder.create(it).range(-90.0, 90.0).step(1.0) }
+                            .binding(ModConfig.default.onDoubleSneak.minPitch,
+                                { FSitMod.config.onDoubleSneak.minPitch },
+                                { FSitMod.config.onDoubleSneak.minPitch = it}
+                            ).build(),
+                        Option.createBuilder<Long>().name(optionOnDoubleSneakDelay)
+                            .description { OptionDescription.createBuilder()
+                                .text(descriptionOnDoubleSneakDelay)
+                                .build()
+                            }.controller { LongSliderControllerBuilder.create(it).range(100, 2000).step(25) }
+                            .binding(ModConfig.default.onDoubleSneak.delay,
+                                { FSitMod.config.onDoubleSneak.delay },
+                                { FSitMod.config.onDoubleSneak.delay = it }
+                            ).build()
+                        )
+                    ).build()
+                ).save(FSitModClient::saveConfig).build().generateScreen(screen)
         }
     }
 }
