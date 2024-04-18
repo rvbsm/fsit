@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.client.controller
+package dev.rvbsm.fsit.client.gui.controller
 
 import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.api.utils.Dimension
@@ -6,18 +6,12 @@ import dev.isxander.yacl3.gui.AbstractWidget
 import dev.isxander.yacl3.gui.YACLScreen
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownController
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownControllerElement
-import dev.isxander.yacl3.impl.controller.AbstractControllerBuilderImpl
 import dev.rvbsm.fsit.util.literal
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
-
-class RegistryControllerBuilder<T, W>(option: Option<W>, private val registryHelper: RegistryHelper<T, W>) :
-    AbstractControllerBuilderImpl<W>(option) where T : ItemConvertible, W : Any {
-    override fun build() = RegistryController(option, registryHelper)
-}
 
 class RegistryController<T, W>(option: Option<W>, internal val registryHelper: RegistryHelper<T, W>) :
     AbstractDropdownController<W>(option) where T : ItemConvertible, W : Any {

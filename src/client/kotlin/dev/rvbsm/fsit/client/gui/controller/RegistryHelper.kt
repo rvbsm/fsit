@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.client.controller
+package dev.rvbsm.fsit.client.gui.controller
 
 import dev.rvbsm.fsit.util.id
 import net.minecraft.item.ItemConvertible
