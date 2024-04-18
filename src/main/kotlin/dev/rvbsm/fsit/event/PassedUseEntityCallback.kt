@@ -46,11 +46,11 @@ fun interface PassedUseEntityCallback {
             val target = entity as ServerPlayerEntity
             if (!player.canStartRiding(target)) return ActionResult.PASS
 
-            val playerConfig = player.getConfig().riding.onUse
-            val targetConfig = target.getConfig().riding.onUse
+            val playerConfig = player.getConfig().onUse
+            val targetConfig = target.getConfig().onUse
 
             if (player.uuid to target.uuid in requests ||
-                !playerConfig.enabled || !targetConfig.enabled
+                !playerConfig.riding || !targetConfig.riding
                 || !player.isInRange(target, playerConfig.range.toDouble())
             ) return ActionResult.PASS
 

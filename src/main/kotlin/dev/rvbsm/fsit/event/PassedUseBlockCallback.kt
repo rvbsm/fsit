@@ -44,10 +44,10 @@ fun interface PassedUseBlockCallback {
         override fun interactBlock(player: ServerPlayerEntity, world: World, hitResult: BlockHitResult): ActionResult {
             if (player.shouldCancelInteraction() || hitResult.side != Direction.UP) return ActionResult.PASS
 
-            val onUseConfig = player.getConfig().sitting.onUse
+            val onUseConfig = player.getConfig().onUse
             val hitState = world.getBlockState(hitResult.blockPos)
 
-            if (!onUseConfig.enabled ||
+            if (!onUseConfig.sitting ||
                 !player.pos.isInRange(hitResult.pos, onUseConfig.range.toDouble()) ||
                 !hitState.isSittableSide() ||
                 !onUseConfig.blocks.any { it.test(hitState) } ||

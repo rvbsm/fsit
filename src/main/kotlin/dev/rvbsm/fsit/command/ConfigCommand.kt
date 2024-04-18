@@ -8,24 +8,30 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
 import dev.rvbsm.fsit.FSitMod
+import dev.rvbsm.fsit.config.ModConfig
+import dev.rvbsm.fsit.config.MutablePropertyProvider
 import dev.rvbsm.fsit.util.literal
 import net.minecraft.server.command.ServerCommandSource
-import kotlin.reflect.KMutableProperty
 
 enum class ConfigCommand(
-    private val property: KMutableProperty<*>,
+    private val propertyProvider: MutablePropertyProvider<*>,
     private val type: ArgumentType<*>,
     private val clazz: Class<*>,
 ) : ModCommand<ServerCommandSource> {
-    UseServer(FSitMod.config::useServer, BoolArgumentType.bool(), Boolean::class.java),
-    SeatsGravity(FSitMod.config.sitting::seatsGravity, BoolArgumentType.bool(), Boolean::class.java),
-    SitOnUse(FSitMod.config.sitting.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
-    SitOnUseRange(FSitMod.config.sitting.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java),
-    SitOnSneak(FSitMod.config.sitting.onDoubleSneak::enabled, BoolArgumentType.bool(), Boolean::class.java),
-    SitOnSneakMinPitch(FSitMod.config.sitting.onDoubleSneak::minPitch, DoubleArgumentType.doubleArg(-90.0, 90.0), Double::class.java),
-    SitOnSneakDelay(FSitMod.config.sitting.onDoubleSneak::delay, LongArgumentType.longArg(100, 2000), Long::class.java),
-    RideOnUse(FSitMod.config.riding.onUse::enabled, BoolArgumentType.bool(), Boolean::class.java),
-    RideOnUseRange(FSitMod.config.riding.onUse::range, LongArgumentType.longArg(1, 4), Long::class.java);
+    UseServer({ it::useServer }, BoolArgumentType.bool(), Boolean::class.java),
+    SeatsGravity({ ModConfig::sitting.get(it)::seatsGravity }, BoolArgumentType.bool(), Boolean::class.java),
+    AllowSittingInAir({ ModConfig::sitting.get(it)::allowMidAir }, BoolArgumentType.bool(), Boolean::class.java),
+    OnUseSit({ ModConfig::onUse.get(it)::sitting }, BoolArgumentType.bool(), Boolean::class.java),
+    OnUseRide({ ModConfig::onUse.get(it)::riding }, BoolArgumentType.bool(), Boolean::class.java),
+    OnUseRange({ ModConfig::onUse.get(it)::range }, LongArgumentType.longArg(1, 4), Long::class.java),
+    OnUseSuffocationCheck({ ModConfig::onUse.get(it)::suffocationCheck }, BoolArgumentType.bool(), Boolean::class.java),
+    OnSneakSit({ ModConfig::onDoubleSneak.get(it)::sitting }, BoolArgumentType.bool(), Boolean::class.java),
+    OnSneakCrawl({ ModConfig::onDoubleSneak.get(it)::crawling }, BoolArgumentType.bool(), Boolean::class.java),
+    OnSneakMinPitch({ ModConfig::onDoubleSneak.get(it)::minPitch }, DoubleArgumentType.doubleArg(-90.0, 90.0), Double::class.java),
+    OnSneakDelay({ ModConfig::onDoubleSneak.get(it)::delay }, LongArgumentType.longArg(100, 2000), Long::class.java),
+    ;
+
+    private val property get() = propertyProvider(FSitMod.config)
 
     override fun requires(src: ServerCommandSource) = src.hasPermissionLevel(2)
 

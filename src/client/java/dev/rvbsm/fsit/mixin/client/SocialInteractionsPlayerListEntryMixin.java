@@ -59,11 +59,11 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
             this.allowButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, RESTRICT_TEXTURE, this::allow);
             *//*?} */
 
-            this.restrictButton.active = FSitMod.getConfig().getRiding().getOnUse().getEnabled();
+            this.restrictButton.active = FSitMod.getConfig().getOnUse().getRiding();
             this.restrictButton.setTooltip(Tooltip.of(this.restrictButton.active ? RESTRICT_BUTTON : DISABLED_BUTTON));
             buttons.add(this.restrictButton);
 
-            this.allowButton.active = FSitMod.getConfig().getRiding().getOnUse().getEnabled();
+            this.allowButton.active = FSitMod.getConfig().getOnUse().getRiding();
             this.allowButton.setTooltip(Tooltip.of(this.allowButton.active ? ALLOW_BUTTON : DISABLED_BUTTON));
             buttons.add(this.allowButton);
 
