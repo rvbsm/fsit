@@ -6,6 +6,7 @@ import net.minecraft.entity.*
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 
 class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(EntityType.BLOCK_DISPLAY, player.world) {
@@ -33,9 +34,15 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
 
     override fun tick() {
         if (!world.isClient && !isRemoved) {
-            if (player.getConfig().sitting.seatsGravity) {
+            val config = player.getConfig().sitting
+            if (config.seatsGravity) {
                 velocity = velocity.add(0.0, -0.04, 0.0)
                 move(MovementType.SELF, velocity)
+            } else if (!config.allowMidAir) {
+                val box = Box.of(pos, 1.0e-6, 1.0e-6, 1.0e-6)
+                if (world.isSpaceEmpty(this, box)) {
+                    discard()
+                }
             }
 
             if (firstPassenger == null) {
