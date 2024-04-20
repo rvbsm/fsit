@@ -30,7 +30,7 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
 
         val player = client.player ?: return
         val currentPose = player.pose()
-        val canSitMidAir = FSitMod.config.sitting.allowMidAir || player.isOnGround
+        val canSitMidAir = FSitMod.config.sitting.allowInAir || player.isOnGround
         if (currentPose == Pose.Standing && (player.hasVehicle() || !canSitMidAir)) return
 
         if ((sitKey.isPressed && crawlKey.isPressed) || player.abilities.flying || player.isSneaking) {

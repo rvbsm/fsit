@@ -70,31 +70,30 @@ data class ModConfig(
 
 @Serializable
 data class Sitting(
-    @YamlComment("Apply gravity to seats.")
-    var seatsGravity: Boolean = true,
-    @YamlComment("Whether players can initiate sitting while in midair.")
-    var allowMidAir: Boolean = false,
+    @YamlComment("Controls whether gravity affects seats.")
+    var applyGravity: Boolean = true,
+    @YamlComment("Allows sitting even if not standing on a solid block.")
+    var allowInAir: Boolean = false,
 )
 
 @Serializable
 data class Riding(
     @YamlComment("Whether to hide a player's rider when the player is not looking at him.")
-    @SerialName("hide_rider")
     var hideRider: Boolean = true,
 )
 
 @Serializable
 data class OnUse(
-    @YamlComment("Allows sitting on specific blocks by interacting with them.")
+    @YamlComment("Allows to start sitting on specific blocks by interacting with them.")
     var sitting: Boolean = true,
-    @YamlComment("Enables riding on other players.")
+    @YamlComment("Allows to start riding other players by interaction with them.")
     var riding: Boolean = true,
 
-    @YamlComment("The surrounding distance where players can interact to sit on blocks or players.")
+    @YamlComment("The maximum distance to a target to interact.")
     var range: Long = 2,
     @YamlComment("Prevents players from sitting in places where they would suffocate.")
-    var suffocationCheck: Boolean = true,
-    @YamlComment("List of blocks and block types (e.g., \"oak_log\", \"#logs\") players can sit on.")
+    var checkSuffocation: Boolean = true,
+    @YamlComment("List of blocks or block types (e.g., \"oak_log\", \"#logs\") that are available to sit on by interacting with them.")
     val blocks: MutableSet<BlockContainer> = mutableSetOf(
         BlockTags.SLABS.asContainer(), BlockTags.STAIRS.asContainer(), BlockTags.LOGS.asContainer(),
     ),
@@ -102,12 +101,12 @@ data class OnUse(
 
 @Serializable
 data class OnDoubleSneak(
-    @YamlComment("Allows sitting on blocks by double sneaking while looking down.")
+    @YamlComment("Allows to start sitting by double sneaking while looking down.")
     var sitting: Boolean = true,
-    @YamlComment("Start crawling by double sneaking while looking down near a hole.")
+    @YamlComment("Allows to start crawling by double sneaking near a one-block gap.")
     var crawling: Boolean = true,
 
-    @YamlComment("The minimum pitch angle (degrees) required for double sneak sit.")
+    @YamlComment("The minimum angle must be looking down (in degrees) with double sneak.")
     var minPitch: Double = 66.6,
     @YamlComment("The window between sneaks to sit down (in milliseconds).")
     var delay: Long = 600,

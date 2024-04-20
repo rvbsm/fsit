@@ -13,7 +13,7 @@ private val migrations = setOf(
     BooleanProperty("sittable.enabled") { ModConfig::onUse.get(it)::sitting },
     BooleanProperty("riding.enabled") { ModConfig::onUse.get(it)::riding },
     BooleanProperty("sitting.on_use.enabled") { ModConfig::onUse.get(it)::sitting },
-    BooleanProperty("sitting.on_use.suffocation_check") { ModConfig::onUse.get(it)::suffocationCheck },
+    BooleanProperty("sitting.on_use.suffocation_check") { ModConfig::onUse.get(it)::checkSuffocation },
     BooleanProperty("sitting.on_double_sneak.enabled") { ModConfig::onDoubleSneak.get(it)::sitting },
     BooleanProperty("riding.on_use.enabled") { ModConfig::onUse.get(it)::riding },
 

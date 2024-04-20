@@ -35,10 +35,10 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
     override fun tick() {
         if (!world.isClient && !isRemoved) {
             val config = player.getConfig().sitting
-            if (config.seatsGravity) {
+            if (config.applyGravity) {
                 velocity = velocity.add(0.0, -0.04, 0.0)
                 move(MovementType.SELF, velocity)
-            } else if (!config.allowMidAir) {
+            } else if (!config.allowInAir) {
                 val box = Box.of(pos, 1.0e-6, 1.0e-6, 1.0e-6)
                 if (world.isSpaceEmpty(this, box)) {
                     discard()

@@ -33,13 +33,13 @@ object FSitModMenu : ModMenuApi {
     private val descriptionRiding = FSitMod.translatable("description", "riding")
 
     private val optionUseServer = FSitMod.translatable("option", "use_server")
-    private val optionSittingSeatsGravity = FSitMod.translatable("option", "sitting.seats_gravity")
-    private val optionSittingAllowMidAir = FSitMod.translatable("option", "sitting.allow_mid_air")
+    private val optionSittingSeatsGravity = FSitMod.translatable("option", "sitting.apply_gravity")
+    private val optionSittingAllowMidAir = FSitMod.translatable("option", "sitting.allow_in_air")
     private val optionRidingHideRider = FSitMod.translatable("option", "riding.hide_rider")
     private val optionOnUseSitting = FSitMod.translatable("option", "on_use.sitting")
     private val optionOnUseRiding = FSitMod.translatable("option", "on_use.riding")
     private val optionOnUseRange = FSitMod.translatable("option", "on_use.range")
-    private val optionOnUseSuffocationCheck = FSitMod.translatable("option", "on_use.suffocation_check")
+    private val optionOnUseSuffocationCheck = FSitMod.translatable("option", "on_use.check_suffocation")
     private val optionOnUseBlocks = FSitMod.translatable("option", "on_use.blocks")
     private val optionOnUseTags = FSitMod.translatable("option", "on_use.tags")
     private val optionOnDoubleSneakSitting = FSitMod.translatable("option", "on_double_sneak.sitting")
@@ -48,13 +48,13 @@ object FSitModMenu : ModMenuApi {
     private val optionOnDoubleSneakDelay = FSitMod.translatable("option", "on_double_sneak.delay")
 
     private val descriptionUseServer = FSitMod.translatable("description", "use_server")
-    private val descriptionSittingSeatsGravity = FSitMod.translatable("description", "sitting.seats_gravity")
-    private val descriptionSittingAllowMidAir = FSitMod.translatable("description", "sitting.allow_mid_air")
+    private val descriptionSittingSeatsGravity = FSitMod.translatable("description", "sitting.apply_gravity")
+    private val descriptionSittingAllowMidAir = FSitMod.translatable("description", "sitting.allow_in_air")
     private val descriptionRidingHideRider = FSitMod.translatable("description", "riding.hide_rider")
     private val descriptionOnUseSitting = FSitMod.translatable("description", "on_use.sitting")
     private val descriptionOnUseRiding = FSitMod.translatable("description", "on_use.riding")
     private val descriptionOnUseRange = FSitMod.translatable("description", "on_use.range")
-    private val descriptionOnUseSuffocationCheck = FSitMod.translatable("description", "on_use.suffocation_check")
+    private val descriptionOnUseSuffocationCheck = FSitMod.translatable("description", "on_use.check_suffocation")
     private val descriptionOnUseBlocks = FSitMod.translatable("description", "on_use.blocks")
     private val descriptionOnUseTags = FSitMod.translatable("description", "on_use.tags")
     private val descriptionOnDoubleSneakSitting = FSitMod.translatable("description", "on_double_sneak.sitting")
@@ -85,18 +85,18 @@ object FSitModMenu : ModMenuApi {
                                     .text(descriptionSittingSeatsGravity)
                                     .build()
                                 }.controller(TickBoxControllerBuilder::create)
-                                .binding(ModConfig.default.sitting.seatsGravity,
-                                    { FSitMod.config.sitting.seatsGravity },
-                                    { FSitMod.config.sitting.seatsGravity = it }
+                                .binding(ModConfig.default.sitting.applyGravity,
+                                    { FSitMod.config.sitting.applyGravity },
+                                    { FSitMod.config.sitting.applyGravity = it }
                                 ).build(),
                             Option.createBuilder<Boolean>().name(optionSittingAllowMidAir)
                                 .description { OptionDescription.createBuilder()
                                     .text(descriptionSittingAllowMidAir)
                                     .build()
                                 }.controller(TickBoxControllerBuilder::create)
-                                .binding(ModConfig.default.sitting.allowMidAir,
-                                    { FSitMod.config.sitting.allowMidAir },
-                                    { FSitMod.config.sitting.allowMidAir = it }
+                                .binding(ModConfig.default.sitting.allowInAir,
+                                    { FSitMod.config.sitting.allowInAir },
+                                    { FSitMod.config.sitting.allowInAir = it }
                                 ).build()
                             )
                         ).build()
@@ -151,9 +151,9 @@ object FSitModMenu : ModMenuApi {
                                 .text(descriptionOnUseSuffocationCheck)
                                 .build()
                             }.controller(TickBoxControllerBuilder::create)
-                            .binding(ModConfig.default.onUse.suffocationCheck,
-                                { FSitMod.config.onUse.suffocationCheck },
-                                { FSitMod.config.onUse.suffocationCheck = it }
+                            .binding(ModConfig.default.onUse.checkSuffocation,
+                                { FSitMod.config.onUse.checkSuffocation },
+                                { FSitMod.config.onUse.checkSuffocation = it }
                             ).build(),
                         )
                     ).group(ListOption.createBuilder<Block>().name(optionOnUseBlocks)
