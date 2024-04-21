@@ -17,6 +17,7 @@ jobs:
           cache: gradle
 
       - uses: Wandalen/wretry.action@master
+        name: build
         with:
           command: ./gradlew chiseledBuild
 
