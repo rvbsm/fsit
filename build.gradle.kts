@@ -1,23 +1,29 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val gitVersion: groovy.lang.Closure<String> by extra
+
 plugins {
     kotlin("jvm") version libs.versions.kotlin
     kotlin("plugin.serialization") version libs.versions.kotlin
 
     alias(libs.plugins.fabric.loom)
+    alias(libs.plugins.publish)
     alias(libs.plugins.git)
     alias(libs.plugins.machete)
 }
 
-val gitVersion: groovy.lang.Closure<String> by extra
-
 val modVersion = gitVersion().let { if (it.first() == 'v') it.drop(1) else it }
+val modrinthId = "${property("mod.modrinth_id")}"
+
 val mcVersion = stonecutter.current.version
-val mcTarget = property("minecraft.target")!!
-val fabricYarnBuild = property("fabric.yarn_build")!!
+val mcTarget = "${property("minecraft.target")}"
+
+val fabricYarnBuild = "${property("fabric.yarn_build")}"
 val fabricVersion = "${property("fabric.api")}+${stonecutter.current.project}"
-val modmenuVersion = property("api.modmenu")!!
-val yaclVersion = property("api.yacl")!!
+
+val modmenuVersion = "${property("api.modmenu")}"
+val yaclVersion = "${property("api.yacl")}"
+
 val javaVersion = "${property("java.version")}".toInt(10)
 
 version = "$modVersion+$mcVersion"
@@ -85,7 +91,7 @@ dependencies {
 tasks {
     processResources {
         inputs.property("version", "$version")
-        inputs.property("mcPredicate", "$mcTarget")
+        inputs.property("mcPredicate", mcTarget)
 
         filesMatching("fabric.mod.json") {
             expand("version" to version, "mcPredicate" to mcTarget)
@@ -121,4 +127,26 @@ java {
 
 kotlin {
     jvmToolchain(javaVersion)
+}
+
+publishMods {
+    file = tasks.remapJar.get().archiveFile
+    additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
+    changelog = providers.environmentVariable("CHANGELOG").orElse("No changelog provided.")
+    type = when {
+        "alpha" in modVersion -> ALPHA
+        "beta" in modVersion -> BETA
+        else -> STABLE
+    }
+    displayName = "[$mcVersion] v$modVersion"
+    modLoaders.add("fabric")
+
+    modrinth {
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        projectId = modrinthId
+        minecraftVersions.add(mcVersion)
+
+        requires("fabric-api", "fabric-language-kotlin")
+        optional("modmenu", "yacl")
+    }
 }

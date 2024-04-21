@@ -8,6 +8,7 @@ fabric_loom = "1.6-SNAPSHOT"
 kaml = "0.54.0"
 snakeyaml = "2.6"
 
+mod_publish = "0.5.1"
 palantir_git = "3.0.0"
 machete = "2.0.1"
 
@@ -24,5 +25,6 @@ kaml = ["kaml", "snakeyaml_engine"]
 
 [plugins]
 fabric_loom = { id = "fabric-loom", version.ref = "fabric_loom" }
+publish = { id = "me.modmuss50.mod-publish-plugin", version.ref = "mod_publish" }
 git = { id = "com.palantir.git-version", version.ref = "palantir_git" }
 machete = { id = "io.github.p03w.machete", version.ref = "machete" }
