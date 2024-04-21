@@ -33,24 +33,39 @@ player configuration will be automatically synced (only if `use_server` is `fals
 The config can be modified with [Mod Menu][modmenu] and [YetAnotherConfigLib][yacl] installed.
 
 ```yaml
+# Whether to use the server-side configuration.
 use_server: false
 sitting:
-  seats_gravity: true
-  on_use:
-    enabled: true
-    range: 2
-    blocks:
-      - "#slabs"
-      - "#stairs"
-      - "#logs"
-  on_double_sneak:
-    enabled: false
-    min_pitch: 66.6
-    delay: 600
+  # Controls whether gravity affects seats.
+  apply_gravity: true
+  # Allows sitting even if not standing on a solid block.
+  allow_in_air: false
 riding:
-  on_use:
-    enabled: true
-    range: 3
+  # Whether to hide a player's rider when the player is not looking at him.
+  hide_rider: true
+on_use:
+  # Allows to start sitting on specific blocks by interacting with them.
+  sitting: false
+  # Allows to start riding other players by interaction with them.
+  riding: false
+  # The maximum distance to a target to interact.
+  range: 2
+  # Prevents players from sitting in places where they would suffocate.
+  check_suffocation: true
+  # List of blocks or block types (e.g., "oak_log", "#logs") that are available to sit on by interacting with them.
+  blocks:
+    - "#slabs"
+    - "#stairs"
+    - "#logs"
+on_double_sneak:
+  # Allows to start sitting by double sneaking while looking down.
+  sitting: true
+  # Allows to start crawling by double sneaking near a one-block gap.
+  crawling: true
+  # The minimum angle must be looking down (in degrees) with double sneak.
+  min_pitch: 66.6
+  # The window between sneaks to sit down (in milliseconds).
+  delay: 600
 ```
 
 ## Contributing
