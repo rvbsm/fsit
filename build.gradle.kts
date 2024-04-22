@@ -102,11 +102,11 @@ tasks {
         from("LICENSE")
     }
 
-    withType(JavaCompile::class.java).configureEach {
+    withType<JavaCompile> {
         options.release = javaVersion
     }
 
-    withType(KotlinCompile::class.java).configureEach {
+    withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "$javaVersion"
     }
 

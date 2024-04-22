@@ -24,7 +24,6 @@ private val migrations = setOf(
     DoubleProperty("sitting.on_double_sneak.min_pitch") { ModConfig::onDoubleSneak.get(it)::minPitch },
 )
 
-// todo: automatize if needed
 internal object FSitConfigMigrator {
     private val logger = LoggerFactory.getLogger(FSitConfigMigrator::class.java)
 

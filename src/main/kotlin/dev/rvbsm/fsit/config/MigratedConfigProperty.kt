@@ -20,9 +20,7 @@ internal sealed class MigratedConfigProperty<T>(
     internal fun set(value: T) = property.setter.call(value)
 
     internal fun migrate(yamlMap: YamlMap): Boolean {
-        if (config == null) {
-            throw IllegalStateException("Config must be provided")
-        }
+        checkNotNull(config) { "Config must be provided" }
 
         val keys = key.split('.')
         var node = yamlMap
@@ -35,9 +33,7 @@ internal sealed class MigratedConfigProperty<T>(
     }
 
     internal fun migrate(jsonObject: JsonObject) {
-        if (config == null) {
-            throw IllegalStateException("config must be not null")
-        }
+        checkNotNull(config) { "Config must be provided" }
 
         val keys = key.split('.')
         var node = jsonObject

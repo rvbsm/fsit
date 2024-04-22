@@ -23,7 +23,7 @@ sealed interface BlockContainer : Container {
         override fun test(state: BlockState) = state.isOf(block)
 
         companion object {
-            fun fromString(string: String) = BlockEntry(Registries.BLOCK.get(string.id()))
+            fun fromString(string: String) = BlockEntry(Registries.BLOCK[string.id()])
         }
     }
 

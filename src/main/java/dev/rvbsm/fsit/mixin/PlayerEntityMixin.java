@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(PlayerEntity.class)
-abstract public class PlayerEntityMixin extends LivingEntity implements Poseable {
+public abstract class PlayerEntityMixin extends LivingEntity implements Poseable {
     @Unique
     protected @NotNull Pose pose = Pose.Standing;
 

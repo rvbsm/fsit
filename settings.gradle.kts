@@ -1,5 +1,7 @@
 import dev.kikugie.stonecutter.gradle.StonecutterSettings
 
+rootProject.name = "fsit"
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -22,4 +24,3 @@ extensions.configure<StonecutterSettings> {
     create(rootProject)
 }
 
-rootProject.name = "fsit"

@@ -45,7 +45,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
     }
 
     @Mixin(targets = "net.minecraft.server.network.ServerPlayNetworkHandler$1")
-    public static abstract class PlayerInteractEntityC2SPacketHandler {
+    public abstract static class PlayerInteractEntityC2SPacketHandler {
         @Shadow
         @Final
         ServerPlayNetworkHandler field_28963;

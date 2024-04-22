@@ -76,9 +76,11 @@ class RegistryControllerElement<T, W>(
 
     override fun getControlWidth() = super.getControlWidth() + decorationPadding
 
-    override fun getValueText(): Text = if (inputField.isEmpty()) super.getValueText()
-    else if (inputFieldFocused) Text.literal(inputField)
-    else if (control.option().pendingValue() is ItemConvertible) (control.option()
-        .pendingValue() as ItemConvertible).asItem().name
-    else inputField.literal()
+    override fun getValueText(): Text = when {
+        inputField.isEmpty() -> super.getValueText()
+        inputFieldFocused -> Text.literal(inputField)
+        control.option().pendingValue() is ItemConvertible -> (control.option()
+            .pendingValue() as ItemConvertible).asItem().name
+        else -> inputField.literal()
+    }
 }
