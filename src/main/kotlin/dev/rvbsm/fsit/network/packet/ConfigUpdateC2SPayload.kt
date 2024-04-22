@@ -6,10 +6,10 @@ import dev.rvbsm.fsit.config.ModConfig
 import net.minecraft.network.PacketByteBuf
 
 data class ConfigUpdateC2SPayload(val config: ModConfig) : CustomPayload(packetId) {
-    constructor(buf: PacketByteBuf) : this(ModConfig.fromJson(buf.readString()))
+    constructor(buf: PacketByteBuf) : this(ModConfig.decodeJson(buf.readString()))
 
     override fun write(buf: PacketByteBuf) {
-        buf.writeString(config.toJson())
+        buf.writeString(config.encodeJson())
     }
 
     companion object {

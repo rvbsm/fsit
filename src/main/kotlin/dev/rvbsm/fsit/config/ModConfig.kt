@@ -12,12 +12,9 @@ import kotlinx.serialization.json.JsonNamingStrategy
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.registry.tag.BlockTags
 import java.nio.file.Path
-import kotlin.io.path.exists
-import kotlin.io.path.fileSize
-import kotlin.io.path.readText
-import kotlin.io.path.writeText
+import kotlin.io.path.*
 
-private val configPath = FabricLoader.getInstance().configDir
+private val configDirPath = FabricLoader.getInstance().configDir
 
 private val yamlConf = YamlConfiguration(strictMode = false, yamlNamingStrategy = YamlNamingStrategy.SnakeCase)
 private val yaml = Yaml(configuration = yamlConf)
@@ -43,28 +40,36 @@ data class ModConfig(
         require(onDoubleSneak.delay in 100..2000) { "sitting.on_double_sneak.delay is needed to be in 100..2000" }
     }
 
-    override fun toString() = toYaml()
-    fun toYaml() = yaml.encodeToString(this)
-    fun toJson() = json.encodeToString(this)
+    override fun toString() = encodeYaml()
+    fun encodeYaml() = yaml.encodeToString(this)
+    fun encodeJson() = json.encodeToString(this)
     internal fun write() = path?.writeText("$this")
 
     companion object {
         @Transient
         val default = ModConfig()
 
-        fun fromYaml(string: String) =
+        fun decodeYaml(string: String) =
             yaml.decodeFromString<ModConfig>(string).apply { migrate(yaml.parseToYamlNode(string)) }
 
-        fun fromJson(string: String) =
+        fun decodeJson(string: String) =
             json.decodeFromString<ModConfig>(string).apply { migrate(json.parseToJsonElement(string)) }
 
-        internal fun read(id: String) = configPath.resolve("$id.yaml").let {
-            if (it.exists() && it.fileSize() > 0) {
-                fromYaml(it.readText()).copy(path = it)
-            } else {
-                default.copy(path = it)
-            }
-        }.apply { write() }
+        internal fun read(id: String): ModConfig {
+            val ymlConfigPath = configDirPath.resolve("$id.yml")
+            val yamlConfigPath = configDirPath.resolve("$id.yaml")
+
+            return when {
+                ymlConfigPath.exists() && ymlConfigPath.fileSize() > 0 -> decodeYaml(ymlConfigPath.readText())
+                yamlConfigPath.exists() && yamlConfigPath.fileSize() > 0 -> {
+                    decodeYaml(yamlConfigPath.readText()).also {
+                        yamlConfigPath.deleteExisting()
+                    }
+                }
+
+                else -> default
+            }.copy(path = ymlConfigPath).apply { write() }
+        }
     }
 }
 

@@ -5,7 +5,6 @@ import dev.rvbsm.fsit.entity.Pose
 import dev.rvbsm.fsit.entity.SeatEntity
 import dev.rvbsm.fsit.network.*
 import dev.rvbsm.fsit.network.packet.PoseUpdateS2CPayload
-import dev.rvbsm.fsit.network.sendIfPossible
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.server.network.ServerPlayerEntity
