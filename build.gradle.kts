@@ -80,8 +80,14 @@ dependencies {
 
     modApi("com.terraformersmc:modmenu:$modmenuVersion")
 
-    modApi("dev.isxander.yacl:yet-another-config-lib-fabric:$yaclVersion") {
-        exclude("net.fabricmc.fabric-api", "fabric-api")
+    if (mcVersion == "1.20.2") {
+        modApi("dev.isxander.yacl:yet-another-config-lib-fabric:$yaclVersion") {
+            exclude("net.fabricmc.fabric-api", "fabric-api")
+        }
+    } else {
+        modApi("dev.isxander:yet-another-config-lib:$yaclVersion-fabric") {
+            exclude("net.fabricmc.fabric-api", "fabric-api")
+        }
     }
 
     implementation(libs.bundles.kaml)
