@@ -148,5 +148,9 @@ publishMods {
 
         requires("fabric-api", "fabric-language-kotlin")
         optional("modmenu", "yacl")
+
+        tasks.getByName("publishModrinth") {
+            dependsOn("optimizeOutputsOfRemapJar")
+        }
     }
 }
