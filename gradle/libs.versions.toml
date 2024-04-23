@@ -1,7 +1,7 @@
 [versions]
 kotlin = "1.9.23"
 
-fabric_loader = "0.15.9"
+fabric_loader = "0.15.10"
 fabric_kotlin = "1.10.19+kotlin.1.9.23"
 fabric_loom = "1.6-SNAPSHOT"
 
