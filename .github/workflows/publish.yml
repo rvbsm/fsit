@@ -19,8 +19,8 @@ jobs:
 
       - name: Parse changelog
         run: |
-          content="$(awk -v version="$GITHUB_REF_NAME" '/^# /{ if (p) { exit }; if ($2 == version) { p = 1; next } } p && NF' CHANGELOG.md)"
-          
+          content="$(awk -v version="$GITHUB_REF_NAME" '/^## /{ if (p) { exit }; if ($2 == version) { p = 1; next } } p && NF' CHANGELOG.md)"
+
           echo "CHANGELOG<<EOF" >> $GITHUB_ENV
           echo "$content" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -32,3 +32,7 @@ jobs:
         env:
           CHANGELOG: ${{ env.CHANGELOG }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+      - uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ env.CHANGELOG }}
+          files: versions/*/build/libs/*.jar
