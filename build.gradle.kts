@@ -97,10 +97,11 @@ dependencies {
 tasks {
     processResources {
         inputs.property("version", "$version")
-        inputs.property("mcPredicate", mcTarget)
+        inputs.property("mcTarget", mcTarget)
+        inputs.property("javaTarget", javaVersion)
 
         filesMatching("fabric.mod.json") {
-            expand("version" to version, "mcPredicate" to mcTarget)
+            expand("version" to version, "mcTarget" to mcTarget, "javaTarget" to javaVersion)
         }
     }
 
