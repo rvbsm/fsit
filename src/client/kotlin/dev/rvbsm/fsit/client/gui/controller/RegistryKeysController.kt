@@ -59,6 +59,7 @@ class RegistryControllerElement<T, W>(
         return identifiers
     }
 
+    /*? if 1.20.2 {*/
     override fun renderDropdownEntry(graphics: DrawContext, id: Identifier, n: Int) {
         super.renderDropdownEntry(graphics, id, n)
         graphics.drawItemWithoutEntity(
@@ -67,8 +68,17 @@ class RegistryControllerElement<T, W>(
             dimension.y() + n * dimension.height() + 4
         )
     }
+    /*?} else {*//*
+    override fun renderDropdownEntry(graphics: DrawContext, entryDimension: Dimension<Int>, id: Identifier) {
+        super.renderDropdownEntry(graphics, entryDimension, id)
+        graphics.drawItemWithoutEntity(
+            ItemStack(matching[id]),
+            entryDimension.xLimit() - 2,
+            entryDimension.y() + 1)
+    }
+    *//*?} */
 
-    override fun getString(id: Identifier?) = "$id"
+    override fun getString(id: Identifier) = "$id"
 
     override fun getDecorationPadding() = 16
 
@@ -81,6 +91,7 @@ class RegistryControllerElement<T, W>(
         inputFieldFocused -> Text.literal(inputField)
         control.option().pendingValue() is ItemConvertible -> (control.option()
             .pendingValue() as ItemConvertible).asItem().name
+
         else -> inputField.literal()
     }
 }
