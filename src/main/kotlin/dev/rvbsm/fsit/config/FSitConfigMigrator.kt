@@ -10,6 +10,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.slf4j.LoggerFactory
 
 private val migrations = setOf(
+    BooleanProperty("sneak.enabled") { ModConfig::onDoubleSneak.get(it)::sitting },
     BooleanProperty("sittable.enabled") { ModConfig::onUse.get(it)::sitting },
     BooleanProperty("riding.enabled") { ModConfig::onUse.get(it)::riding },
     BooleanProperty("sitting.on_use.enabled") { ModConfig::onUse.get(it)::sitting },
@@ -17,10 +18,12 @@ private val migrations = setOf(
     BooleanProperty("sitting.on_double_sneak.enabled") { ModConfig::onDoubleSneak.get(it)::sitting },
     BooleanProperty("riding.on_use.enabled") { ModConfig::onUse.get(it)::riding },
 
+    LongProperty("sneak.delay") { ModConfig::onDoubleSneak.get(it)::delay },
     LongProperty("sittable.radius") { ModConfig::onUse.get(it)::range },
     LongProperty("sitting.on_use.range") { ModConfig::onUse.get(it)::range },
     LongProperty("sitting.on_double_sneak.delay") { ModConfig::onDoubleSneak.get(it)::delay },
 
+    DoubleProperty("sneak.angle") { ModConfig::onDoubleSneak.get(it)::minPitch },
     DoubleProperty("sitting.on_double_sneak.min_pitch") { ModConfig::onDoubleSneak.get(it)::minPitch },
 )
 
