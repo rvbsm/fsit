@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.config
+package dev.rvbsm.fsit.config.migration
 
 import com.charleskorn.kaml.YamlList
 import com.charleskorn.kaml.YamlMap
@@ -15,7 +15,7 @@ internal class ContainerProperty<E : ItemConvertible, C : Container<E, *>>(
     private val key: String,
     private val type: Type,
     internal var container: C? = null,
-) : MigratedField {
+) : MigratedProperty {
     override fun toString() = key
 
     override fun migrate(yamlMap: YamlMap): Boolean {

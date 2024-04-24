@@ -2,6 +2,10 @@ package dev.rvbsm.fsit.config
 
 import com.charleskorn.kaml.*
 import dev.rvbsm.fsit.config.container.BlockContainer
+import dev.rvbsm.fsit.config.migration.BooleanProperty
+import dev.rvbsm.fsit.config.migration.ContainerProperty
+import dev.rvbsm.fsit.config.migration.DoubleProperty
+import dev.rvbsm.fsit.config.migration.LongProperty
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import net.minecraft.block.Block

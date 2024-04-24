@@ -1,7 +1,8 @@
-package dev.rvbsm.fsit.config
+package dev.rvbsm.fsit.config.migration
 
 import com.charleskorn.kaml.YamlMap
 import com.charleskorn.kaml.YamlScalar
+import dev.rvbsm.fsit.config.ModConfig
 import kotlinx.serialization.json.*
 import kotlin.reflect.KMutableProperty
 
@@ -13,7 +14,7 @@ internal sealed class PrimitiveProperty<T>(
     private val fromYaml: (YamlScalar) -> T,
     private val fromJson: (JsonPrimitive) -> T,
     internal var config: ModConfig? = null,
-) : MigratedField {
+) : MigratedProperty {
     private val property: KMutableProperty<T> get() = propertyProvider(config!!)
 
     override fun toString() = key
