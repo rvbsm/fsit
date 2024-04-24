@@ -157,18 +157,22 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
     @Unique
     private void playerPassengerTick() {
-        final ServerPlayerEntity passenger = (ServerPlayerEntity) this.getFirstPassenger();
-        if (passenger != null && fsit$getConfig().getRiding().getHideRider()) {
-            final boolean hidePassenger = this.isSneaking() || this.getPitch() > 0; // todo
+        final Entity firstPassenger = this.getFirstPassenger();
 
-            if (hidePassenger && !this.wasPassengerHidden) {
-                this.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(passenger.getId()));
-            } else if (!hidePassenger && this.wasPassengerHidden) {
-                this.networkHandler.sendPacket(passenger.createSpawnPacket());
-                this.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(this));
+        if (firstPassenger != null && firstPassenger.isPlayer()) {
+            final ServerPlayerEntity playerPassenger = (ServerPlayerEntity) firstPassenger;
+            if (fsit$getConfig().getRiding().getHideRider()) {
+                final boolean hidePassenger = this.isSneaking() || this.getPitch() > 0;
+
+                if (hidePassenger && !this.wasPassengerHidden) {
+                    this.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(playerPassenger.getId()));
+                } else if (!hidePassenger && this.wasPassengerHidden) {
+                    this.networkHandler.sendPacket(playerPassenger.createSpawnPacket());
+                    this.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(this));
+                }
+
+                this.wasPassengerHidden = hidePassenger;
             }
-
-            this.wasPassengerHidden = hidePassenger;
         }
     }
 }
