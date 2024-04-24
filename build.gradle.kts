@@ -145,7 +145,7 @@ publishMods {
         else -> STABLE
     }
     displayName = "[$mcVersion] v$modVersion"
-    modLoaders.add("fabric")
+    modLoaders.addAll("fabric", "quilt")
 
     modrinth {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
