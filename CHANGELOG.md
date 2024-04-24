@@ -12,7 +12,7 @@
 - Support Minecraft 1.20.5
 - Try to start riding on passed uses (totems in offhand, food, etc.)
 - Start crawling by double sneaking near a one-block gap
-- Preventing from sitting in places where player would suffocate
+- Preventing from sitting in places where players would suffocate
 - Discard seat if `sitting.apply_gravity` and `sitting.allow_in_air` are disabled
 - New config options:
   - `sitting.allow_in_air`
@@ -139,3 +139,306 @@
 - Sit by double sneaking
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.5.1-1.20.2...v2.0.0
+
+## v1.5.1
+
+### Added
+
+- `/fsit config` command to show server config
+
+### Removed
+
+- `/fsit get` and `/fsit set` commands autocompletion #27
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.5.0-1.20.2...v1.5.1-1.20.2
+
+## v1.5.0
+
+### Added
+
+- `/fsit get` and `/fsit set` commands to edit config options
+- Discard empty seats if they exist after world reload
+
+### Fixed
+
+- The server crashed when the player tried to ride himself (e.g., free cam) #25
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.4.2...v1.5.0-1.20.2
+
+## v1.4.2
+
+### Fixed
+
+- Was unable to dismount player if `sneak.enabled` is disabled
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.4.1...v1.4.2
+
+## v1.4.1
+
+### Fixed
+
+- Client config wasn't sent to server :grin:
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.4.0...v1.4.1
+
+## v1.4.0
+
+**1.20.2 update**
+
+**~~May~~ Should not be compatible with previous versions. Both server and client version must be the same.**
+
+_P.S. Thanks for 2K downloads at Modrinth_ :heart:
+
+### Added
+
+- Support Minecraft 1.20.2
+- Config migration
+
+### Changed
+
+- Keep players' riding restrictions in their server player-data
+- Move to `toml4j`
+
+### Removed
+
+- `riding.height` was removed due to the correct position of players' passengers in Minecraft 1.20.2 :tada:
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.3.2...v1.4.0
+
+## v1.3.2
+
+### Fixed
+
+- Config manager had resetting some fields
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.3.1...v1.3.2
+
+## v1.3.1
+
+### Added
+
+- Adjustable height between player head and a rider
+- Stop crawling if a player starts flying
+- Reset pose on pose commands (`/sit`, `/crawl`)
+- Looking at the rider and sneaking dismounts him
+
+### Fixed
+
+- Game crashes without Mod Menu installed
+- Player stops crawling if a block above is non-full #20
+- Doubled messages after pose changing
+- Crawling support entity didn't disappear
+- Crawling with Speed II and Swift Sneak III
+- Config was sent to the server even if the player wasn't connected to one
+
+## v1.3.0
+
+_FSit-client is now a part of the FSit_
+
+### Added
+
+- Start crawling with `/crawl` or sneak twice looking down while already crawling
+- Adjusting the radius to start riding
+- Sitting on honey blocks works like standing on honey
+- Send an overlay message to player on pose change
+- Reload config with `/fsit reload`
+- The server will respect players' configuration if they have a mod installed
+- Player riding restrictions at Social Interactions screen
+
+### Fixed
+
+- The player immediately stopped sitting on the edge of a block
+- Random crashes with invalid config
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.2.0...v1.3.0
+
+## v1.2.0
+
+### Added
+
+- Support Minecraft 1.20
+
+### Changed
+
+- [revert] Do not start sitting by interaction if player is sneaking
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.1.3...v1.2.0
+
+## v1.1.3
+
+### Fixed
+
+- The rider's position wasn't updated if the player didn't have a client-side mod installed
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.1.2...v1.1.3
+
+## v1.1.2
+
+### Fixed
+
+- Interaction with entity swung hand all the times
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.1.1...v1.1.2
+
+## v1.1.1
+
+### Fixed
+
+- Blocks weren't placed
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.1.0...v1.1.1
+
+## v1.1.0
+
+**WARNING: configuration will be reset to default after the first launch**
+
+### Added
+
+- Config version field
+- Make sit on double sneak optional (`sneak_sit`)
+- Swing hand on successful sit and ride interactions
+
+### Changed
+
+- Clear config without deleting config file
+- Rename config options:
+  - `min_angle` → `sneak.min_angle`
+  - `shift_delay` → `sneak.sneak_delay`
+  - `sittable_blocks` → `sittable.blocks`
+  - `sittable_tags` → `sittable.tags`
+  - `sit_on_players` → `misc.sit_players`
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.1...v1.1.0
+
+## v1.0.1
+
+### Added
+
+- Start riding only if the main hand is empty
+- Reduce rider's dimensions height
+- Fake parent in Mod Menu for client-side mod
+
+### Fixed
+
+- Interaction with entity when player's pitch is greater than `min_angle` sits the player
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0...v1.0.1
+
+## v1.0.0
+
+### Added
+
+- Create a client-side mod that fixes rider's position
+- Include Fabric API modules to JAR
+
+### Changed
+
+- Make `/sit` server-only
+- Try to ride even if a player has a vehicle
+
+### Fixed
+
+- `/sit` didn't reset player's pose
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.8...v1.0.0
+
+## v1.0.0-beta.8
+
+another beta
+
+### Added
+
+- `/sit` command
+- Dismount rider if player changes game-mode to spectator
+
+### Fixed
+
+- The player's position didn't change for other clients when he started riding another player
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.7...v1.0.0-beta.8
+
+## v1.0.0-beta.7
+
+### Added
+
+- Player riding (disabled in config by default)
+
+### Fixed
+
+- Do not allow sitting in spectator mode
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.6...v1.0.0-beta.7
+
+## v1.0.0-beta.6
+
+### Added
+
+- Add default options to be able to reset config
+
+### Changed
+
+- Use `night-config` instead of `toml4j`
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.5...v1.0.0-beta.6
+
+## v1.0.0-beta.5
+
+### Added
+
+- Check if block is in sittable position
+- Use Cloth Config for Mod Menu integration
+- Include `toml4j`
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.4...v1.0.0-beta.5
+
+## v1.0.0-beta.4
+
+### Added
+
+- Configuration file
+- [WIP] Mod Menu integration (1.19.4 only)
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.3...v1.0.0-beta.4
+
+## v1.0.0-beta.3
+
+### Added
+
+- Sit on horizontally placed logs by interacting with them
+
+### Changes
+
+- Start sitting by interacting with a block only if the player is sneaking
+
+### Fixes
+
+- A bucket of water was used, and the seat was called in while interacting with the water-loggable block
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.2...v1.0.0-beta.3
+
+## v1.0.0-beta.2
+
+### Added
+
+- Don't allow sitting on occupied by another player block
+
+### Changes
+
+- Less delay between sneaks (1s → 600ms)
+
+### Fixes
+
+- Vehicle dismounting was counted as a sneak
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.1...v1.0.0-beta.2
+
+## v1.0.0-beta.1
+
+Initial release
+
+### Added
+
+- Sit on slabs or stairs
+- Sit on double sneak
+
+**Full Changelog**: https://github.com/rvbsm/fsit/commits/v1.0.0-beta.1
