@@ -5,7 +5,6 @@ import com.charleskorn.kaml.YamlComment
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlNamingStrategy
 import dev.rvbsm.fsit.config.container.BlockContainer
-import dev.rvbsm.fsit.config.container.asContainer
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNamingStrategy
@@ -99,8 +98,8 @@ data class OnUse(
     @YamlComment("Prevents players from sitting in places where they would suffocate.")
     var checkSuffocation: Boolean = true,
     @YamlComment("List of blocks or block types (e.g., \"oak_log\", \"#logs\") that are available to sit on by interacting with them.")
-    val blocks: MutableSet<BlockContainer> = mutableSetOf(
-        BlockTags.SLABS.asContainer(), BlockTags.STAIRS.asContainer(), BlockTags.LOGS.asContainer(),
+    val blocks: BlockContainer = BlockContainer(
+        tags = mutableSetOf(BlockTags.SLABS, BlockTags.STAIRS, BlockTags.LOGS)
     ),
 )
 

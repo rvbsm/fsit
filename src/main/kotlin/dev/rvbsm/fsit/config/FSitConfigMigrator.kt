@@ -2,11 +2,9 @@ package dev.rvbsm.fsit.config
 
 import com.charleskorn.kaml.*
 import dev.rvbsm.fsit.config.container.BlockContainer
-import dev.rvbsm.fsit.config.container.updateWith
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import net.minecraft.block.Block
 import org.slf4j.LoggerFactory
 
 private val migrations = setOf(
@@ -27,6 +25,13 @@ private val migrations = setOf(
     DoubleProperty("sitting.on_double_sneak.min_pitch") { ModConfig::onDoubleSneak.get(it)::minPitch },
 )
 
+private val containerMigrations = setOf(
+    ContainerProperty<Block, BlockContainer>("sittable.blocks", ContainerProperty.Type.ENTRIES),
+    ContainerProperty<Block, BlockContainer>("sittable.tags", ContainerProperty.Type.TAGS),
+    ContainerProperty<Block, BlockContainer>("sittable.materials", ContainerProperty.Type.CONTAINER),
+    ContainerProperty<Block, BlockContainer>("sitting.blocks", ContainerProperty.Type.CONTAINER),
+)
+
 internal object FSitConfigMigrator {
     private val logger = LoggerFactory.getLogger(FSitConfigMigrator::class.java)
 
@@ -41,35 +46,11 @@ internal object FSitConfigMigrator {
             }
         }
 
-        // todo
-        yamlConfig.get<YamlMap>("sittable")?.let { yamlSittable ->
-            yamlSittable.get<YamlList>("blocks")?.let { yamlBlocks ->
-                yamlBlocks.items.map { BlockContainer.fromString(it.yamlScalar.content) }.let {
-                    config.onUse.blocks.updateWith(it)
-                    logger.info("Migrated 'sittable.blocks'")
-                }
-            }
-            yamlSittable.get<YamlList>("tags")?.let { yamlTags ->
-                yamlTags.items.map { BlockContainer.fromString('#' + it.yamlScalar.content) }.let {
-                    config.onUse.blocks.updateWith(it)
-                    logger.info("Migrated 'sittable.tags'")
-                }
-            }
-            yamlSittable.get<YamlList>("materials")?.let { yamlMaterials ->
-                yamlMaterials.items.map { BlockContainer.fromString(it.yamlScalar.content) }.let {
-                    config.onUse.blocks.updateWith(it)
-                    logger.info("Migrated 'sittable.materials'")
-                }
-            }
-        }
+        containerMigrations.forEach {
+            it.container = config.onUse.blocks
 
-        yamlConfig.get<YamlMap>("sitting")?.let { yamlSitting ->
-            yamlSitting.get<YamlMap>("on_use")?.let { yamlSittingOnUse ->
-                yamlSittingOnUse.get<YamlList>("blocks")?.items?.map { BlockContainer.fromString(it.yamlScalar.content) }
-                    ?.let {
-                        logger.info("Migrated 'sitting.on_use.blocks'")
-                        config.onUse.blocks.updateWith(it)
-                    }
+            if (it.migrate(yamlConfig)) {
+                logger.info("Migrated '$it'")
             }
         }
     }
@@ -83,26 +64,10 @@ internal object FSitConfigMigrator {
             it.migrate(jsonConfig)
         }
 
-        jsonConfig["sittable"]?.jsonObject?.let { jsonSittable ->
-            jsonSittable["tags"]?.jsonArray?.let { jsonTags ->
-                jsonTags.map { BlockContainer.TagEntry.fromString('#' + it.jsonPrimitive.content) }.let {
-                    config.onUse.blocks.updateWith(it)
-                }
-            }
-            jsonSittable["materials"]?.jsonArray?.let { jsonMaterials ->
-                jsonMaterials.map { BlockContainer.fromString(it.jsonPrimitive.content) }.let {
-                    config.onUse.blocks.updateWith(it)
-                }
-            }
-        }
+        containerMigrations.forEach {
+            it.container = config.onUse.blocks
 
-        jsonConfig["sitting"]?.jsonObject?.let { yamlSitting ->
-            yamlSitting["on_use"]?.jsonObject?.let { yamlSittingOnUse ->
-                yamlSittingOnUse["blocks"]?.jsonArray?.map { BlockContainer.fromString(it.jsonPrimitive.content) }
-                    ?.let {
-                        config.onUse.blocks.updateWith(it)
-                    }
-            }
+            it.migrate(jsonConfig)
         }
     }
 }

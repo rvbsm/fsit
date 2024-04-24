@@ -7,19 +7,19 @@ import kotlin.reflect.KMutableProperty
 
 typealias MutablePropertyProvider<T> = (ModConfig) -> KMutableProperty<T>
 
-internal sealed class MigratedConfigProperty<T>(
+internal sealed class PrimitiveProperty<T>(
     private val key: String,
     private val propertyProvider: MutablePropertyProvider<T>,
     private val fromYaml: (YamlScalar) -> T,
     private val fromJson: (JsonPrimitive) -> T,
-) {
-    internal var config: ModConfig? = null
+    internal var config: ModConfig? = null,
+) : MigratedField {
     private val property: KMutableProperty<T> get() = propertyProvider(config!!)
 
     override fun toString() = key
     internal fun set(value: T) = property.setter.call(value)
 
-    internal fun migrate(yamlMap: YamlMap): Boolean {
+    override fun migrate(yamlMap: YamlMap): Boolean {
         checkNotNull(config) { "Config must be provided" }
 
         val keys = key.split('.')
@@ -32,7 +32,7 @@ internal sealed class MigratedConfigProperty<T>(
         return true
     }
 
-    internal fun migrate(jsonObject: JsonObject) {
+    override fun migrate(jsonObject: JsonObject) {
         checkNotNull(config) { "Config must be provided" }
 
         val keys = key.split('.')
@@ -45,10 +45,10 @@ internal sealed class MigratedConfigProperty<T>(
 }
 
 internal class BooleanProperty(key: String, propertyProvider: MutablePropertyProvider<Boolean>) :
-    MigratedConfigProperty<Boolean>(key, propertyProvider, YamlScalar::toBoolean, JsonPrimitive::boolean)
+    PrimitiveProperty<Boolean>(key, propertyProvider, YamlScalar::toBoolean, JsonPrimitive::boolean)
 
 internal class LongProperty(key: String, propertyProvider: MutablePropertyProvider<Long>) :
-    MigratedConfigProperty<Long>(key, propertyProvider, YamlScalar::toLong, JsonPrimitive::long)
+    PrimitiveProperty<Long>(key, propertyProvider, YamlScalar::toLong, JsonPrimitive::long)
 
 internal class DoubleProperty(key: String, propertyProvider: MutablePropertyProvider<Double>) :
-    MigratedConfigProperty<Double>(key, propertyProvider, YamlScalar::toDouble, JsonPrimitive::double)
+    PrimitiveProperty<Double>(key, propertyProvider, YamlScalar::toDouble, JsonPrimitive::double)

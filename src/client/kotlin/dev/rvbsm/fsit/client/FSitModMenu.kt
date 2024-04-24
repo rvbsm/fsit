@@ -10,7 +10,6 @@ import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.gui.controller.RegistryController
 import dev.rvbsm.fsit.client.gui.controller.RegistryHelper
 import dev.rvbsm.fsit.config.ModConfig
-import dev.rvbsm.fsit.config.container.*
 import dev.rvbsm.fsit.util.literal
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
@@ -161,18 +160,18 @@ object FSitModMenu : ModMenuApi {
                             .text(descriptionOnUseBlocks)
                             .build()
                         ).customController { RegistryController(it, RegistryHelper.Simple(Registries.BLOCK)) }
-                        .binding(ModConfig.default.onUse.blocks.getEntries(),
-                            FSitMod.config.onUse.blocks::getEntries
-                        ) { FSitMod.config.onUse.blocks.updateWith(it.asEntries()) }.initial(Blocks.AIR)
+                        .binding(ModConfig.default.onUse.blocks.entries.toList(),
+                            FSitMod.config.onUse.blocks.entries::toList
+                        ) { FSitMod.config.onUse.blocks.updateEntries(it) }.initial(Blocks.AIR)
                         .build()
                     ).group(ListOption.createBuilder<TagKey<Block>>().name(optionOnUseTags)
                         .description(OptionDescription.createBuilder()
                             .text(descriptionOnUseTags)
                             .build()
                         ).customController { RegistryController(it, RegistryHelper.Tag(Registries.BLOCK)) }
-                        .binding(ModConfig.default.onUse.blocks.getTags(),
-                            FSitMod.config.onUse.blocks::getTags
-                        ) { FSitMod.config.onUse.blocks.updateWith(it.asTags()) }.initial(BlockTags.FENCES)
+                        .binding(ModConfig.default.onUse.blocks.tags.toList(),
+                            FSitMod.config.onUse.blocks.tags::toList
+                        ) { FSitMod.config.onUse.blocks.updateTags(it) }.initial(BlockTags.FENCES)
                         .build()
                     ).build()
                 ).category(ConfigCategory.createBuilder().name(categoryOnDoubleSneak)

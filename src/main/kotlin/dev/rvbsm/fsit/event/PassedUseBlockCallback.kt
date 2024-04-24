@@ -50,7 +50,7 @@ fun interface PassedUseBlockCallback {
             if (!onUseConfig.sitting ||
                 !player.pos.isInRange(hitResult.pos, onUseConfig.range.toDouble()) ||
                 !hitState.isSittableSide() ||
-                !onUseConfig.blocks.any { it.test(hitState) } ||
+                !onUseConfig.blocks.test(hitState) ||
                 (onUseConfig.checkSuffocation && world.willSuffocate(player, hitResult.pos))
             ) return ActionResult.PASS
 
