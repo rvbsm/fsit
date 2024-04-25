@@ -4,12 +4,10 @@ import com.charleskorn.kaml.YamlList
 import com.charleskorn.kaml.YamlMap
 import com.charleskorn.kaml.yamlScalar
 import dev.rvbsm.fsit.config.container.Container
-import dev.rvbsm.fsit.util.id
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import net.minecraft.item.ItemConvertible
-import net.minecraft.registry.tag.TagKey
 
 internal class ContainerProperty<E : ItemConvertible, C : Container<E, *>>(
     private val key: String,
@@ -45,20 +43,16 @@ internal class ContainerProperty<E : ItemConvertible, C : Container<E, *>>(
 
     private fun migrate(ids: Iterable<String>) = when (type) {
         Type.ENTRIES -> {
-            val entries = ids.map { container!!.registry[it.id()] }
-            container!!.updateEntries(entries)
+            container!!.updateEntries(ids)
         }
 
         Type.TAGS -> {
-            val tags = ids.map { TagKey.of(container!!.registry.key, it.id()) }
-            container!!.updateTags(tags)
+            container!!.updateTags(ids.map { "#$it" })
         }
 
         Type.CONTAINER -> {
-            val entries = ids.filter { !it.startsWith('#') }.map { container!!.registry[it.id()] }
-            container!!.updateEntries(entries)
-            val tags = ids.filter { it.startsWith('#') }.map { TagKey.of(container!!.registry.key, it.drop(1).id()) }
-            container!!.updateTags(tags)
+            container!!.updateEntries(ids)
+            container!!.updateTags(ids)
         }
     }
 

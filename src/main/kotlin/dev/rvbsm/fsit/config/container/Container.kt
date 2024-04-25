@@ -28,9 +28,17 @@ sealed class Container<E : ItemConvertible, S>(
         entries.addAll(newEntries)
     }
 
+    fun updateEntries(ids: Iterable<String>) {
+        updateEntries(ids.parseEntries(registry))
+    }
+
     fun updateTags(newTags: Iterable<TagKey<E>>) {
         tags.removeAll { it !in newTags }
         tags.addAll(newTags)
+    }
+
+    fun updateTags(ids: Iterable<String>) {
+        updateTags(ids.parseTags(registry))
     }
 
     sealed class Serializer<E : ItemConvertible, C : Container<E, *>>(
@@ -42,17 +50,25 @@ sealed class Container<E : ItemConvertible, S>(
         override fun deserialize(decoder: Decoder): C {
             val ids = decoder.decodeSerializableValue(setSerializer)
 
-            val entries = ids.filter { !it.startsWith('#') }.map { registry[it.id()] }.toMutableSet()
-            val tags = ids.filter { it.startsWith('#') }.map { TagKey.of(registry.key, it.drop(1).id()) }.toMutableSet()
+            val entries = ids.parseEntries(registry)
+            val tags = ids.parseTags(registry)
 
-            return constructor(entries, tags)
+            return constructor(entries.toMutableSet(), tags.toMutableSet())
         }
 
         override fun serialize(encoder: Encoder, value: C) {
-            val tags = value.tags.map { '#' + it.id.asString() }
             val entries = value.entries.map { registry.getId(it).asString() }
+            val tags = value.tags.map { '#' + it.id.asString() }
 
             encoder.encodeSerializableValue(setSerializer, (tags + entries).toSet())
         }
+    }
+
+    companion object {
+        fun <E> Iterable<String>.parseEntries(registry: DefaultedRegistry<E>) =
+            filter { !it.startsWith('#') }.map { registry[it.id()] }
+
+        fun <E> Iterable<String>.parseTags(registry: DefaultedRegistry<E>) =
+            filter { it.startsWith('#') }.map { TagKey.of(registry.key, it.drop(1).id()) }
     }
 }
