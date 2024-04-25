@@ -9,7 +9,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.config.ModConfig
-import dev.rvbsm.fsit.config.MutablePropertyProvider
+import dev.rvbsm.fsit.config.migration.MutablePropertyProvider
 import dev.rvbsm.fsit.util.literal
 import dev.rvbsm.fsit.util.lowercaseFirst
 import net.minecraft.server.command.ServerCommandSource
