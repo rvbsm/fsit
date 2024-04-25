@@ -13,7 +13,7 @@ import net.minecraft.registry.tag.TagKey
 import java.util.function.Predicate
 
 sealed class Container<E : ItemConvertible, S>(
-    val registry: DefaultedRegistry<E>,
+    private val registry: DefaultedRegistry<E>,
     val entries: MutableSet<E> = mutableSetOf(),
     val tags: MutableSet<TagKey<E>> = mutableSetOf(),
 ) : Predicate<S> {
@@ -28,7 +28,7 @@ sealed class Container<E : ItemConvertible, S>(
         entries.addAll(newEntries)
     }
 
-    fun updateEntries(ids: Iterable<String>) {
+    fun updateEntriesByIds(ids: Iterable<String>) {
         updateEntries(ids.parseEntries(registry))
     }
 
@@ -37,7 +37,7 @@ sealed class Container<E : ItemConvertible, S>(
         tags.addAll(newTags)
     }
 
-    fun updateTags(ids: Iterable<String>) {
+    fun updateTagsByIds(ids: Iterable<String>) {
         updateTags(ids.parseTags(registry))
     }
 

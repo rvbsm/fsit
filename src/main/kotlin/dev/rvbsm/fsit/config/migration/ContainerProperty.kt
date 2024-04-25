@@ -43,16 +43,16 @@ internal class ContainerProperty<E : ItemConvertible, C : Container<E, *>>(
 
     private fun migrate(ids: Iterable<String>) = when (type) {
         Type.ENTRIES -> {
-            container!!.updateEntries(ids)
+            container!!.updateEntriesByIds(ids)
         }
 
         Type.TAGS -> {
-            container!!.updateTags(ids.map { "#$it" })
+            container!!.updateTagsByIds(ids.map { "#$it" })
         }
 
         Type.CONTAINER -> {
-            container!!.updateEntries(ids)
-            container!!.updateTags(ids)
+            container!!.updateEntriesByIds(ids)
+            container!!.updateTagsByIds(ids)
         }
     }
 
