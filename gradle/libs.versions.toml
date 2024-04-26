@@ -1,30 +1,30 @@
 [versions]
 kotlin = "1.9.23"
 
-fabric_loader = "0.15.10"
-fabric_kotlin = "1.10.19+kotlin.1.9.23"
-fabric_loom = "1.6-SNAPSHOT"
+fabric-loader = "0.15.10"
+fabric-kotlin = "1.10.19+kotlin.1.9.23"
+fabric-loom = "1.6-SNAPSHOT"
 
 kaml = "0.54.0"
 snakeyaml = "2.6"
 
-mod_publish = "0.5.1"
-palantir_git = "3.0.0"
+mod-publish = "0.5.1"
+palantir-git = "3.0.0"
 machete = "2.0.1"
 
 [libraries]
-fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
-fabric_kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric_kotlin" }
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
+fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
 
 kaml = { module = "com.charleskorn.kaml:kaml-jvm", version.ref = "kaml" }
-snakeyaml_engine = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml" }
+snakeyaml-engine = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml" }
 
 [bundles]
-fabric = ["fabric_loader", "fabric_kotlin"]
-kaml = ["kaml", "snakeyaml_engine"]
+fabric = ["fabric-loader", "fabric-kotlin"]
+kaml = ["kaml", "snakeyaml-engine"]
 
 [plugins]
-fabric_loom = { id = "fabric-loom", version.ref = "fabric_loom" }
-publish = { id = "me.modmuss50.mod-publish-plugin", version.ref = "mod_publish" }
-git = { id = "com.palantir.git-version", version.ref = "palantir_git" }
+fabric-loom = { id = "fabric-loom", version.ref = "fabric-loom" }
+publish = { id = "me.modmuss50.mod-publish-plugin", version.ref = "mod-publish" }
+git = { id = "com.palantir.git-version", version.ref = "palantir-git" }
 machete = { id = "io.github.p03w.machete", version.ref = "machete" }
