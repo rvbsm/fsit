@@ -1,6 +1,7 @@
 package dev.rvbsm.fsit.config
 
-import com.charleskorn.kaml.*
+import com.charleskorn.kaml.YamlNode
+import com.charleskorn.kaml.yamlMap
 import dev.rvbsm.fsit.config.container.BlockContainer
 import dev.rvbsm.fsit.config.migration.BooleanProperty
 import dev.rvbsm.fsit.config.migration.ContainerProperty
@@ -9,7 +10,6 @@ import dev.rvbsm.fsit.config.migration.LongProperty
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import net.minecraft.block.Block
-import org.slf4j.LoggerFactory
 
 private val migrations = setOf(
     BooleanProperty("sneak.enabled") { ModConfig::onDoubleSneak.get(it)::sitting },
@@ -36,26 +36,20 @@ private val containerMigrations = setOf(
     ContainerProperty<Block, BlockContainer>("sitting.blocks", ContainerProperty.Type.CONTAINER),
 )
 
-internal object FSitConfigMigrator {
-    private val logger = LoggerFactory.getLogger(FSitConfigMigrator::class.java)
-
+internal object ConfigMigrator {
     internal fun migrateYaml(config: ModConfig, yamlNode: YamlNode) {
         val yamlConfig = yamlNode.yamlMap
 
         migrations.forEach {
             it.config = config
 
-            if (it.migrate(yamlConfig)) {
-                logger.info("Migrated '$it'")
-            }
+            it.migrate(yamlConfig)
         }
 
         containerMigrations.forEach {
             it.container = config.onUse.blocks
 
-            if (it.migrate(yamlConfig)) {
-                logger.info("Migrated '$it'")
-            }
+            it.migrate(yamlConfig)
         }
     }
 
@@ -76,5 +70,5 @@ internal object FSitConfigMigrator {
     }
 }
 
-internal fun ModConfig.migrate(yamlNode: YamlNode) = FSitConfigMigrator.migrateYaml(this, yamlNode)
-internal fun ModConfig.migrate(jsonElement: JsonElement) = FSitConfigMigrator.migrateJson(this, jsonElement)
+internal fun ModConfig.migrate(yamlNode: YamlNode) = ConfigMigrator.migrateYaml(this, yamlNode)
+internal fun ModConfig.migrate(jsonElement: JsonElement) = ConfigMigrator.migrateJson(this, jsonElement)
