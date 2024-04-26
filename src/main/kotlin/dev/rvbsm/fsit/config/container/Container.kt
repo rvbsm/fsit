@@ -14,8 +14,8 @@ import java.util.function.Predicate
 
 sealed class Container<E : ItemConvertible, S>(
     private val registry: DefaultedRegistry<E>,
-    val entries: MutableSet<E> = mutableSetOf(),
-    val tags: MutableSet<TagKey<E>> = mutableSetOf(),
+    var entries: Set<E> = setOf(),
+    var tags: Set<TagKey<E>> = setOf(),
 ) : Predicate<S> {
     abstract override fun test(state: S): Boolean
 
@@ -23,25 +23,15 @@ sealed class Container<E : ItemConvertible, S>(
         return (entries + tags).toString()
     }
 
-    fun updateEntries(newEntries: Iterable<E>) {
-        entries.removeAll { it !in newEntries }
-        entries.addAll(newEntries)
-    }
-
     fun updateEntriesByIds(ids: Iterable<String>) {
-        updateEntries(ids.parseEntries(registry))
-    }
-
-    fun updateTags(newTags: Iterable<TagKey<E>>) {
-        tags.removeAll { it !in newTags }
-        tags.addAll(newTags)
+        entries = ids.parseEntries(registry).toSet()
     }
 
     fun updateTagsByIds(ids: Iterable<String>) {
-        updateTags(ids.parseTags(registry))
+        tags = ids.parseTags(registry).toSet()
     }
 
-    sealed class Serializer<E : ItemConvertible, C : Container<E, *>>(
+    internal sealed class Serializer<E : ItemConvertible, C : Container<E, *>>(
         val constructor: (MutableSet<E>, MutableSet<TagKey<E>>) -> C, private val registry: DefaultedRegistry<E>
     ) : KSerializer<C> {
         private val setSerializer = SetSerializer(String.serializer())

@@ -162,7 +162,7 @@ object FSitModMenu : ModMenuApi {
                         ).customController { RegistryController(it, RegistryHelper.Simple(Registries.BLOCK)) }
                         .binding(ModConfig.default.onUse.blocks.entries.toList(),
                             FSitMod.config.onUse.blocks.entries::toList
-                        ) { FSitMod.config.onUse.blocks.updateEntries(it) }.initial(Blocks.AIR)
+                        ) { FSitMod.config.onUse.blocks.entries = it.toSet() }.initial(Blocks.AIR)
                         .build()
                     ).group(ListOption.createBuilder<TagKey<Block>>().name(optionOnUseTags)
                         .description(OptionDescription.createBuilder()
@@ -171,7 +171,7 @@ object FSitModMenu : ModMenuApi {
                         ).customController { RegistryController(it, RegistryHelper.Tag(Registries.BLOCK)) }
                         .binding(ModConfig.default.onUse.blocks.tags.toList(),
                             FSitMod.config.onUse.blocks.tags::toList
-                        ) { FSitMod.config.onUse.blocks.updateTags(it) }.initial(BlockTags.FENCES)
+                        ) { FSitMod.config.onUse.blocks.tags = it.toSet() }.initial(BlockTags.FENCES)
                         .build()
                     ).build()
                 ).category(ConfigCategory.createBuilder().name(categoryOnDoubleSneak)
