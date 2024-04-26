@@ -25,10 +25,10 @@ jobs:
           echo "$content" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - uses: Wandalen/wretry.action@master
-        name: publish
-        with:
-          command: ./gradlew chiseledPublish
+      - run: ./gradlew printVersion
+        continue-on-error: true
+
+      - run: ./gradlew chiseledPublish
         env:
           CHANGELOG: ${{ env.CHANGELOG }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}

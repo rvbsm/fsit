@@ -16,11 +16,10 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - uses: Wandalen/wretry.action@master
-        name: build
-        with:
-          command: ./gradlew chiseledBuild
+      - run: ./gradlew printVersion
+        continue-on-error: true
 
+      - run: ./gradlew chiseledBuild
       - uses: actions/upload-artifact@v4
         with:
           name: 1.20.1
