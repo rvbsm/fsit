@@ -59,7 +59,7 @@ class RegistryControllerElement<T, W>(
         return identifiers
     }
 
-    /*? if 1.20.2 {*/
+    /*? if <=1.20.4 {*//*
     override fun renderDropdownEntry(graphics: DrawContext, id: Identifier, n: Int) {
         super.renderDropdownEntry(graphics, id, n)
         graphics.drawItemWithoutEntity(
@@ -68,7 +68,7 @@ class RegistryControllerElement<T, W>(
             dimension.y() + n * dimension.height() + 4
         )
     }
-    /*?} else {*//*
+    *//*?} else {*/
     override fun renderDropdownEntry(graphics: DrawContext, entryDimension: Dimension<Int>, id: Identifier) {
         super.renderDropdownEntry(graphics, entryDimension, id)
         graphics.drawItemWithoutEntity(
@@ -76,7 +76,7 @@ class RegistryControllerElement<T, W>(
             entryDimension.xLimit() - 2,
             entryDimension.y() + 1)
     }
-    *//*?} */
+    /*?} */
 
     override fun getString(id: Identifier) = "$id"
 

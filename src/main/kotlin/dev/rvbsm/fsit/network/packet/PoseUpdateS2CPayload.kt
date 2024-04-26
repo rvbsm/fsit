@@ -17,7 +17,9 @@ data class PoseUpdateS2CPayload(val pose: Pose, val pos: Vec3d) : CustomPayload(
     companion object {
         private val id = FSitMod.id("pose_sync")
 
-        /*? if >=1.20.5- {*//*
+        /*? if <=1.20.4 {*/
+        val packetId = net.fabricmc.fabric.api.networking.v1.PacketType.create(id, ::PoseUpdateS2CPayload)
+        /*?} else {*//*
         val packetId = net.minecraft.network.packet.CustomPayload.Id<PoseUpdateS2CPayload>(id)
         val packetCodec =
             net.minecraft.network.packet.CustomPayload.codecOf(PoseUpdateS2CPayload::write, ::PoseUpdateS2CPayload)
@@ -25,8 +27,6 @@ data class PoseUpdateS2CPayload(val pose: Pose, val pos: Vec3d) : CustomPayload(
         init {
             net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playS2C().register(packetId, packetCodec)
         }
-        *//*?} else {*/
-        val packetId = net.fabricmc.fabric.api.networking.v1.PacketType.create(id, ::PoseUpdateS2CPayload)
-        /*?} */
+        *//*?} */
     }
 }

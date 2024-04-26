@@ -16,8 +16,7 @@ object FSitServerNetworking {
         ServerPlayNetworking.registerGlobalReceiver(ConfigUpdateC2SPayload.packetId, ConfigUpdateC2SPayload::receive)
         ServerPlayNetworking.registerGlobalReceiver(PoseRequestC2SPayload.packetId, PoseRequestC2SPayload::receive)
         ServerPlayNetworking.registerGlobalReceiver(
-            RidingResponseC2SPayload.packetId,
-            RidingResponseC2SPayload::receive
+            RidingResponseC2SPayload.packetId, RidingResponseC2SPayload::receive
         )
     }
 
@@ -38,23 +37,21 @@ object FSitServerNetworking {
     }
 }
 
-/*? if >=1.20.5- {*//*
-private fun ConfigUpdateC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
-private fun PoseRequestC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
-private fun RidingResponseC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
-*//*?} else {*/
+
 private fun ConfigUpdateC2SPayload.receive(
-    player: ServerPlayerEntity,
-    responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
+    player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
 ) = receive(player)
 
 private fun PoseRequestC2SPayload.receive(
-    player: ServerPlayerEntity,
-    responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
+    player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
 ) = receive(player)
 
 private fun RidingResponseC2SPayload.receive(
-    player: ServerPlayerEntity,
-    responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
+    player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
 ) = receive(player)
-/*?} */
+
+/*? if >=1.20.5 {*//*
+private fun ConfigUpdateC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
+private fun PoseRequestC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
+private fun RidingResponseC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
+*//*?} */

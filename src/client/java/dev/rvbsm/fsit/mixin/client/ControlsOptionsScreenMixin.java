@@ -14,26 +14,26 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.*;
 
 @Mixin(ControlsOptionsScreen.class)
-abstract public class ControlsOptionsScreenMixin extends GameOptionsScreen {
+public abstract class ControlsOptionsScreenMixin extends GameOptionsScreen {
     public ControlsOptionsScreenMixin(Screen parent, GameOptions gameOptions, Text title) {
         super(parent, gameOptions, title);
     }
 
-    /*? if >=1.20.5- {*//*
+    /*? if <=1.20.4 {*/
+    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/option/ControlsOptionsScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 3))
+    private void fsitOptions(CallbackInfo ci, @Local(ordinal = 0) int i, @Local(ordinal = 1) int j, @Local(ordinal = 2) LocalIntRef k) {
+        k.set(k.get() + 24);
+        this.addDrawableChild(FSitModClient.getSitKeyMode().createWidget(this.gameOptions, i, k.get(), 150));
+        this.addDrawableChild(FSitModClient.getCrawlKeyMode().createWidget(this.gameOptions, j, k.get(), 150));
+    }
+    /*?} else {*//*
     @Inject(method = "getOptions", at = @At("RETURN"), cancellable = true)
-    private static void withFSitOptions(GameOptions gameOptions, CallbackInfoReturnable<net.minecraft.client.option.SimpleOption<?>[]> cir) {
+    private static void fsitOptions(GameOptions gameOptions, CallbackInfoReturnable<net.minecraft.client.option.SimpleOption<?>[]> cir) {
         net.minecraft.client.option.SimpleOption<?>[] options = cir.getReturnValue();
         options = org.apache.commons.lang3.ArrayUtils.insert(2, options, FSitModClient.getSitKeyMode());
         options = org.apache.commons.lang3.ArrayUtils.insert(3, options, FSitModClient.getCrawlKeyMode());
 
         cir.setReturnValue(options);
     }
-    *//*?} else {*/
-    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/option/ControlsOptionsScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 3))
-    private void init(CallbackInfo ci, @Local(ordinal = 0) int i, @Local(ordinal = 1) int j, @Local(ordinal = 2) LocalIntRef k) {
-        k.set(k.get() + 24);
-        this.addDrawableChild(FSitModClient.getSitKeyMode().createWidget(this.gameOptions, i, k.get(), 150));
-        this.addDrawableChild(FSitModClient.getCrawlKeyMode().createWidget(this.gameOptions, j, k.get(), 150));
-    }
-    /*?} */
+    *//*?} */
 }
