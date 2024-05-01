@@ -5,8 +5,8 @@ import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
 fun String.id(namespace: String = "") = if (namespace.isNotEmpty()) {
-    Identifier(namespace, lowercase())
-} else Identifier(lowercase())
+    Identifier.tryParse(namespace + Identifier.NAMESPACE_SEPARATOR + lowercase())
+} else Identifier.tryParse(lowercase())
 
 fun String.translatable(vararg args: Any): MutableText = Text.translatable(this, args)
 fun String.literal(): MutableText = Text.literal(this)

@@ -2,14 +2,12 @@ package dev.rvbsm.fsit.config
 
 import com.charleskorn.kaml.YamlNode
 import com.charleskorn.kaml.yamlMap
-import dev.rvbsm.fsit.config.container.BlockContainer
 import dev.rvbsm.fsit.config.migration.BooleanProperty
-import dev.rvbsm.fsit.config.migration.ContainerProperty
 import dev.rvbsm.fsit.config.migration.DoubleProperty
 import dev.rvbsm.fsit.config.migration.LongProperty
+import dev.rvbsm.fsit.config.migration.RegistrySetProperty
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
-import net.minecraft.block.Block
 
 private val migrations = setOf(
     BooleanProperty("sneak.enabled") { ModConfig::onDoubleSneak.get(it)::sitting },
@@ -27,13 +25,11 @@ private val migrations = setOf(
 
     DoubleProperty("sneak.angle") { ModConfig::onDoubleSneak.get(it)::minPitch },
     DoubleProperty("sitting.on_double_sneak.min_pitch") { ModConfig::onDoubleSneak.get(it)::minPitch },
-)
 
-private val containerMigrations = setOf(
-    ContainerProperty<Block, BlockContainer>("sittable.blocks", ContainerProperty.Type.ENTRIES),
-    ContainerProperty<Block, BlockContainer>("sittable.tags", ContainerProperty.Type.TAGS),
-    ContainerProperty<Block, BlockContainer>("sittable.materials", ContainerProperty.Type.CONTAINER),
-    ContainerProperty<Block, BlockContainer>("sitting.blocks", ContainerProperty.Type.CONTAINER),
+    RegistrySetProperty("sittable.blocks", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.ENTRIES),
+    RegistrySetProperty("sittable.tags", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.TAGS),
+    RegistrySetProperty("sittable.materials", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.CONTAINER),
+    RegistrySetProperty("sitting.blocks", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.CONTAINER),
 )
 
 internal object ConfigMigrator {
@@ -45,12 +41,6 @@ internal object ConfigMigrator {
 
             it.migrate(yamlConfig)
         }
-
-        containerMigrations.forEach {
-            it.container = config.onUse.blocks
-
-            it.migrate(yamlConfig)
-        }
     }
 
     internal fun migrateJson(config: ModConfig, jsonElement: JsonElement) {
@@ -58,12 +48,6 @@ internal object ConfigMigrator {
 
         migrations.forEach {
             it.config = config
-
-            it.migrate(jsonConfig)
-        }
-
-        containerMigrations.forEach {
-            it.container = config.onUse.blocks
 
             it.migrate(jsonConfig)
         }

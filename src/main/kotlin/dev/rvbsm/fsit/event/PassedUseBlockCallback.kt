@@ -3,8 +3,10 @@ package dev.rvbsm.fsit.event
 import dev.rvbsm.fsit.entity.Pose
 import dev.rvbsm.fsit.network.getConfig
 import dev.rvbsm.fsit.network.setPose
+import dev.rvbsm.fsit.util.RegistrySet
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
+import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.enums.BlockHalf
 import net.minecraft.block.enums.SlabType
@@ -85,3 +87,5 @@ fun interface PassedUseBlockCallback {
         }
     }
 }
+
+fun RegistrySet<Block>.test(state: BlockState) = entries.any { state.isOf(it) } || tags.any { state.isIn(it) }

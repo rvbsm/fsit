@@ -4,11 +4,14 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlComment
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlNamingStrategy
-import dev.rvbsm.fsit.config.container.BlockContainer
+import dev.rvbsm.fsit.config.serialization.RegistrySetSerializer
+import dev.rvbsm.fsit.util.RegistrySet
+import dev.rvbsm.fsit.util.registrySetOf
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNamingStrategy
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.block.Block
 import net.minecraft.registry.tag.BlockTags
 import java.nio.file.Path
 import kotlin.io.path.*
@@ -97,10 +100,9 @@ data class OnUse(
     var range: Long = 2,
     @YamlComment("Prevents players from sitting in places where they would suffocate.")
     var checkSuffocation: Boolean = true,
+    @Serializable(RegistrySetSerializer.Block::class)
     @YamlComment("List of blocks or block types (e.g., \"oak_log\", \"#logs\") that are available to sit on by interacting with them.")
-    val blocks: BlockContainer = BlockContainer(
-        tags = mutableSetOf(BlockTags.SLABS, BlockTags.STAIRS, BlockTags.LOGS)
-    ),
+    var blocks: RegistrySet<@Contextual Block> = registrySetOf(BlockTags.SLABS, BlockTags.STAIRS, BlockTags.LOGS)
 )
 
 @Serializable

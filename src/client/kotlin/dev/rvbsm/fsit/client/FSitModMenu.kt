@@ -8,14 +8,10 @@ import dev.isxander.yacl3.api.controller.LongSliderControllerBuilder
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.gui.controller.RegistryController
-import dev.rvbsm.fsit.client.gui.controller.RegistryHelper
 import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.util.literal
-import net.minecraft.block.Block
-import net.minecraft.block.Blocks
+import dev.rvbsm.fsit.util.toRegistrySet
 import net.minecraft.registry.Registries
-import net.minecraft.registry.tag.BlockTags
-import net.minecraft.registry.tag.TagKey
 import org.slf4j.LoggerFactory
 
 // todo: make it look better 👽
@@ -155,23 +151,14 @@ object FSitModMenu : ModMenuApi {
                                 { FSitMod.config.onUse.checkSuffocation = it }
                             ).build(),
                         )
-                    ).group(ListOption.createBuilder<Block>().name(optionOnUseBlocks)
+                    ).group(ListOption.createBuilder<String>().name(optionOnUseBlocks)
                         .description(OptionDescription.createBuilder()
                             .text(descriptionOnUseBlocks)
                             .build()
-                        ).customController { RegistryController(it, RegistryHelper.Simple(Registries.BLOCK)) }
-                        .binding(ModConfig.default.onUse.blocks.entries.toList(),
-                            FSitMod.config.onUse.blocks.entries::toList
-                        ) { FSitMod.config.onUse.blocks.entries = it.toSet() }.initial(Blocks.AIR)
-                        .build()
-                    ).group(ListOption.createBuilder<TagKey<Block>>().name(optionOnUseTags)
-                        .description(OptionDescription.createBuilder()
-                            .text(descriptionOnUseTags)
-                            .build()
-                        ).customController { RegistryController(it, RegistryHelper.Tag(Registries.BLOCK)) }
-                        .binding(ModConfig.default.onUse.blocks.tags.toList(),
-                            FSitMod.config.onUse.blocks.tags::toList
-                        ) { FSitMod.config.onUse.blocks.tags = it.toSet() }.initial(BlockTags.FENCES)
+                        ).customController { RegistryController(it, Registries.BLOCK) }
+                        .binding(ModConfig.default.onUse.blocks.toList(),
+                            { FSitMod.config.onUse.blocks.toList() }
+                        ) { FSitMod.config.onUse.blocks = it.toRegistrySet(Registries.BLOCK) }.initial("#slabs")
                         .build()
                     ).build()
                 ).category(ConfigCategory.createBuilder().name(categoryOnDoubleSneak)

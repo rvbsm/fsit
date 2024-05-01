@@ -6,38 +6,40 @@ import dev.isxander.yacl3.gui.AbstractWidget
 import dev.isxander.yacl3.gui.YACLScreen
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownController
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownControllerElement
+import dev.rvbsm.fsit.util.find
+import dev.rvbsm.fsit.util.id
 import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.matchingIdentifiers
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
+import net.minecraft.registry.DefaultedRegistry
 import net.minecraft.text.Text
-import net.minecraft.util.Identifier
 
-class RegistryController<T, W>(option: Option<W>, internal val registryHelper: RegistryHelper<T, W>) :
-    AbstractDropdownController<W>(option) where T : ItemConvertible, W : Any {
+class RegistryController<T>(option: Option<String>, internal val registry: DefaultedRegistry<T>) :
+    AbstractDropdownController<String>(option) where T : ItemConvertible {
+    override fun getString() = option.pendingValue()
+    override fun setFromString(value: String) = option.requestSet(value)
+    override fun formatValue() = string.literal()
 
-    override fun getString() = registryHelper.toString(option.pendingValue())
+    override fun isValueValid(value: String) = if (value.startsWith('#')) {
+        value.drop(1).id()
+            .let { id -> registry.streamTags().findAny().isEmpty || registry.streamTags().anyMatch { it.id == id } }
+    } else registry.containsId(value.id())
 
-    override fun setFromString(value: String) = option.requestSet(registryHelper.fromStringWrapper(value))
+    override fun getValidValue(value: String, offset: Int) =
+        registry.matchingIdentifiers(value).drop(offset).firstOrNull() ?: string
 
-    override fun formatValue(): Text = Text.literal(string)
-
-    override fun isValueValid(value: String) = registryHelper.isRegistered(value)
-
-    override fun getValidValue(value: String, offset: Int) = registryHelper.validValue(value, offset.toLong()) ?: string
-
-    override fun provideWidget(screen: YACLScreen, widgetDimension: Dimension<Int>): AbstractWidget =
-        RegistryControllerElement(this, screen, widgetDimension)
+    override fun provideWidget(screen: YACLScreen, widgetDimension: Dimension<Int>): AbstractWidget {
+        return RegistryControllerElement(this, screen, widgetDimension)
+    }
 }
 
-class RegistryControllerElement<T, W>(
-    control: RegistryController<T, W>,
-    screen: YACLScreen,
-    dim: Dimension<Int>,
-    private val controller: RegistryController<T, W> = control
-) : AbstractDropdownControllerElement<W, Identifier>(control, screen, dim) where T : ItemConvertible, W : Any {
+class RegistryControllerElement<T>(
+    private val controller: RegistryController<T>, screen: YACLScreen, dim: Dimension<Int>
+) : AbstractDropdownControllerElement<String, String>(controller, screen, dim) where T : ItemConvertible {
     private var current: T? = null
-    private val matching = mutableMapOf<Identifier, T>()
+    private val matching = mutableMapOf<String, T>()
 
     override fun drawValueText(graphics: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         val oldDimension = dimension
@@ -51,35 +53,33 @@ class RegistryControllerElement<T, W>(
         }
     }
 
-    override fun computeMatchingValues(): MutableList<Identifier> {
-        val identifiers = controller.registryHelper.matchingIdentifiers(inputField).toList()
-        current = controller.registryHelper.fromString(inputField)
-        identifiers.forEach { matching[it] = controller.registryHelper.fromId(it) }
+    override fun computeMatchingValues(): MutableList<String> {
+        val ids = controller.registry.matchingIdentifiers(inputField).toList()
+        current = controller.registry.find(inputField)
+        ids.forEach { matching[it] = controller.registry.find(it) ?: controller.registry[it.id()] }
 
-        return identifiers
+        return ids.toMutableList()
     }
 
-    override fun renderDropdownEntry(graphics: DrawContext, entryDimension: Dimension<Int>, id: Identifier) {
-        super.renderDropdownEntry(graphics, entryDimension, id)
+    override fun renderDropdownEntry(graphics: DrawContext, entryDimension: Dimension<Int>, string: String) {
+        super.renderDropdownEntry(graphics, entryDimension, string)
         graphics.drawItemWithoutEntity(
-            ItemStack(matching[id]),
+            ItemStack(matching[string]),
             entryDimension.xLimit() - 2,
-            entryDimension.y() + 1)
+            entryDimension.y() + 1,
+        )
     }
 
-    override fun getString(id: Identifier) = "$id"
+    override fun getString(string: String) = string
 
     override fun getDecorationPadding() = 16
-
     override fun getDropdownEntryPadding() = 4
-
     override fun getControlWidth() = super.getControlWidth() + decorationPadding
 
     override fun getValueText(): Text = when {
         inputField.isEmpty() -> super.getValueText()
         inputFieldFocused -> Text.literal(inputField)
-        control.option().pendingValue() is ItemConvertible -> (control.option()
-            .pendingValue() as ItemConvertible).asItem().name
+        !inputField.startsWith('#') && current is ItemConvertible -> (current as ItemConvertible).asItem().name
 
         else -> inputField.literal()
     }
