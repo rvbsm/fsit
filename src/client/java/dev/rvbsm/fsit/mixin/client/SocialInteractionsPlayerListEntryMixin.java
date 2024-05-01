@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @Mixin(SocialInteractionsPlayerListEntry.class)
 public abstract class SocialInteractionsPlayerListEntryMixin extends ElementListWidget.Entry<SocialInteractionsPlayerListEntry> {
-    /*? if <=1.20.1 {*//*/*
+    /*? if <=1.20.1 {*//*
     @Unique
     private static final net.minecraft.util.Identifier RESTRICT_TEXTURE = FSitMod.id("textures/gui/restrict_button.png");
     *//*?} else {*/
@@ -51,7 +51,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
     protected void restrictButtons(CallbackInfo ci) {
         if (FSitModClient.isServerFSitCompatible()) {
-            /*? if <=1.20.1 {*//*/*
+            /*? if <=1.20.1 {*//*
             this.restrictButton = new TexturedButtonWidget(0, 0, 20, 20, 0, 0, 20, RESTRICT_TEXTURE, this::restrict);
             this.allowButton = new TexturedButtonWidget(0, 0, 20, 20, 20, 0, 20, RESTRICT_TEXTURE, this::allow);
             *//*?} else {*/
@@ -61,12 +61,11 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
 
             this.restrictButton.active = FSitMod.getConfig().getOnUse().getRiding();
             this.restrictButton.setTooltip(Tooltip.of(this.restrictButton.active ? RESTRICT_BUTTON : DISABLED_BUTTON));
-            buttons.add(this.restrictButton);
 
             this.allowButton.active = FSitMod.getConfig().getOnUse().getRiding();
             this.allowButton.setTooltip(Tooltip.of(this.allowButton.active ? ALLOW_BUTTON : DISABLED_BUTTON));
-            buttons.add(this.allowButton);
 
+            buttons.add(this.restrictButton);
             updateButtons(RestrictionList.isRestricted(uuid));
         }
     }
@@ -74,10 +73,12 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     @Inject(method = "render", at = @At("TAIL"))
     public void renderRestrictButtons(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
         if (this.restrictButton != null && this.allowButton != null) {
-            this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - 48);
+            final int offset = 24 * (buttons.size() - 1);
+
+            this.restrictButton.setX(x + (entryWidth - this.restrictButton.getWidth() - 4) - offset);
             this.restrictButton.setY(y + (entryHeight - this.restrictButton.getHeight()) / 2);
             this.restrictButton.render(context, mouseX, mouseY, tickDelta);
-            this.allowButton.setX(x + (entryWidth - this.allowButton.getWidth() - 4) - 48);
+            this.allowButton.setX(x + (entryWidth - this.allowButton.getWidth() - 4) - offset);
             this.allowButton.setY(y + (entryHeight - this.allowButton.getHeight()) / 2);
             this.allowButton.render(context, mouseX, mouseY, tickDelta);
         }
