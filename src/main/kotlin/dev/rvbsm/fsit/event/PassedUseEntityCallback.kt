@@ -91,7 +91,7 @@ fun interface PassedUseEntityCallback {
         private fun ServerPlayerEntity.canStartRiding(other: ServerPlayerEntity) =
             this != other && uuid != other.uuid && !shouldCancelRiding() && !other.shouldCancelRiding()
 
-        fun RidingResponseC2SPayload.completeRequest(player: ServerPlayerEntity) {
+        internal fun RidingResponseC2SPayload.completeRideRequest(player: ServerPlayerEntity) {
             requests[player.uuid to uuid]?.complete(response.isAccepted)
         }
     }

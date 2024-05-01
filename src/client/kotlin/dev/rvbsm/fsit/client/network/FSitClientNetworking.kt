@@ -31,15 +31,15 @@ object FSitClientNetworking {
     }
 }
 
-fun PoseUpdateS2CPayload.receive(
+/*? if <=1.20.4 {*/
+private fun PoseUpdateS2CPayload.receive(
     player: ClientPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
 ) = receive(player)
 
-fun RidingRequestS2CPayload.receive(
+private fun RidingRequestS2CPayload.receive(
     player: ClientPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
 ) = receive()
-
-/*? if >=1.20.5 {*//*
-fun PoseUpdateS2CPayload.receive(context: ClientPlayNetworking.Context) = receive(context.player())
-fun RidingRequestS2CPayload.receive(context: ClientPlayNetworking.Context) = receive()
+/*?} else {*//*
+private fun PoseUpdateS2CPayload.receive(context: ClientPlayNetworking.Context) = receive(context.player())
+private fun RidingRequestS2CPayload.receive(context: ClientPlayNetworking.Context) = receive()
 *//*?} */

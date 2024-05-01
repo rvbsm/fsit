@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.network
 
-import dev.rvbsm.fsit.event.PassedUseEntityCallback.Companion.completeRequest
+import dev.rvbsm.fsit.event.PassedUseEntityCallback.Companion.completeRideRequest
 import dev.rvbsm.fsit.network.FSitServerNetworking.receive
 import dev.rvbsm.fsit.network.packet.ConfigUpdateC2SPayload
 import dev.rvbsm.fsit.network.packet.PoseRequestC2SPayload
@@ -33,11 +33,11 @@ object FSitServerNetworking {
             player.removeAllPassengers()
         }
 
-        completeRequest(player)
+        completeRideRequest(player)
     }
 }
 
-
+/*? if <=1.20.4 {*/
 private fun ConfigUpdateC2SPayload.receive(
     player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
 ) = receive(player)
@@ -49,8 +49,7 @@ private fun PoseRequestC2SPayload.receive(
 private fun RidingResponseC2SPayload.receive(
     player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
 ) = receive(player)
-
-/*? if >=1.20.5 {*//*
+/*?} else {*//*
 private fun ConfigUpdateC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
 private fun PoseRequestC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
 private fun RidingResponseC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
