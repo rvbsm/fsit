@@ -9,12 +9,6 @@ enum class KeyBindingMode(private val translationKey: String) : TranslatableOpti
     override fun getId() = ordinal
     override fun getTranslationKey() = translationKey
 
-    fun isSticky(holdTicks: Int) = when (this) {
-        Toggle -> true
-        Hold -> false
-        Hybrid -> holdTicks < 20
-    }
-
     companion object {
         private val byId = ValueLists.createIdToValueFunction(
             KeyBindingMode::getId,

@@ -6,6 +6,7 @@
     "ClientPlayerEntityMixin",
     "ControlsOptionsScreenMixin",
     "GameOptionsMixin",
+    "KeyBindingMixin",
     "SocialInteractionsPlayerListEntryMixin"
   ],
   "injectors": {
