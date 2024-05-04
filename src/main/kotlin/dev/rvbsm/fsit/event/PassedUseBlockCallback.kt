@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.event
 
-import dev.rvbsm.fsit.entity.Pose
+import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.network.getConfig
 import dev.rvbsm.fsit.network.setPose
 import dev.rvbsm.fsit.util.RegistrySet
@@ -56,7 +56,7 @@ fun interface PassedUseBlockCallback {
                 (onUseConfig.checkSuffocation && world.willSuffocate(player, hitResult.pos))
             ) return ActionResult.PASS
 
-            player.setPose(Pose.Sitting, hitResult.pos)
+            player.setPose(PlayerPose.Sitting, hitResult.pos)
             return ActionResult.SUCCESS
         }
 

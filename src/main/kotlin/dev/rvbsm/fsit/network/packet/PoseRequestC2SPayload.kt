@@ -2,11 +2,11 @@ package dev.rvbsm.fsit.network.packet
 
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.compat.CustomPayload
-import dev.rvbsm.fsit.entity.Pose
+import dev.rvbsm.fsit.entity.PlayerPose
 import net.minecraft.network.PacketByteBuf
 
-data class PoseRequestC2SPayload(val pose: Pose) : CustomPayload(packetId) {
-    constructor(buf: PacketByteBuf) : this(buf.readEnumConstant(Pose::class.java))
+data class PoseRequestC2SPayload(val pose: PlayerPose) : CustomPayload(packetId) {
+    constructor(buf: PacketByteBuf) : this(buf.readEnumConstant(PlayerPose::class.java))
 
     override fun write(buf: PacketByteBuf) {
         buf.writeEnumConstant(pose)

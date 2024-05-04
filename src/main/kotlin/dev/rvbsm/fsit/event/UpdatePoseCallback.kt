@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.event
 
 import dev.rvbsm.fsit.entity.CrawlEntity
-import dev.rvbsm.fsit.entity.Pose
+import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.entity.SeatEntity
 import dev.rvbsm.fsit.network.*
 import dev.rvbsm.fsit.network.packet.PoseUpdateS2CPayload
@@ -11,7 +11,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
 
 fun interface UpdatePoseCallback {
-    fun onUpdatePose(player: ServerPlayerEntity, pose: Pose, pos: Vec3d?)
+    fun onUpdatePose(player: ServerPlayerEntity, pose: PlayerPose, pos: Vec3d?)
 
     companion object : UpdatePoseCallback {
         @JvmField
@@ -24,22 +24,22 @@ fun interface UpdatePoseCallback {
                 }
             }
 
-        override fun onUpdatePose(player: ServerPlayerEntity, pose: Pose, pos: Vec3d?) {
+        override fun onUpdatePose(player: ServerPlayerEntity, pose: PlayerPose, pos: Vec3d?) {
             when (pose) {
-                Pose.Standing -> {
+                PlayerPose.Standing -> {
                     if (player.vehicle is SeatEntity) player.stopRiding()
                     else if (player.hasCrawl()) player.removeCrawl()
                 }
 
-                Pose.Sitting -> {
+                PlayerPose.Sitting -> {
                     if (!player.getConfig().sitting.allowInAir && !player.isOnGround) {
-                        return player.setPose(Pose.Standing, pos)
+                        return player.setPose(PlayerPose.Standing, pos)
                     }
 
                     SeatEntity.create(player, pos ?: player.pos)
                 }
 
-                Pose.Crawling -> if (!player.hasConfig()) {
+                PlayerPose.Crawling -> if (!player.hasConfig()) {
                     CrawlEntity.create(player)
                 }
 

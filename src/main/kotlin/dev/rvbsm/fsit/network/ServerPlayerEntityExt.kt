@@ -6,7 +6,7 @@ import dev.rvbsm.fsit.api.Poseable
 import dev.rvbsm.fsit.compat.CustomPayload
 import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.entity.CrawlEntity
-import dev.rvbsm.fsit.entity.Pose
+import dev.rvbsm.fsit.entity.PlayerPose
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
@@ -17,7 +17,7 @@ internal fun <T> ServerPlayerEntity.sendIfPossible(payload: T, orAction: () -> U
     } else orAction()
 }
 
-fun ServerPlayerEntity.setPose(pose: Pose, pos: Vec3d? = null) = (this as Poseable).`fsit$setPose`(pose, pos)
+fun ServerPlayerEntity.setPose(pose: PlayerPose, pos: Vec3d? = null) = (this as Poseable).`fsit$setPose`(pose, pos)
 fun ServerPlayerEntity.resetPose() = (this as Poseable).`fsit$resetPose`()
 fun ServerPlayerEntity.isInPose() = (this as Poseable).`fsit$isInPose`()
 

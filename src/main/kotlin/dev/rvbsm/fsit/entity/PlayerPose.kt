@@ -1,10 +1,10 @@
 package dev.rvbsm.fsit.entity
 
-enum class Pose {
+enum class PlayerPose {
     Standing,
     _Sneaking,
     Sitting,
     Crawling,
-    Spinning,
-    Laying;
+    Laying,
+    Spinning;
 }

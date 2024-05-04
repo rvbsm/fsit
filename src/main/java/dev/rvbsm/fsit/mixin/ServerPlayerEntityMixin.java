@@ -6,7 +6,7 @@ import dev.rvbsm.fsit.api.ConfigurableEntity;
 import dev.rvbsm.fsit.api.Crawlable;
 import dev.rvbsm.fsit.config.ModConfig;
 import dev.rvbsm.fsit.entity.CrawlEntity;
-import dev.rvbsm.fsit.entity.Pose;
+import dev.rvbsm.fsit.entity.PlayerPose;
 import dev.rvbsm.fsit.event.UpdatePoseCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -60,7 +60,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
     @Inject(method = "onDisconnect", at = @At("TAIL"))
     private void dismountSeat(CallbackInfo ci) {
-        if (this.fsit$isInPose(Pose.Sitting)) {
+        if (this.fsit$isInPose(PlayerPose.Sitting)) {
             this.stopRiding();
         }
     }
@@ -83,7 +83,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
     @Inject(method = "stopRiding", at = @At("TAIL"))
     private void resetPose(CallbackInfo ci, @Local Entity entity) {
-        if (this.fsit$isInPose(Pose.Sitting)) {
+        if (this.fsit$isInPose(PlayerPose.Sitting)) {
             this.fsit$resetPose();
         }
     }
@@ -131,7 +131,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     }
 
     @Override
-    public void fsit$setPose(@NotNull Pose pose, @Nullable Vec3d pos) {
+    public void fsit$setPose(@NotNull PlayerPose pose, @Nullable Vec3d pos) {
         super.fsit$setPose(pose, pos);
 
         UpdatePoseCallback.EVENT.invoker().onUpdatePose((ServerPlayerEntity) (Object) this, pose, pos);

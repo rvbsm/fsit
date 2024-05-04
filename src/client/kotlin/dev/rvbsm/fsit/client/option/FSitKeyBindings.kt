@@ -4,7 +4,7 @@ import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.client.network.pose
 import dev.rvbsm.fsit.client.network.setPose
-import dev.rvbsm.fsit.entity.Pose
+import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.network.packet.PoseRequestC2SPayload
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
@@ -31,16 +31,16 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
         val player = client.player ?: return
         val currentPose = player.pose()
         val canSitMidAir = FSitMod.config.sitting.allowInAir || player.isOnGround
-        if (currentPose == Pose.Standing && (player.hasVehicle() || !canSitMidAir)) return
 
         if ((sitKey.isPressed && crawlKey.isPressed) || player.abilities.flying || player.isSneaking) {
             reset()
         }
+        if (currentPose == PlayerPose.Standing && (player.hasVehicle() || !canSitMidAir)) return
 
         val pose = when {
-            sitKey.isPressed -> Pose.Sitting
-            crawlKey.isPressed -> Pose.Crawling
-            wasUpdatedFromKeybinding -> Pose.Standing
+            sitKey.isPressed -> PlayerPose.Sitting
+            crawlKey.isPressed -> PlayerPose.Crawling
+            wasUpdatedFromKeybinding -> PlayerPose.Standing
             else -> currentPose
         }
         wasUpdatedFromKeybinding = sitKey.isPressed || crawlKey.isPressed

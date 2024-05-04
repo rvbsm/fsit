@@ -1,17 +1,18 @@
 package dev.rvbsm.fsit.command
 
 import com.mojang.brigadier.context.CommandContext
-import dev.rvbsm.fsit.entity.Pose
+import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.network.isInPose
 import dev.rvbsm.fsit.network.resetPose
 import dev.rvbsm.fsit.network.setPose
 import net.minecraft.server.command.ServerCommandSource
 
-enum class PoseCommand(private val pose: Pose) : ModCommand<ServerCommandSource> {
-    Sit(Pose.Sitting),
-    Crawl(Pose.Crawling),
-    /*Lay(Pose.Laying),
-    Spin(Pose.Spinning)*/;
+enum class PoseCommand(private val pose: PlayerPose) : ModCommand<ServerCommandSource> {
+    Sit(PlayerPose.Sitting),
+    Crawl(PlayerPose.Crawling),
+//    Lay(PlayerPose.Laying),
+//    Spin(PlayerPose.Spinning)
+    ;
 
     override fun requires(src: ServerCommandSource) = src.isExecutedByPlayer
 

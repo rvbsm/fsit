@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.event
 
-import dev.rvbsm.fsit.entity.Pose
+import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.network.getConfig
 import dev.rvbsm.fsit.network.setPose
 import net.fabricmc.fabric.api.event.Event
@@ -37,8 +37,8 @@ fun interface ClientCommandCallback {
             if (player.uuid !in sneaks && player.pitch > config.minPitch) {
                 createSneak(player.uuid, config.delay).thenAcceptAsync {
                     when {
-                        it && config.crawling && player.isNearGap() -> player.setPose(Pose.Crawling)
-                        it && config.sitting -> player.setPose(Pose.Sitting)
+                        it && config.crawling && player.isNearGap() -> player.setPose(PlayerPose.Crawling)
+                        it && config.sitting -> player.setPose(PlayerPose.Sitting)
                     }
                 }
             } else {
