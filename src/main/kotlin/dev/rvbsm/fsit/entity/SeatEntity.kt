@@ -1,6 +1,8 @@
 package dev.rvbsm.fsit.entity
 
 import dev.rvbsm.fsit.network.getConfig
+import dev.rvbsm.fsit.util.math.addHorizontal
+import dev.rvbsm.fsit.util.math.clamp
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.entity.*
 import net.minecraft.nbt.NbtCompound
@@ -10,9 +12,15 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 
 class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(EntityType.BLOCK_DISPLAY, player.world) {
+    private val config
+        get() = player.getConfig()
+    private val groundCollisionBox
+        get() = Box.of(pos, width.toDouble(), 1.0e-6, width.toDouble())
+    private val onGround
+        get() = !world.isBlockSpaceEmpty(this, groundCollisionBox)
+
     init {
         setPosition(pos)
-        velocity = player.velocity
         calculateDimensions()
 
         isInvisible = true
@@ -20,6 +28,8 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
         isCustomNameVisible = false
 
         customName = Text.literal("FSit_SeatEntity")
+
+        velocity = player.velocity.addHorizontal(player.horizontalSpeed - player.prevHorizontalSpeed, player.yaw)
     }
 
     /*? if <=1.20.4 {*/
@@ -29,26 +39,42 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
     *//*?} */
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) = Unit
-
     override fun writeCustomDataToNbt(nbt: NbtCompound) = Unit
 
     override fun tick() {
         if (!world.isClient && !isRemoved) {
-            val config = player.getConfig().sitting
-            if (config.applyGravity) {
-                velocity = velocity.add(0.0, -0.04, 0.0)
-                move(MovementType.SELF, velocity)
-            } else if (!config.allowInAir) {
-                val box = Box.of(pos, 1.0e-6, 1.0e-6, 1.0e-6)
-                if (world.isSpaceEmpty(this, box)) {
-                    discard()
-                }
+            if (config.sitting.applyGravity) {
+                tickGravity()
             }
 
             if (firstPassenger == null) {
                 discard()
+            } else if (!config.sitting.applyGravity && !config.sitting.allowInAir && !onGround) {
+                discard()
             }
         }
+    }
+
+    private fun tickGravity() {
+        updateWaterState()
+
+        velocity = velocity.clamp(0.003)
+        velocity = velocity.add(0.0, -0.04, 0.0)
+        if (isTouchingWater) {
+            velocity = velocity.multiply(0.8, 0.6, 0.8)
+        }
+
+        if (isOnGround && velocity.horizontalLengthSquared() > 1.0e-5) {
+            val blockSlipperiness = world.getBlockState(velocityAffectingPos).block.slipperiness * 0.9
+
+            velocity = velocity.multiply(blockSlipperiness, 1.0, blockSlipperiness)
+        }
+
+        move(MovementType.SELF, velocity)
+    }
+
+    override fun removePassenger(passenger: Entity) {
+        super.removePassenger(passenger)
     }
 
     // note: height of the boat
@@ -64,10 +90,10 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
 
     companion object {
         fun create(player: ServerPlayerEntity, pos: Vec3d) {
-            val seat = SeatEntity(player, pos)
+            val seatEntity = SeatEntity(player, pos)
 
-            player.startRiding(seat, true)
-            player.world.spawnEntity(seat)
+            player.startRiding(seatEntity, true)
+            player.world.spawnEntity(seatEntity)
         }
     }
 }
