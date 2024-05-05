@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.config.serialization
 
-import dev.rvbsm.fsit.util.RegistrySet
-import dev.rvbsm.fsit.util.registrySetOf
+import dev.rvbsm.fsit.registry.RegistrySet
+import dev.rvbsm.fsit.registry.registrySetOf
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.builtins.serializer

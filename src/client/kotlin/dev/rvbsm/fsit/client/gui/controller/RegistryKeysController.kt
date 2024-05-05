@@ -6,10 +6,10 @@ import dev.isxander.yacl3.gui.AbstractWidget
 import dev.isxander.yacl3.gui.YACLScreen
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownController
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownControllerElement
-import dev.rvbsm.fsit.util.find
+import dev.rvbsm.fsit.registry.find
 import dev.rvbsm.fsit.util.id
 import dev.rvbsm.fsit.util.literal
-import dev.rvbsm.fsit.util.matchingIdentifiers
+import dev.rvbsm.fsit.registry.matchingIdentifiers
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack

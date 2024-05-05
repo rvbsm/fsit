@@ -10,7 +10,7 @@ import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.gui.controller.RegistryController
 import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.util.literal
-import dev.rvbsm.fsit.util.toRegistrySet
+import dev.rvbsm.fsit.registry.toRegistrySet
 import net.minecraft.registry.Registries
 import org.slf4j.LoggerFactory
 

@@ -5,8 +5,8 @@ import com.charleskorn.kaml.YamlMap
 import com.charleskorn.kaml.YamlScalar
 import com.charleskorn.kaml.yamlScalar
 import dev.rvbsm.fsit.config.ModConfig
-import dev.rvbsm.fsit.util.RegistrySet
-import dev.rvbsm.fsit.util.registrySetOf
+import dev.rvbsm.fsit.registry.RegistrySet
+import dev.rvbsm.fsit.registry.registrySetOf
 import kotlinx.serialization.json.*
 import kotlin.reflect.KMutableProperty
 

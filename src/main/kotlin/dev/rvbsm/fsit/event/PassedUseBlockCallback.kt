@@ -3,7 +3,7 @@ package dev.rvbsm.fsit.event
 import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.network.getConfig
 import dev.rvbsm.fsit.network.setPose
-import dev.rvbsm.fsit.util.RegistrySet
+import dev.rvbsm.fsit.registry.RegistrySet
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.block.Block

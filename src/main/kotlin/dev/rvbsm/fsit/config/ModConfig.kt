@@ -5,8 +5,8 @@ import com.charleskorn.kaml.YamlComment
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlNamingStrategy
 import dev.rvbsm.fsit.config.serialization.RegistrySetSerializer
-import dev.rvbsm.fsit.util.RegistrySet
-import dev.rvbsm.fsit.util.registrySetOf
+import dev.rvbsm.fsit.registry.RegistrySet
+import dev.rvbsm.fsit.registry.registrySetOf
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNamingStrategy

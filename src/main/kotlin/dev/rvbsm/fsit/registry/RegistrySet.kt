@@ -1,5 +1,6 @@
-package dev.rvbsm.fsit.util
+package dev.rvbsm.fsit.registry
 
+import dev.rvbsm.fsit.util.asString
 import net.minecraft.block.Block
 import net.minecraft.registry.DefaultedRegistry
 import net.minecraft.registry.Registries
@@ -26,10 +27,10 @@ internal fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg ids: Strin
     RegistryLinkedHashSet(registry, *ids)
 
 internal fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg entries: E) =
-    registrySetOf(registry, *entries.asIds(registry))
+    dev.rvbsm.fsit.registry.registrySetOf(registry, *entries.asIds(registry))
 
 internal fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg tags: TagKey<E>) =
-    registrySetOf(registry, *tags.asIds())
+    dev.rvbsm.fsit.registry.registrySetOf(registry, *tags.asIds())
 
 internal fun registrySetOf(vararg blocks: Block) = registrySetOf(Registries.BLOCK, *blocks)
 internal fun registrySetOf(vararg tags: TagKey<Block>) = registrySetOf(Registries.BLOCK, *tags)

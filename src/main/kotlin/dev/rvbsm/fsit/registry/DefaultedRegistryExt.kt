@@ -1,5 +1,6 @@
-package dev.rvbsm.fsit.util
+package dev.rvbsm.fsit.registry
 
+import dev.rvbsm.fsit.util.id
 import net.minecraft.item.ItemConvertible
 import net.minecraft.registry.DefaultedRegistry
 import net.minecraft.registry.tag.TagKey
