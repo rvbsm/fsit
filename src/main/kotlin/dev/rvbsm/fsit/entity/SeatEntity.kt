@@ -17,7 +17,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
     private val groundCollisionBox
         get() = Box.of(pos, width.toDouble(), 1.0e-6, width.toDouble())
     private val onGround
-        get() = !world.isBlockSpaceEmpty(this, groundCollisionBox)
+        get() = world.getBlockCollisions(this, groundCollisionBox).any { !it.isEmpty }
 
     init {
         setPosition(pos)
