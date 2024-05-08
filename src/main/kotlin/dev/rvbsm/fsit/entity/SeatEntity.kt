@@ -64,7 +64,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
             velocity = velocity.multiply(0.8, 0.6, 0.8)
         }
 
-        if (isOnGround && velocity.horizontalLengthSquared() > 1.0e-5) {
+        if (isOnGround && velocity.horizontalLength() >= 1.8e-5) {
             val blockSlipperiness = world.getBlockState(velocityAffectingPos).block.slipperiness * 0.9
 
             velocity = velocity.multiply(blockSlipperiness, 1.0, blockSlipperiness)
