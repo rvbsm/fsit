@@ -16,7 +16,9 @@ val modVersion = gitVersion().let { if (it.first() == 'v') it.drop(1) else it }
 val modrinthId = "${property("mod.modrinth_id")}"
 
 val mcVersion = stonecutter.current.version
-val mcTarget = "${property("minecraft.target")}"
+val mcTargetStart = "${property("minecraft.target.start")}"
+val mcTargetEnd = "${property("minecraft.target.end")}"
+val mcTarget = ">=$mcTargetStart-" + (" <=$mcTargetEnd".takeUnless { mcTargetEnd == "latest" } ?: "")
 
 val fabricYarnBuild = "${property("fabric.yarn_build")}"
 val fabricVersion = "${property("fabric.api")}+${stonecutter.current.project}"
@@ -144,7 +146,11 @@ publishMods {
     modrinth {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = modrinthId
-        minecraftVersions.add(mcVersion)
+
+        minecraftVersionRange {
+            start = mcTargetStart
+            end = mcTargetEnd
+        }
 
         requires("fabric-api", "fabric-language-kotlin")
         optional("modmenu", "yacl")
