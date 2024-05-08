@@ -55,7 +55,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
         }
 
         // note: at least it works fully server-side
-        this.playerPassengerTick();
+        if (this.getFirstPassenger() instanceof ServerPlayerEntity passenger && this.fsit$getConfig().getRiding().getHideRider()) {
+            this.playerPassengerTick(passenger);
+        }
     }
 
     @Inject(method = "onDisconnect", at = @At("TAIL"))
@@ -156,23 +158,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     }
 
     @Unique
-    private void playerPassengerTick() {
-        final Entity firstPassenger = this.getFirstPassenger();
+    private void playerPassengerTick(@NotNull ServerPlayerEntity passenger) {
+        final boolean hidePassenger = this.isSneaking() || this.getPitch() > 0;
 
-        if (firstPassenger != null && firstPassenger.isPlayer()) {
-            final ServerPlayerEntity playerPassenger = (ServerPlayerEntity) firstPassenger;
-            if (fsit$getConfig().getRiding().getHideRider()) {
-                final boolean hidePassenger = this.isSneaking() || this.getPitch() > 0;
-
-                if (hidePassenger && !this.wasPassengerHidden) {
-                    this.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(playerPassenger.getId()));
-                } else if (!hidePassenger && this.wasPassengerHidden) {
-                    this.networkHandler.sendPacket(playerPassenger.createSpawnPacket());
-                    this.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(this));
-                }
-
-                this.wasPassengerHidden = hidePassenger;
-            }
+        if (hidePassenger && !this.wasPassengerHidden) {
+            this.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(passenger.getId()));
+        } else if (!hidePassenger && this.wasPassengerHidden) {
+            this.networkHandler.sendPacket(passenger.createSpawnPacket());
+            this.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(this));
         }
+
+        this.wasPassengerHidden = hidePassenger;
     }
 }
