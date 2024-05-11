@@ -1,5 +1,26 @@
 # Changelog
 
+## v2.3.0
+
+### Added
+
+- Migrate v1 config `sneak` category
+- Block slipperiness affects seats (if `sitting.apply_gravity`)
+- Fluids affect seats (if `sitting.apply_gravity`)
+
+### Changed
+
+- Blocks and Tags options were merged in Mod Menu too
+
+### Fixed
+
+- The server crashed when player has non-player passenger
+- Opening screens with toggled pose key on Hybrid mode reset it
+
+### Removed
+
+- Logs about migrated config options
+
 ## v2.2.0
 
 ### New Contributors
@@ -209,7 +230,7 @@ _P.S. Thanks for 2K downloads at Modrinth_ :heart:
 
 ### Fixed
 
-- Config manager had resetting some fields
+- Config manager had been resetting some fields
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.3.1...v1.3.2
 
@@ -230,6 +251,8 @@ _P.S. Thanks for 2K downloads at Modrinth_ :heart:
 - Crawling support entity didn't disappear
 - Crawling with Speed II and Swift Sneak III
 - Config was sent to the server even if the player wasn't connected to one
+
+**Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.3.0...v1.3.1
 
 ## v1.3.0
 
@@ -334,7 +357,7 @@ _FSit-client is now a part of the FSit_
 ### Changed
 
 - Make `/sit` server-only
-- Try to ride even if a player has a vehicle
+- Try to ride, even if a player has a vehicle
 
 ### Fixed
 
