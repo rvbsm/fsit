@@ -33,8 +33,9 @@ fun interface ClientCommandCallback {
             if (mode != ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY || !player.isOnGround) return
 
             val config = player.getConfig().onDoubleSneak.takeUnless { !it.sitting && !it.crawling } ?: return
+            if (player.pitch < config.minPitch) return
 
-            if (player.uuid !in sneaks && player.pitch > config.minPitch) {
+            if (player.uuid !in sneaks) {
                 createSneak(player.uuid, config.delay).thenAcceptAsync {
                     when {
                         it && config.crawling && player.isNearGap() -> player.setPose(PlayerPose.Crawling)
@@ -66,9 +67,8 @@ fun interface ClientCommandCallback {
                 Direction.fromRotation(yaw.toDouble()).offsetZ * 0.1,
             )
 
-            return world.isSpaceEmpty(
-                this, crawlingDimensions.getBoxAt(expectEmptyAt).contract(1.0e-6)
-            ) && !world.isSpaceEmpty(this, crawlingDimensions.getBoxAt(expectFullAt).contract(1.0e-6))
+            return world.isSpaceEmpty(this, crawlingDimensions.getBoxAt(expectEmptyAt).contract(1.0e-6)) &&
+                    !world.isSpaceEmpty(this, crawlingDimensions.getBoxAt(expectFullAt).contract(1.0e-6))
         }
     }
 }
