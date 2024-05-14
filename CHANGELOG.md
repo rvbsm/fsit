@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.3.1
+
+### Fixed
+
+- Minecraft crash in 1.20.6
+- Server crash because `fabric-key-binding-api-v1` is not available
+- Double sneak didn't work
+
 ## v2.3.0
 
 ### Added
