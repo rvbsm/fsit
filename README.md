@@ -73,6 +73,16 @@ on_double_sneak:
 Pull requests are welcome.  
 For major changes, please open an issue first to discuss what you would like to change.
 
+### Building
+
+Since the project uses [Stonecutter][stonecutter], the build is performed using `chiseledBuild` task.
+
+```shell
+> ./gradlew chiseledBuild
+```
+
+For further info, visit the [Stonecutter Wiki][stonecutter-wiki].
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
@@ -83,3 +93,6 @@ This project is licensed under the [MIT License](./LICENSE).
 
 [modmenu]: [https://modrinth.com/mod/modmenu]
 [yacl]: [https://modrinth.com/mod/yacl]
+
+[stonecutter]: https://github.com/kikugie/stonecutter-kt
+[stonecutter-wiki]: https://github.com/kikugie/stonecutter-kt/wiki
