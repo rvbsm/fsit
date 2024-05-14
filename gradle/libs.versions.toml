@@ -1,8 +1,8 @@
 [versions]
-kotlin = "1.9.23"
+kotlin = "1.9.24"
 
-fabric-kotlin = "1.10.19+kotlin.1.9.23"
 fabric-loader = "0.15.11"
+fabric-kotlin = "1.10.20+kotlin.1.9.24"
 fabric-loom = "1.6-SNAPSHOT"
 
 kaml = "0.54.0"
