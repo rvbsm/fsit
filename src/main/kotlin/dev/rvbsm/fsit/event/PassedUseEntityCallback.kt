@@ -65,7 +65,7 @@ fun interface PassedUseEntityCallback {
         private fun sendRequest(player: ServerPlayerEntity, target: ServerPlayerEntity) =
             requests.computeIfAbsent(player.uuid to target.uuid) { pair ->
                 CompletableFuture<Boolean>().completeOnTimeout(false, TIMEOUT, TimeUnit.MILLISECONDS)
-                    .apply { thenRunAsync { requests.remove(pair) } }.also {
+                    .apply { thenRun { requests.remove(pair) } }.also {
                         player.sendIfPossible(RidingRequestS2CPayload(pair.second)) { it.complete(true) }
                     }
             }
@@ -74,13 +74,11 @@ fun interface PassedUseEntityCallback {
             val playerRequest = sendRequest(player, target)
             val targetRequest = sendRequest(target, player)
 
-            playerRequest.thenCombineAsync(targetRequest) { playerResult, targetResult -> playerResult && targetResult }
+            playerRequest.thenCombine(targetRequest) { playerResult, targetResult -> playerResult && targetResult }
                 .thenAccept { result ->
                     if (result && player.isAlive && target.isAlive) {
-                        world.server.execute {
-                            player.startRiding(target)
-                            target.networkHandler.sendPacket(EntityPassengersSetS2CPacket(target))
-                        }
+                        player.startRiding(target)
+                        target.networkHandler.sendPacket(EntityPassengersSetS2CPacket(target))
                     }
                 }
         }

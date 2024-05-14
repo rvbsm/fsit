@@ -36,7 +36,7 @@ fun interface ClientCommandCallback {
             if (player.pitch < config.minPitch) return
 
             if (player.uuid !in sneaks) {
-                createSneak(player.uuid, config.delay).thenAcceptAsync {
+                createSneak(player.uuid, config.delay).thenAccept {
                     when {
                         it && config.crawling && player.isNearGap() -> player.setPose(PlayerPose.Crawling)
                         it && config.sitting -> player.setPose(PlayerPose.Sitting)
