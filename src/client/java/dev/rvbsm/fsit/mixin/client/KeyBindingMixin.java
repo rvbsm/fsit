@@ -11,6 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class KeyBindingMixin {
     @Inject(method = "untoggleStickyKeys", at = @At("TAIL"))
     private static void untoggleHybridKeys(CallbackInfo ci) {
-        FSitKeyBindings.INSTANCE.reset();
+        FSitKeyBindings.reset();
     }
 }

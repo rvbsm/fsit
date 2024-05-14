@@ -12,7 +12,6 @@ import dev.rvbsm.fsit.compat.CustomPayload
 import dev.rvbsm.fsit.network.packet.ConfigUpdateC2SPayload
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.option.SimpleOption
@@ -25,23 +24,25 @@ object FSitModClient : ClientModInitializer {
     val isServerFSitCompatible get() = ClientPlayNetworking.canSend(ConfigUpdateC2SPayload.packetId)
 
     @JvmStatic
-    val sitKeyMode = SimpleOption(
+    val sitMode = SimpleOption(
         "key.fsit.sit",
         SimpleOption.emptyTooltip(),
         SimpleOption.enumValueText(),
         SimpleOption.PotentialValuesBasedCallbacks(
-            enumValues<KeyBindingMode>().asList(), Codec.INT.xmap(KeyBindingMode::byId, KeyBindingMode::getId)
+            KeyBindingMode.entries,
+            Codec.INT.xmap(KeyBindingMode::byId, KeyBindingMode::getId),
         ),
         KeyBindingMode.Hybrid,
     ) {}
 
     @JvmStatic
-    val crawlKeyMode = SimpleOption(
+    val crawlMode = SimpleOption(
         "key.fsit.crawl",
         SimpleOption.emptyTooltip(),
         SimpleOption.enumValueText(),
         SimpleOption.PotentialValuesBasedCallbacks(
-            enumValues<KeyBindingMode>().asList(), Codec.INT.xmap(KeyBindingMode::byId, KeyBindingMode::getId)
+            KeyBindingMode.entries,
+            Codec.INT.xmap(KeyBindingMode::byId, KeyBindingMode::getId),
         ),
         KeyBindingMode.Hybrid,
     ) {}
@@ -50,9 +51,9 @@ object FSitModClient : ClientModInitializer {
         RestrictionList.load()
 
         FSitClientNetworking.register()
+        FSitKeyBindings.register()
 
         ClientPlayConnectionEvents.JOIN.register(ClientConnectionListener)
-        ClientTickEvents.END_CLIENT_TICK.register(FSitKeyBindings)
 
         ClientCommandRegistrationCallback.EVENT.register(ClientMainCommand::register)
     }

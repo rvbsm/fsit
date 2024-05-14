@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class GameOptionsMixin {
     @Inject(method = "accept", at = @At("TAIL"))
     private void accept(GameOptions.Visitor visitor, CallbackInfo ci) {
-        visitor.accept("fsit.sitMode", FSitModClient.getSitKeyMode());
-        visitor.accept("fsit.crawlMode", FSitModClient.getCrawlKeyMode());
+        visitor.accept("fsit.sitMode", FSitModClient.getSitMode());
+        visitor.accept("fsit.crawlMode", FSitModClient.getCrawlMode());
     }
 }
