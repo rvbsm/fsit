@@ -1,5 +1,6 @@
 package dev.rvbsm.fsit.network
 
+import dev.rvbsm.fsit.api.ServerPlayerClientVelocity
 import dev.rvbsm.fsit.api.ConfigurableEntity
 import dev.rvbsm.fsit.api.Crawlable
 import dev.rvbsm.fsit.api.Poseable
@@ -28,3 +29,5 @@ var ServerPlayerEntity.config
     get() = (this as ConfigurableEntity).`fsit$getConfig`()
     set(config) = (this as ConfigurableEntity).`fsit$setConfig`(config)
 fun ServerPlayerEntity.hasConfig() = (this as ConfigurableEntity).`fsit$hasConfig`()
+
+val ServerPlayerEntity.clientVelocity: Vec3d get() = (this as ServerPlayerClientVelocity).`fsit$getClientVelocity`()

@@ -2,6 +2,7 @@ package dev.rvbsm.fsit.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import dev.rvbsm.fsit.api.ServerPlayerClientVelocity;
 import dev.rvbsm.fsit.event.ClientCommandCallback;
 import dev.rvbsm.fsit.event.PassedUseBlockCallback;
 import dev.rvbsm.fsit.event.PassedUseEntityCallback;
@@ -13,12 +14,14 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -42,6 +45,13 @@ public abstract class ServerPlayNetworkHandlerMixin {
         }
 
         return interactionActionResult;
+    }
+
+    @ModifyArg(method = "onPlayerMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V"), index = 1)
+    private Vec3d captureClientVelocity(Vec3d movement) {
+        ((ServerPlayerClientVelocity) this.player).fsit$setClientVelocity(movement);
+
+        return movement;
     }
 
     @Mixin(targets = "net.minecraft.server.network.ServerPlayNetworkHandler$1")

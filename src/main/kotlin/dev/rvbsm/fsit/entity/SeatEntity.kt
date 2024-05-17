@@ -1,5 +1,6 @@
 package dev.rvbsm.fsit.entity
 
+import dev.rvbsm.fsit.network.clientVelocity
 import dev.rvbsm.fsit.network.config
 import dev.rvbsm.fsit.util.math.addHorizontal
 import dev.rvbsm.fsit.util.math.clamp
@@ -29,7 +30,9 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
 
         customName = Text.literal("FSit_SeatEntity")
 
-        velocity = player.velocity.addHorizontal(player.horizontalSpeed - player.prevHorizontalSpeed, player.yaw)
+        if (config.sitting.applyGravity) {
+            velocity = player.clientVelocity
+        }
     }
 
     /*? if <=1.20.4 {*/

@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.api.ConfigurableEntity;
 import dev.rvbsm.fsit.api.Crawlable;
+import dev.rvbsm.fsit.api.ServerPlayerClientVelocity;
 import dev.rvbsm.fsit.config.ModConfig;
 import dev.rvbsm.fsit.entity.CrawlEntity;
 import dev.rvbsm.fsit.entity.PlayerPose;
@@ -27,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ConfigurableEntity, Crawlable {
+public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ConfigurableEntity, Crawlable, ServerPlayerClientVelocity {
     @Shadow
     public ServerPlayNetworkHandler networkHandler;
 
@@ -37,6 +38,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     private @Nullable CrawlEntity crawlEntity;
     @Unique
     private boolean wasPassengerHidden = false;
+    @Unique
+    private Vec3d clientVelocity = Vec3d.ZERO;
 
     protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -155,6 +158,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     @Override
     public boolean fsit$isCrawling() {
         return this.crawlEntity != null && !this.crawlEntity.isRemoved();
+    }
+
+    @Override
+    public void fsit$setClientVelocity(Vec3d velocity) {
+        this.clientVelocity = velocity;
+    }
+
+    @Override
+    public Vec3d fsit$getClientVelocity() {
+        return this.clientVelocity;
     }
 
     @Unique
