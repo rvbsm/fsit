@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.event
 
 import dev.rvbsm.fsit.entity.PlayerPose
-import dev.rvbsm.fsit.network.getConfig
+import dev.rvbsm.fsit.network.config
 import dev.rvbsm.fsit.network.setPose
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
@@ -32,7 +32,7 @@ fun interface ClientCommandCallback {
         override fun onClientMode(player: ServerPlayerEntity, mode: ClientCommandC2SPacket.Mode) {
             if (mode != ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY || !player.isOnGround) return
 
-            val config = player.getConfig().onDoubleSneak.takeUnless { !it.sitting && !it.crawling } ?: return
+            val config = player.config.onDoubleSneak.takeUnless { !it.sitting && !it.crawling } ?: return
             if (player.pitch < config.minPitch) return
 
             if (player.uuid !in sneaks) {

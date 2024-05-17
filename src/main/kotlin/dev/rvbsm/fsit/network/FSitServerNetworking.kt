@@ -21,7 +21,7 @@ object FSitServerNetworking {
     }
 
     internal fun ConfigUpdateC2SPayload.receive(player: ServerPlayerEntity) {
-        player.setConfig(config)
+        player.config = config
     }
 
     internal fun PoseRequestC2SPayload.receive(player: ServerPlayerEntity) {

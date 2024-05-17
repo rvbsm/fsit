@@ -4,7 +4,6 @@ import dev.rvbsm.fsit.api.ConfigurableEntity
 import dev.rvbsm.fsit.api.Crawlable
 import dev.rvbsm.fsit.api.Poseable
 import dev.rvbsm.fsit.compat.CustomPayload
-import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.entity.CrawlEntity
 import dev.rvbsm.fsit.entity.PlayerPose
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
@@ -25,6 +24,7 @@ fun ServerPlayerEntity.setCrawl(crawlEntity: CrawlEntity) = (this as Crawlable).
 fun ServerPlayerEntity.removeCrawl() = (this as Crawlable).`fsit$stopCrawling`()
 fun ServerPlayerEntity.hasCrawl() = (this as Crawlable).`fsit$isCrawling`()
 
-fun ServerPlayerEntity.setConfig(config: ModConfig) = (this as ConfigurableEntity).`fsit$setConfig`(config)
-fun ServerPlayerEntity.getConfig() = (this as ConfigurableEntity).`fsit$getConfig`()
+var ServerPlayerEntity.config
+    get() = (this as ConfigurableEntity).`fsit$getConfig`()
+    set(config) = (this as ConfigurableEntity).`fsit$setConfig`(config)
 fun ServerPlayerEntity.hasConfig() = (this as ConfigurableEntity).`fsit$hasConfig`()

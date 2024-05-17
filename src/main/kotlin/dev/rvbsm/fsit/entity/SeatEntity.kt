@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.entity
 
-import dev.rvbsm.fsit.network.getConfig
+import dev.rvbsm.fsit.network.config
 import dev.rvbsm.fsit.util.math.addHorizontal
 import dev.rvbsm.fsit.util.math.clamp
 import net.minecraft.block.piston.PistonBehavior
@@ -13,7 +13,7 @@ import net.minecraft.util.math.Vec3d
 
 class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(EntityType.BLOCK_DISPLAY, player.world) {
     private val config
-        get() = player.getConfig()
+        get() = player.config
     private val groundCollisionBox
         get() = Box.of(pos, width.toDouble(), 1.0e-6, width.toDouble())
     private val onGround

@@ -33,7 +33,6 @@ class CrawlEntity(private val player: ServerPlayerEntity) : Entity(EntityType.SH
     *//*?} */
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) = Unit
-
     override fun writeCustomDataToNbt(nbt: NbtCompound) = Unit
 
     override fun remove(reason: RemovalReason) {

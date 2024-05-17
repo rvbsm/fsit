@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.event
 
-import dev.rvbsm.fsit.network.getConfig
+import dev.rvbsm.fsit.network.config
 import dev.rvbsm.fsit.network.packet.RidingRequestS2CPayload
 import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
 import dev.rvbsm.fsit.network.sendIfPossible
@@ -46,15 +46,15 @@ fun interface PassedUseEntityCallback {
             val target = entity as ServerPlayerEntity
             if (!player.canStartRiding(target)) return ActionResult.PASS
 
-            val playerConfig = player.getConfig().onUse
-            val targetConfig = target.getConfig().onUse
+            val playerConfig = player.config.onUse
+            val targetConfig = target.config.onUse
 
             if (player.uuid to target.uuid in requests ||
                 !playerConfig.riding || !targetConfig.riding
                 || !player.isInRange(target, playerConfig.range.toDouble())
             ) return ActionResult.PASS
 
-            sendRequests(player, target, world)
+            sendRequests(player, target)
             return ActionResult.PASS
         }
 
@@ -70,7 +70,7 @@ fun interface PassedUseEntityCallback {
                     }
             }
 
-        private fun sendRequests(player: ServerPlayerEntity, target: ServerPlayerEntity, world: ServerWorld) {
+        private fun sendRequests(player: ServerPlayerEntity, target: ServerPlayerEntity) {
             val playerRequest = sendRequest(player, target)
             val targetRequest = sendRequest(target, player)
 

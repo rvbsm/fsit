@@ -32,7 +32,7 @@ fun interface UpdatePoseCallback {
                 }
 
                 PlayerPose.Sitting -> {
-                    if (!player.getConfig().sitting.allowInAir && !player.isOnGround) {
+                    if (!player.config.sitting.allowInAir && !player.isOnGround) {
                         return player.setPose(PlayerPose.Standing, pos)
                     }
 

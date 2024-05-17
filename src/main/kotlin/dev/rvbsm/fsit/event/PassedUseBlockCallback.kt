@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.event
 
 import dev.rvbsm.fsit.entity.PlayerPose
-import dev.rvbsm.fsit.network.getConfig
+import dev.rvbsm.fsit.network.config
 import dev.rvbsm.fsit.network.setPose
 import dev.rvbsm.fsit.registry.RegistrySet
 import net.fabricmc.fabric.api.event.Event
@@ -46,7 +46,7 @@ fun interface PassedUseBlockCallback {
         override fun interactBlock(player: ServerPlayerEntity, world: World, hitResult: BlockHitResult): ActionResult {
             if (player.shouldCancelInteraction() || hitResult.side != Direction.UP) return ActionResult.PASS
 
-            val onUseConfig = player.getConfig().onUse
+            val onUseConfig = player.config.onUse
             val hitState = world.getBlockState(hitResult.blockPos)
 
             if (!onUseConfig.sitting ||
