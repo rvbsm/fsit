@@ -42,10 +42,9 @@ data class ModConfig(
         require(onDoubleSneak.delay in 100..2000) { "sitting.on_double_sneak.delay is needed to be in 100..2000" }
     }
 
-    override fun toString() = encodeYaml()
     fun encodeYaml() = yaml.encodeToString(this)
     fun encodeJson() = json.encodeToString(this)
-    internal fun write() = path?.writeText("$this")
+    internal fun write() = path?.writeText(encodeYaml())
 
     companion object {
         @Transient
