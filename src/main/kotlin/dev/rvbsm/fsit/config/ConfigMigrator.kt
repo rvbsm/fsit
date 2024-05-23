@@ -17,6 +17,7 @@ private val migrations = setOf(
     BooleanProperty("sitting.on_use.suffocation_check") { ModConfig::onUse.get(it)::checkSuffocation },
     BooleanProperty("sitting.on_double_sneak.enabled") { ModConfig::onDoubleSneak.get(it)::sitting },
     BooleanProperty("riding.on_use.enabled") { ModConfig::onUse.get(it)::riding },
+    BooleanProperty("sitting.seats_gravity") { ModConfig::sitting.get(it)::applyGravity },
 
     LongProperty("sneak.delay") { ModConfig::onDoubleSneak.get(it)::delay },
     LongProperty("sittable.radius") { ModConfig::onUse.get(it)::range },
@@ -30,6 +31,7 @@ private val migrations = setOf(
     RegistrySetProperty("sittable.tags", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.TAGS),
     RegistrySetProperty("sittable.materials", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.CONTAINER),
     RegistrySetProperty("sitting.blocks", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.CONTAINER),
+    RegistrySetProperty("sitting.on_use.blocks", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.CONTAINER),
 )
 
 internal object ConfigMigrator {
