@@ -19,7 +19,7 @@ internal sealed class MigratedProperty<T>(
 ) : MigratedOption {
     internal val property: KMutableProperty<T> get() = propertyProvider(config!!)
 
-    internal fun set(value: T) = property.setter.call(value)
+    internal open fun set(value: T) = property.setter.call(value)
 
     override fun migrate(yamlMap: YamlMap) {
         checkNotNull(config) { "Config must be provided" }
@@ -76,7 +76,16 @@ internal class RegistrySetProperty<T>(
     key: String,
     propertyProvider: MutablePropertyProvider<RegistrySet<T>>,
     private val type: Type,
+    private val overwrite: Boolean = true,
 ) : MigratedProperty<RegistrySet<T>>(key, propertyProvider) {
+    override fun set(value: RegistrySet<T>) {
+        if (!overwrite) {
+            val currentValue = property.getter.call()
+            return super.set(registrySetOf(currentValue.registry, *currentValue.toTypedArray(), *value.toTypedArray()))
+        }
+
+        super.set(value)
+    }
 
     private val registry get() = property.getter.call().registry
 

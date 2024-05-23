@@ -28,7 +28,7 @@ private val migrations = setOf(
     DoubleProperty("sitting.on_double_sneak.min_pitch") { ModConfig::onDoubleSneak.get(it)::minPitch },
 
     RegistrySetProperty("sittable.blocks", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.ENTRIES),
-    RegistrySetProperty("sittable.tags", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.TAGS),
+    RegistrySetProperty("sittable.tags", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.TAGS, false),
     RegistrySetProperty("sittable.materials", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.CONTAINER),
     RegistrySetProperty("sitting.blocks", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.CONTAINER),
     RegistrySetProperty("sitting.on_use.blocks", { ModConfig::onUse.get(it)::blocks }, RegistrySetProperty.Type.CONTAINER),
