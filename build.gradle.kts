@@ -1,6 +1,9 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.palantir.gradle.gitversion.VersionDetails
 
 val gitVersion: groovy.lang.Closure<String> by extra
+val versionDetails: groovy.lang.Closure<VersionDetails> by extra
+
+val gitDetails = versionDetails()
 
 plugins {
     kotlin("jvm") version libs.versions.kotlin
@@ -12,23 +15,48 @@ plugins {
     alias(libs.plugins.machete)
 }
 
-val modVersion = gitVersion().let { if (it.first() == 'v') it.drop(1) else it }
-val modrinthId = "${property("mod.modrinth_id")}"
+private class ModMetadata {
+    val modVersion = gitDetails.lastTag.dropFirstIf('v')
+    val minecraftVersion = stonecutter.current.version
 
-val mcVersion = stonecutter.current.version
-val mcTargetStart = "${property("minecraft.target.start")}"
-val mcTargetEnd = "${property("minecraft.target.end")}"
-val mcTarget = ">=$mcTargetStart-" + (" <=$mcTargetEnd".takeUnless { mcTargetEnd == "latest" } ?: "")
+    val javaVersion = "${property("java.version")}".toInt(10)
 
-val fabricYarnBuild = "${property("fabric.yarn_build")}"
-val fabricVersion = "${property("fabric.api")}+${stonecutter.current.project}"
+    val minecraftTargetStart = "${property("minecraft.target.start")}"
+    val minecraftTargetEnd = "${property("minecraft.target.end")}"
+    val minecraftTarget =
+        ">=$minecraftTargetStart-" + (" <=$minecraftTargetEnd".takeUnless { minecraftTargetEnd == "latest" } ?: "")
 
-val modmenuVersion = "${property("api.modmenu")}"
-val yaclVersion = "${property("api.yacl")}"
+    val modrinthId = "${property("mod.modrinth_id")}"
+}
 
-val javaVersion = "${property("java.version")}".toInt(10)
+private class ModLibraries(metadata: ModMetadata) {
+    private val fabricYarnBuild = "${property("fabric.yarn_build")}"
+    val fabricApiVersion = "${property("fabric.api")}+${metadata.minecraftVersion}"
+    private val modmenuVersion = "${property("api.modmenu")}"
+    private val yaclVersion = "${property("api.yacl")}"
 
-version = "$modVersion+$mcVersion"
+    val minecraft = "com.mojang:minecraft:${metadata.minecraftVersion}"
+    val fabricYarn = "net.fabricmc:yarn:${metadata.minecraftVersion}+build.$fabricYarnBuild:v2"
+    val fabricApiModules = setOf(
+        "fabric-api-base",
+        "fabric-command-api-v2",
+        "fabric-key-binding-api-v1",
+        "fabric-lifecycle-events-v1",
+        "fabric-networking-api-v1",
+    )
+    val fabricApi by lazy {
+        fabricApiModules.map { project.fabricApi.module(it, fabricApiVersion) }
+    }
+    val modmenu = "com.terraformersmc:modmenu:$modmenuVersion"
+    val yacl = "dev.isxander:yet-another-config-lib:$yaclVersion-fabric"
+}
+
+private val modMetadata = ModMetadata()
+private val modLibs = ModLibraries(modMetadata)
+
+version = "${modMetadata.modVersion}+${modMetadata.minecraftVersion}" + gitDetails.let { details ->
+    "-${details.gitHash}-${details.commitDistance}".takeIf { details.commitDistance > 0 } ?: ""
+}
 group = "dev.rvbsm"
 base.archivesName = rootProject.name
 
@@ -59,29 +87,17 @@ repositories {
     mavenCentral()
     maven("https://maven.terraformersmc.com/releases")
     maven("https://maven.isxander.dev/releases")
-    maven("https://maven.isxander.dev/snapshots")
-    maven("https://maven.quiltmc.org/repository/release")
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:$mcVersion")
-    mappings("net.fabricmc:yarn:$mcVersion+build.$fabricYarnBuild:v2")
+    minecraft(modLibs.minecraft)
+    mappings(modLibs.fabricYarn)
 
     modImplementation(libs.bundles.fabric)
-    setOf(
-        "fabric-api-base",
-        "fabric-command-api-v2",
-        "fabric-key-binding-api-v1",
-        "fabric-lifecycle-events-v1",
-        "fabric-networking-api-v1"
-    ).map { fabricApi.module(it, fabricVersion) }.forEach(::modImplementation)
+    modLibs.fabricApi.forEach(::modImplementation)
 
-    // fabric-resource-loader-v0: @Mixin target net.minecraft.class_60 was not found
-    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-
-    modApi("com.terraformersmc:modmenu:$modmenuVersion")
-    modApi("dev.isxander:yet-another-config-lib:$yaclVersion-fabric") {
+    modImplementation(modLibs.modmenu)
+    modImplementation(modLibs.yacl) {
         exclude("net.fabricmc.fabric-api", "fabric-api")
     }
 
@@ -92,43 +108,32 @@ dependencies {
 tasks {
     processResources {
         inputs.property("version", "$version")
-        inputs.property("mcTarget", mcTarget)
-        inputs.property("javaTarget", javaVersion)
+        inputs.property("minecraftTarget", modMetadata.minecraftTarget)
+        inputs.property("javaTarget", modMetadata.javaVersion)
 
         filesMatching("fabric.mod.json") {
-            expand("version" to version, "mcTarget" to mcTarget, "javaTarget" to javaVersion)
+            expand(
+                "version" to version,
+                "minecraftTarget" to modMetadata.minecraftTarget,
+                "javaTarget" to modMetadata.javaVersion,
+            )
         }
     }
 
     jar {
         from("LICENSE")
     }
-
-    withType<JavaCompile> {
-        options.release = javaVersion
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "$javaVersion"
-    }
-
-    if (stonecutter.current.isActive) {
-        register("buildActive") {
-            group = "project"
-            dependsOn(build)
-        }
-    }
 }
 
 java {
     withSourcesJar()
 
-    sourceCompatibility = enumValues<JavaVersion>()[javaVersion - 1]
-    targetCompatibility = enumValues<JavaVersion>()[javaVersion - 1]
+    sourceCompatibility = enumValues<JavaVersion>()[modMetadata.javaVersion - 1]
+    targetCompatibility = enumValues<JavaVersion>()[modMetadata.javaVersion - 1]
 }
 
 kotlin {
-    jvmToolchain(javaVersion)
+    jvmToolchain(modMetadata.javaVersion)
 }
 
 publishMods {
@@ -136,20 +141,20 @@ publishMods {
     additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
     changelog = providers.environmentVariable("CHANGELOG").orElse("No changelog provided.")
     type = when {
-        "alpha" in modVersion -> ALPHA
-        "beta" in modVersion -> BETA
+        "alpha" in modMetadata.modVersion -> ALPHA
+        "beta" in modMetadata.modVersion -> BETA
         else -> STABLE
     }
-    displayName = "[$mcVersion] v$modVersion"
+    displayName = "[${modMetadata.minecraftVersion}] v${modMetadata.modVersion}"
     modLoaders.addAll("fabric", "quilt")
 
     modrinth {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-        projectId = modrinthId
+        projectId = modMetadata.modrinthId
 
         minecraftVersionRange {
-            start = mcTargetStart
-            end = mcTargetEnd
+            start = modMetadata.minecraftTargetStart
+            end = modMetadata.minecraftTargetEnd
         }
 
         requires("fabric-api", "fabric-language-kotlin")
@@ -160,3 +165,5 @@ publishMods {
         }
     }
 }
+
+fun String.dropFirstIf(char: Char) = if (first() == char) drop(1) else this
