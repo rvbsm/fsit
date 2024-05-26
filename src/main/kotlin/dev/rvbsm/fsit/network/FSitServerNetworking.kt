@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.network
 
-import dev.rvbsm.fsit.event.PassedUseEntityCallback.Companion.completeRideRequest
+import dev.rvbsm.fsit.event.completeRideRequest
 import dev.rvbsm.fsit.network.FSitServerNetworking.receive
 import dev.rvbsm.fsit.network.packet.ConfigUpdateC2SPayload
 import dev.rvbsm.fsit.network.packet.PoseRequestC2SPayload

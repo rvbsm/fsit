@@ -25,12 +25,12 @@ object FSitMod : ModInitializer {
 
         FSitServerNetworking.register()
 
-        ServerLifecycleEvents.SERVER_STOPPING.register(ServerLifecycleListener)
+        ServerLifecycleEvents.SERVER_STOPPING.register(ServerStoppingListener)
 
-        PassedUseEntityCallback.EVENT.register(PassedUseEntityCallback)
-        PassedUseBlockCallback.EVENT.register(PassedUseBlockCallback)
-        ClientCommandCallback.EVENT.register(ClientCommandCallback)
-        UpdatePoseCallback.EVENT.register(UpdatePoseCallback)
+        PassedUseEntityCallback.EVENT.register(StartRidingListener)
+        PassedUseBlockCallback.EVENT.register(SpawnSeatListener)
+        ClientCommandCallback.EVENT.register(ClientCommandSneakListener)
+        UpdatePoseCallback.EVENT.register(UpdatePoseListener)
 
         CommandRegistrationCallback.EVENT.register(MainCommand::register)
         enumValues<PoseCommand>().forEach {
