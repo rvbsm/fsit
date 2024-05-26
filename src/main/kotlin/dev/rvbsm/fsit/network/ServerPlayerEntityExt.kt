@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
 
-internal fun <T> ServerPlayerEntity.sendIfPossible(payload: T, orAction: () -> Unit = {}) where T : CustomPayload {
+internal fun <T> ServerPlayerEntity.trySend(payload: T, orAction: () -> Unit = {}) where T : CustomPayload {
     if (ServerPlayNetworking.canSend(this, payload.id)) {
         ServerPlayNetworking.send(this, payload)
     } else orAction()

@@ -59,10 +59,10 @@ object FSitModClient : ClientModInitializer {
     }
 
     fun saveConfig() = FSitMod.saveConfig().also {
-        sendIfPossible(ConfigUpdateC2SPayload(FSitMod.config))
+        trySend(ConfigUpdateC2SPayload(FSitMod.config))
     }
 
-    fun <T> sendIfPossible(payload: T, orAction: () -> Unit = {}) where T : CustomPayload {
+    fun <T> trySend(payload: T, orAction: () -> Unit = {}) where T : CustomPayload {
         if (ClientPlayNetworking.canSend(payload.id)) {
             ClientPlayNetworking.send(payload)
         } else orAction()

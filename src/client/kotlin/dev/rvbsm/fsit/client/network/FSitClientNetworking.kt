@@ -27,7 +27,7 @@ object FSitClientNetworking {
     }
 
     internal fun RidingRequestS2CPayload.receive() {
-        FSitModClient.sendIfPossible(RidingResponseC2SPayload(uuid, !RestrictionList.isRestricted(uuid)))
+        FSitModClient.trySend(RidingResponseC2SPayload(uuid, !RestrictionList.isRestricted(uuid)))
     }
 }
 

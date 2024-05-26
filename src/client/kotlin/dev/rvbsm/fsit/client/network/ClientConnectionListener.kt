@@ -4,12 +4,7 @@ import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.network.packet.ConfigUpdateC2SPayload
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
-import net.fabricmc.fabric.api.networking.v1.PacketSender
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.network.ClientPlayNetworkHandler
 
-object ClientConnectionListener : ClientPlayConnectionEvents.Join {
-    override fun onPlayReady(handler: ClientPlayNetworkHandler, sender: PacketSender, client: MinecraftClient) {
-        FSitModClient.sendIfPossible(ConfigUpdateC2SPayload(FSitMod.config))
-    }
+val ClientConnectionListener = ClientPlayConnectionEvents.Join { _, _, _ ->
+    FSitModClient.trySend(ConfigUpdateC2SPayload(FSitMod.config))
 }

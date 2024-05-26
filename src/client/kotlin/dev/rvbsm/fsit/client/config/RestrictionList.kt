@@ -25,7 +25,7 @@ object RestrictionList {
 
         MinecraftClient.getInstance().player?.takeIf { player ->
             player.hasPassenger { it.uuid == uuid }
-        }?.also { FSitModClient.sendIfPossible(RidingResponseC2SPayload(uuid, false)) }
+        }?.also { FSitModClient.trySend(RidingResponseC2SPayload(uuid, false)) }
     }
 
     @JvmStatic

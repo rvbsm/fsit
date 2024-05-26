@@ -53,7 +53,7 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
 
         if (pose != currentPose) {
             player.setPose(pose)
-            FSitModClient.sendIfPossible(PoseRequestC2SPayload(pose))
+            FSitModClient.trySend(PoseRequestC2SPayload(pose))
         }
     }
 
