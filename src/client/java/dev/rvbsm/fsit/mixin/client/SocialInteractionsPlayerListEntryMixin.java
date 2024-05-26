@@ -48,7 +48,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     @Unique
     private ButtonWidget allowButton;
 
-    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/SocialInteractionsPlayerListEntry;setShowButtonVisible(Z)V"))
+    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER, ordinal = 1))
     protected void restrictButtons(CallbackInfo ci) {
         if (FSitModClient.isServerFSitCompatible()) {
             /*? if <=1.20.1 {*//*
@@ -88,6 +88,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     private void updateButtons(boolean isRestricted) {
         this.restrictButton.visible = !isRestricted;
         this.allowButton.visible = isRestricted;
+        this.buttons.set(2, isRestricted ? this.allowButton : this.restrictButton);
     }
 
     @Unique
