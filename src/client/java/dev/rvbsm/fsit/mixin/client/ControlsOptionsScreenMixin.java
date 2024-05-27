@@ -19,14 +19,14 @@ public abstract class ControlsOptionsScreenMixin extends GameOptionsScreen {
         super(parent, gameOptions, title);
     }
 
-    /*? if <=1.20.4 {*/
+    /*? if <=1.20.4 {*//*
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/option/ControlsOptionsScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 3))
     private void fsitOptions(CallbackInfo ci, @Local(ordinal = 0) int i, @Local(ordinal = 1) int j, @Local(ordinal = 2) LocalIntRef k) {
         k.set(k.get() + 24);
         this.addDrawableChild(FSitModClient.getSitMode().createWidget(this.gameOptions, i, k.get(), 150));
         this.addDrawableChild(FSitModClient.getCrawlMode().createWidget(this.gameOptions, j, k.get(), 150));
     }
-    /*?} else {*//*
+    *//*?} else {*/
     @Inject(method = "getOptions", at = @At("RETURN"), cancellable = true)
     private static void fsitOptions(GameOptions gameOptions, CallbackInfoReturnable<net.minecraft.client.option.SimpleOption<?>[]> cir) {
         net.minecraft.client.option.SimpleOption<?>[] options = cir.getReturnValue();
@@ -35,5 +35,5 @@ public abstract class ControlsOptionsScreenMixin extends GameOptionsScreen {
 
         cir.setReturnValue(options);
     }
-    *//*?} */
+    /*?} */
 }

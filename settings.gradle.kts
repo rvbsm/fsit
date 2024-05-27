@@ -22,4 +22,3 @@ extensions.configure<StonecutterSettings> {
     }
     create(rootProject)
 }
-

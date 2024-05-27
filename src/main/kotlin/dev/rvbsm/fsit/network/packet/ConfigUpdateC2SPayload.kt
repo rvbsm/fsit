@@ -15,9 +15,9 @@ data class ConfigUpdateC2SPayload(val config: ModConfig) : CustomPayload(packetI
     companion object {
         private val id = FSitMod.id("config_sync")
 
-        /*? if <=1.20.4 {*/
+        /*? if <=1.20.4 {*//*
         val packetId = net.fabricmc.fabric.api.networking.v1.PacketType.create(id, ::ConfigUpdateC2SPayload)
-        /*?} else {*//*
+        *//*?} else {*/
         val packetId = net.minecraft.network.packet.CustomPayload.Id<ConfigUpdateC2SPayload>(id)
         val packetCodec =
             net.minecraft.network.packet.CustomPayload.codecOf(ConfigUpdateC2SPayload::write, ::ConfigUpdateC2SPayload)
@@ -25,6 +25,6 @@ data class ConfigUpdateC2SPayload(val config: ModConfig) : CustomPayload(packetI
         init {
             net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playC2S().register(packetId, packetCodec)
         }
-        *//*?} */
+        /*?} */
     }
 }

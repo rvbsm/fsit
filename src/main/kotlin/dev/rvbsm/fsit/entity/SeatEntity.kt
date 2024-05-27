@@ -2,7 +2,6 @@ package dev.rvbsm.fsit.entity
 
 import dev.rvbsm.fsit.network.clientVelocity
 import dev.rvbsm.fsit.network.config
-import dev.rvbsm.fsit.util.math.addHorizontal
 import dev.rvbsm.fsit.util.math.clamp
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.entity.*
@@ -35,11 +34,11 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
         }
     }
 
-    /*? if <=1.20.4 {*/
+    /*? if <=1.20.4 {*//*
     override fun initDataTracker() = Unit
-    /*?} else {*//*
+    *//*?} else {*/
     override fun initDataTracker(builder: net.minecraft.entity.data.DataTracker.Builder) = Unit
-    *//*?} */
+    /*?} */
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) = Unit
     override fun writeCustomDataToNbt(nbt: NbtCompound) = Unit

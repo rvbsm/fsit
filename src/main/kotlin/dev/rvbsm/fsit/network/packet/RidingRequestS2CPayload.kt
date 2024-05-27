@@ -15,9 +15,9 @@ data class RidingRequestS2CPayload(val uuid: UUID) : CustomPayload(packetId) {
     companion object {
         private val id = FSitMod.id("riding_request")
 
-        /*? if <=1.20.4 {*/
+        /*? if <=1.20.4 {*//*
         val packetId = net.fabricmc.fabric.api.networking.v1.PacketType.create(id, ::RidingRequestS2CPayload)
-        /*?} else {*//*
+        *//*?} else {*/
         val packetId = net.minecraft.network.packet.CustomPayload.Id<RidingRequestS2CPayload>(id)
         val packetCodec =
             net.minecraft.network.packet.CustomPayload.codecOf(RidingRequestS2CPayload::write, ::RidingRequestS2CPayload)
@@ -25,6 +25,6 @@ data class RidingRequestS2CPayload(val uuid: UUID) : CustomPayload(packetId) {
         init {
             net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playS2C().register(packetId, packetCodec)
         }
-        *//*?} */
+        /*?} */
     }
 }

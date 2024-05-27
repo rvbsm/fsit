@@ -17,9 +17,9 @@ data class RidingResponseC2SPayload(val uuid: UUID, val response: ResponseType) 
     companion object {
         private val id = FSitMod.id("riding_response")
 
-        /*? if <=1.20.4 {*/
+        /*? if <=1.20.4 {*//*
         val packetId = net.fabricmc.fabric.api.networking.v1.PacketType.create(id, ::RidingResponseC2SPayload)
-        /*?} else {*//*
+        *//*?} else {*/
         val packetId = net.minecraft.network.packet.CustomPayload.Id<RidingResponseC2SPayload>(id)
         val packetCodec =
             net.minecraft.network.packet.CustomPayload.codecOf(RidingResponseC2SPayload::write, ::RidingResponseC2SPayload)
@@ -27,7 +27,7 @@ data class RidingResponseC2SPayload(val uuid: UUID, val response: ResponseType) 
         init {
             net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playC2S().register(packetId, packetCodec)
         }
-        *//*?} */
+        /*?} */
     }
 
     enum class ResponseType(val isAccepted: Boolean) {
