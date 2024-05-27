@@ -1,6 +1,12 @@
 # Changelog
 
-## v2.3.2
+## v2.3.3
+
+### Fixed
+
+- Minecraft client crashes during launch
+
+## v2.3.2 [yanked]
 
 ### Fixed
 
