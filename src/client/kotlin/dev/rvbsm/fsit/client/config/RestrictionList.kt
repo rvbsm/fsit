@@ -5,6 +5,7 @@ import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.config.serialization.UUIDSerializer
 import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
@@ -38,7 +39,7 @@ object RestrictionList {
 
     fun load() {
         if (restrictionConfigPath.exists()) {
-            restrictedPlayers.addAll(Json.decodeFromString(restrictionConfigPath.readText()))
+            restrictedPlayers.addAll(Json.decodeFromString(SetSerializer(UUIDSerializer), restrictionConfigPath.readText()))
         } else save()
     }
 }
