@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.3.2
+
+### Fixed
+
+- Riding didn't work
+- “Allow” button on the Social Interactions screen didn't work
+- Incorrectly calculated seat velocity when yaw and movement direction differed
+- Some migrated config options were missing
+
 ## v2.3.1
 
 ### Fixed
