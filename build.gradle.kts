@@ -151,6 +151,7 @@ publishMods {
     modrinth {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = modMetadata.modrinthId
+        featured = true
 
         minecraftVersionRange {
             start = modMetadata.minecraftTargetStart
