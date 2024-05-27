@@ -19,7 +19,7 @@ data class RidingRequestS2CPayload(val uuid: UUID) : CustomPayload(packetId) {
         val packetId = net.fabricmc.fabric.api.networking.v1.PacketType.create(id, ::RidingRequestS2CPayload)
         *//*?} else {*/
         val packetId = net.minecraft.network.packet.CustomPayload.Id<RidingRequestS2CPayload>(id)
-        val packetCodec =
+        val packetCodec: net.minecraft.network.codec.PacketCodec<PacketByteBuf, RidingRequestS2CPayload> =
             net.minecraft.network.packet.CustomPayload.codecOf(RidingRequestS2CPayload::write, ::RidingRequestS2CPayload)
 
         init {

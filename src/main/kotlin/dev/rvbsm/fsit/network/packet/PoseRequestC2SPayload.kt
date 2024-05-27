@@ -19,7 +19,7 @@ data class PoseRequestC2SPayload(val pose: PlayerPose) : CustomPayload(packetId)
         val packetId = net.fabricmc.fabric.api.networking.v1.PacketType.create(id, ::PoseRequestC2SPayload)
         *//*?} else {*/
         val packetId = net.minecraft.network.packet.CustomPayload.Id<PoseRequestC2SPayload>(id)
-        val packetCodec =
+        val packetCodec: net.minecraft.network.codec.PacketCodec<PacketByteBuf, PoseRequestC2SPayload> =
             net.minecraft.network.packet.CustomPayload.codecOf(PoseRequestC2SPayload::write, ::PoseRequestC2SPayload)
 
         init {

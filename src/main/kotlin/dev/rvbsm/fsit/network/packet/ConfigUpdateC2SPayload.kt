@@ -19,7 +19,7 @@ data class ConfigUpdateC2SPayload(val config: ModConfig) : CustomPayload(packetI
         val packetId = net.fabricmc.fabric.api.networking.v1.PacketType.create(id, ::ConfigUpdateC2SPayload)
         *//*?} else {*/
         val packetId = net.minecraft.network.packet.CustomPayload.Id<ConfigUpdateC2SPayload>(id)
-        val packetCodec =
+        val packetCodec: net.minecraft.network.codec.PacketCodec<PacketByteBuf, ConfigUpdateC2SPayload> =
             net.minecraft.network.packet.CustomPayload.codecOf(ConfigUpdateC2SPayload::write, ::ConfigUpdateC2SPayload)
 
         init {
