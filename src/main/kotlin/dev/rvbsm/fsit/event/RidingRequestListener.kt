@@ -7,6 +7,7 @@ import dev.rvbsm.fsit.network.trySend
 import dev.rvbsm.fsit.util.plus
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
@@ -14,7 +15,6 @@ import net.minecraft.util.ActionResult
 import java.util.*
 
 private const val TIMEOUT = 5000L
-
 private val scope = CoroutineScope(Dispatchers.IO)
 private val requests = mutableMapOf<UUID, Channel<Boolean>>()
 
@@ -51,18 +51,25 @@ private fun sendRequests(player: ServerPlayerEntity, target: ServerPlayerEntity)
     target.trySend(RidingRequestS2CPayload(player.uuid)) { channel.trySend(true) }
 
     scope.launch {
-        withTimeoutOrNull(TIMEOUT) {
+        player.startRiding(target, channel)
+        requests.remove(player.uuid + target.uuid)
+    }
+}
+
+private suspend fun ServerPlayerEntity.startRiding(target: ServerPlayerEntity, channel: ReceiveChannel<Boolean>) =
+    withTimeout(TIMEOUT) {
             val playerResult = channel.receive()
             val targetResult = channel.receive()
 
-            if (playerResult && player.isAlive && targetResult && target.isAlive) {
+            if (playerResult && isAlive && targetResult && target.isAlive) {
                 ensureActive()
-                player.startRiding(target)
-                target.networkHandler.sendPacket(EntityPassengersSetS2CPacket(target))
+
+                server.execute {
+                    startRiding(target)
+                    target.networkHandler.sendPacket(EntityPassengersSetS2CPacket(target))
+                }
             }
-        }
-    }.invokeOnCompletion { requests.remove(player.uuid + target.uuid) }
-}
+    }
 
 private fun ServerPlayerEntity.shouldCancelRiding() = shouldCancelInteraction() || isSpectator || hasPassengers()
 
