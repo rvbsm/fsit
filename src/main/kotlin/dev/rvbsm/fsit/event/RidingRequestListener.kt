@@ -47,8 +47,8 @@ private fun sendRequests(player: ServerPlayerEntity, target: ServerPlayerEntity)
     val channel = Channel<Boolean>(capacity = 2)
     requests[player.uuid + target.uuid] = channel
 
-    player.trySend(RidingRequestS2CPayload(target.uuid))
-    target.trySend(RidingRequestS2CPayload(player.uuid))
+    player.trySend(RidingRequestS2CPayload(target.uuid)) { channel.trySend(true) }
+    target.trySend(RidingRequestS2CPayload(player.uuid)) { channel.trySend(true) }
 
     scope.launch {
         withTimeoutOrNull(TIMEOUT) {
