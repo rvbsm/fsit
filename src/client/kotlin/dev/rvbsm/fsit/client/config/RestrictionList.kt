@@ -10,22 +10,18 @@ import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import java.util.*
-import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
 private val restrictionConfigPath = FabricLoader.getInstance().configDir.resolve("$MOD_ID.restrictions.json")
 
 object RestrictionList {
-    private val restrictedPlayers = mutableSetOf<@Serializable(UUIDSerializer::class) UUID>()
+    private lateinit var restrictedPlayers: MutableSet<@Serializable(UUIDSerializer::class) UUID>
 
     @JvmStatic
-    fun add(uuid: UUID) = restrictedPlayers.add(uuid).also { _ ->
+    fun add(uuid: UUID) = restrictedPlayers.add(uuid).also {
+        trySendUpdate(uuid)
         save()
-
-        MinecraftClient.getInstance().player?.takeIf { player ->
-            player.hasPassenger { it.uuid == uuid }
-        }?.also { FSitModClient.trySend(RidingResponseC2SPayload(uuid, false)) }
     }
 
     @JvmStatic
@@ -34,11 +30,20 @@ object RestrictionList {
     @JvmStatic
     fun isRestricted(uuid: UUID) = restrictedPlayers.contains(uuid)
 
+    private fun trySendUpdate(uuid: UUID) {
+        val player = MinecraftClient.getInstance().player ?: return
+        if (player.hasPassenger { it.uuid == uuid }) {
+            FSitModClient.trySend(RidingResponseC2SPayload(uuid, false))
+        }
+    }
+
     private fun save() = restrictionConfigPath.writeText(Json.encodeToString(restrictedPlayers))
 
     fun load() {
-        if (restrictionConfigPath.exists()) {
-            restrictedPlayers.addAll(Json.decodeFromString(restrictionConfigPath.readText()))
-        } else save()
+        restrictedPlayers = runCatching {
+            Json.decodeFromString<MutableSet<UUID>>(restrictionConfigPath.readText())
+        }.getOrElse { mutableSetOf() }
+
+        save()
     }
 }
