@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.3.4
+
+### Fixed
+
+- Non-modded clients couldn't ride other players
+- Minecraft client crashes during launch if `fsit.restrictions.json` doesn't exist
+
 ## v2.3.3
 
 ### Fixed
