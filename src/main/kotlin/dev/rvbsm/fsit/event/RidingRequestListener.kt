@@ -4,7 +4,7 @@ import dev.rvbsm.fsit.network.config
 import dev.rvbsm.fsit.network.packet.RidingRequestS2CPayload
 import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
 import dev.rvbsm.fsit.network.trySend
-import dev.rvbsm.fsit.util.plus
+import dev.rvbsm.fsit.util.xor
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -31,7 +31,7 @@ internal val StartRidingListener = PassedUseEntityCallback interact@{ player, _,
         return@interact ActionResult.PASS
     }
 
-    if (player.uuid + target.uuid !in requests) {
+    if (player.uuid xor target.uuid !in requests) {
         sendRequests(player, target)
     }
 
@@ -45,30 +45,29 @@ internal val RidingServerStoppingEvent = ServerLifecycleEvents.ServerStopping {
 
 private fun sendRequests(player: ServerPlayerEntity, target: ServerPlayerEntity) {
     val channel = Channel<Boolean>(capacity = 2)
-    requests[player.uuid + target.uuid] = channel
+    requests[player.uuid xor target.uuid] = channel
 
     player.trySend(RidingRequestS2CPayload(target.uuid)) { channel.trySend(true) }
     target.trySend(RidingRequestS2CPayload(player.uuid)) { channel.trySend(true) }
 
     scope.launch {
         player.startRiding(target, channel)
-        requests.remove(player.uuid + target.uuid)
-    }
+    }.invokeOnCompletion { requests.remove(player.uuid xor target.uuid)?.cancel() }
 }
 
 private suspend fun ServerPlayerEntity.startRiding(target: ServerPlayerEntity, channel: ReceiveChannel<Boolean>) =
     withTimeout(TIMEOUT) {
-            val playerResult = channel.receive()
-            val targetResult = channel.receive()
+        val playerResult = channel.receive()
+        val targetResult = channel.receive()
 
-            if (playerResult && isAlive && targetResult && target.isAlive) {
-                ensureActive()
+        if (playerResult && isAlive && targetResult && target.isAlive) {
+            ensureActive()
 
-                server.execute {
-                    startRiding(target)
-                    target.networkHandler.sendPacket(EntityPassengersSetS2CPacket(target))
-                }
+            server.execute {
+                startRiding(target)
+                target.networkHandler.sendPacket(EntityPassengersSetS2CPacket(target))
             }
+        }
     }
 
 private fun ServerPlayerEntity.shouldCancelRiding() = shouldCancelInteraction() || isSpectator || hasPassengers()
@@ -77,5 +76,5 @@ private fun ServerPlayerEntity.canStartRiding(other: ServerPlayerEntity) =
     this != other && uuid != other.uuid && !shouldCancelRiding() && !other.shouldCancelRiding()
 
 internal fun RidingResponseC2SPayload.completeRideRequest(player: ServerPlayerEntity) {
-    requests[player.uuid + uuid]?.trySend(response.isAccepted)
+    requests[player.uuid xor uuid]?.trySend(response.isAccepted)
 }
