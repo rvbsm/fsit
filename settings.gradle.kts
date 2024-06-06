@@ -1,17 +1,18 @@
-import dev.kikugie.stonecutter.gradle.StonecutterSettings
+import dev.kikugie.stonecutter.StonecutterSettings
 
 rootProject.name = "fsit"
 
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven("https://maven.fabricmc.net/")
+        maven("https://maven.fabricmc.net")
         maven("https://maven.kikugie.dev/releases")
+        maven("https://maven.kikugie.dev/snapshots")
     }
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.3.5"
+    id("dev.kikugie.stonecutter") version "0.4-beta.2"
 }
 
 extensions.configure<StonecutterSettings> {
