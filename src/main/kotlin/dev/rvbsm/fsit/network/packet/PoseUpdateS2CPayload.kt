@@ -17,16 +17,16 @@ data class PoseUpdateS2CPayload(val pose: PlayerPose, val pos: Vec3d) : CustomPa
     companion object {
         private val id = FSitMod.id("pose_sync")
 
-        /*? if <=1.20.4 {*//*
+        //? if <=1.20.4
         val packetId = net.fabricmc.fabric.api.networking.v1.PacketType.create(id, ::PoseUpdateS2CPayload)
-        *//*?} else {*/
-        val packetId = net.minecraft.network.packet.CustomPayload.Id<PoseUpdateS2CPayload>(id)
+        /*? if >1.20.4 {*/
+        /*val packetId = net.minecraft.network.packet.CustomPayload.Id<PoseUpdateS2CPayload>(id)
         val packetCodec: net.minecraft.network.codec.PacketCodec<PacketByteBuf, PoseUpdateS2CPayload> =
             net.minecraft.network.packet.CustomPayload.codecOf(PoseUpdateS2CPayload::write, ::PoseUpdateS2CPayload)
 
         init {
             net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playS2C().register(packetId, packetCodec)
         }
-        /*?} */
+        *//*?}*/
     }
 }

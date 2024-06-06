@@ -34,11 +34,10 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) : Entity(En
         }
     }
 
-    /*? if <=1.20.4 {*//*
+    //? if <=1.20.4
     override fun initDataTracker() = Unit
-    *//*?} else {*/
-    override fun initDataTracker(builder: net.minecraft.entity.data.DataTracker.Builder) = Unit
-    /*?} */
+    //? if >1.20.4
+    /*override fun initDataTracker(builder: net.minecraft.entity.data.DataTracker.Builder) = Unit*/
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) = Unit
     override fun writeCustomDataToNbt(nbt: NbtCompound) = Unit

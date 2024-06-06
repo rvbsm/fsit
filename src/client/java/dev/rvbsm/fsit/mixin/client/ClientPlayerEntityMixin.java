@@ -13,10 +13,10 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
         super(world, pos, yaw, gameProfile);
     }
 
-    /*? if <=1.20.1 {*//*
+    /*? if <=1.20.1 {*/
     @Override
     public double getMountedHeightOffset() {
         return this.getHeight();
     }
-    *//*?} */
+    /*?}*/
 }
