@@ -27,10 +27,10 @@ internal fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg ids: Strin
     RegistryLinkedHashSet(registry, *ids)
 
 internal fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg entries: E) =
-    dev.rvbsm.fsit.registry.registrySetOf(registry, *entries.asIds(registry))
+    registrySetOf(registry, *entries.asIds(registry))
 
 internal fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg tags: TagKey<E>) =
-    dev.rvbsm.fsit.registry.registrySetOf(registry, *tags.asIds())
+    registrySetOf(registry, *tags.asIds())
 
 internal fun registrySetOf(vararg blocks: Block) = registrySetOf(Registries.BLOCK, *blocks)
 internal fun registrySetOf(vararg tags: TagKey<Block>) = registrySetOf(Registries.BLOCK, *tags)

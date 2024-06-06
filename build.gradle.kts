@@ -18,6 +18,7 @@ plugins {
 private class ModMetadata {
     val modVersion = gitDetails.lastTag.dropFirstIf('v')
     val minecraftVersion = stonecutter.current.version
+    val minecraftProjectVersion = stonecutter.current.project
 
     val javaVersion = "${property("java.version")}".toInt(10)
 
@@ -31,9 +32,9 @@ private class ModMetadata {
 
 private class ModLibraries(metadata: ModMetadata) {
     private val fabricYarnBuild = "${property("fabric.yarn_build")}"
-    val fabricApiVersion = "${property("fabric.api")}+${metadata.minecraftVersion}"
+    val fabricApiVersion = "${property("fabric.api")}+${metadata.minecraftProjectVersion}"
     private val modmenuVersion = "${property("api.modmenu")}"
-    private val yaclVersion = "${property("api.yacl")}"
+    private val yaclVersion = "${property("api.yacl")}+${metadata.minecraftProjectVersion}"
 
     val minecraft = "com.mojang:minecraft:${metadata.minecraftVersion}"
     val fabricYarn = "net.fabricmc:yarn:${metadata.minecraftVersion}+build.$fabricYarnBuild:v2"
@@ -87,14 +88,17 @@ repositories {
     mavenCentral()
     maven("https://maven.terraformersmc.com/releases")
     maven("https://maven.isxander.dev/releases")
+    maven("https://maven.isxander.dev/snapshots")
 }
 
 dependencies {
     minecraft(modLibs.minecraft)
     mappings(modLibs.fabricYarn)
 
-    modImplementation(libs.bundles.fabric)
+    modImplementation(libs.fabric.loader)
+    modImplementation(libs.fabric.kotlin)
     modLibs.fabricApi.forEach(::modImplementation)
+    modLocalRuntime(fabricApi.module("fabric-screen-api-v1", modLibs.fabricApiVersion)) // idk why it complains
 
     modImplementation(modLibs.modmenu)
     modImplementation(modLibs.yacl) {
@@ -107,16 +111,15 @@ dependencies {
 
 tasks {
     processResources {
-        inputs.property("version", "$version")
-        inputs.property("minecraftTarget", modMetadata.minecraftTarget)
-        inputs.property("javaTarget", modMetadata.javaVersion)
+        val properties = mapOf(
+            "version" to "$version",
+            "minecraftTarget" to modMetadata.minecraftTarget,
+            "javaTarget" to modMetadata.javaVersion,
+        )
 
+        inputs.properties(properties)
         filesMatching("fabric.mod.json") {
-            expand(
-                "version" to version,
-                "minecraftTarget" to modMetadata.minecraftTarget,
-                "javaTarget" to modMetadata.javaVersion,
-            )
+            expand(properties)
         }
     }
 

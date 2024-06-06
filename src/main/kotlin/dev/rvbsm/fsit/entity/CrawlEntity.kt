@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityType
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
@@ -50,7 +51,7 @@ class CrawlEntity(private val player: ServerPlayerEntity) : Entity(EntityType.SH
         fun create(player: ServerPlayerEntity) {
             val crawlEntity = CrawlEntity(player)
 
-            player.networkHandler.sendPacket(crawlEntity.createSpawnPacket())
+            player.networkHandler.sendPacket(EntitySpawnS2CPacket(crawlEntity, 0, crawlEntity.blockPos))
             player.networkHandler.sendPacket(
                 EntityTrackerUpdateS2CPacket(
                     crawlEntity.id, crawlEntity.dataTracker.dirtyEntries

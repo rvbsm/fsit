@@ -1,9 +1,9 @@
 [versions]
-kotlin = "1.9.24"
+kotlin = "1.9.22"
 
-fabric-loader = "0.15.11"
-fabric-kotlin = "1.10.20+kotlin.1.9.24"
 fabric-loom = "1.6-SNAPSHOT"
+fabric-loader = "0.15.11"
+fabric-kotlin = "1.10.18+kotlin.1.9.22"
 
 kaml = "0.54.0"
 snakeyaml = "2.6"
@@ -20,7 +20,6 @@ kaml = { module = "com.charleskorn.kaml:kaml-jvm", version.ref = "kaml" }
 snakeyaml-engine = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml" }
 
 [bundles]
-fabric = ["fabric-loader", "fabric-kotlin"]
 kaml = ["kaml", "snakeyaml-engine"]
 
 [plugins]

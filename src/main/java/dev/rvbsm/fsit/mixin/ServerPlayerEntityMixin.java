@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -100,7 +101,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
         if (passenger.isPlayer()) {
             if (this.wasPassengerHidden) {
                 this.wasPassengerHidden = false;
-                this.networkHandler.sendPacket(passenger.createSpawnPacket());
+                this.networkHandler.sendPacket(new EntitySpawnS2CPacket(passenger, 0, passenger.getBlockPos()));
             }
             this.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(this));
         }
@@ -177,7 +178,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
         if (hidePassenger && !this.wasPassengerHidden) {
             this.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(passenger.getId()));
         } else if (!hidePassenger && this.wasPassengerHidden) {
-            this.networkHandler.sendPacket(passenger.createSpawnPacket());
+            this.networkHandler.sendPacket(new EntitySpawnS2CPacket(passenger, 0, passenger.getBlockPos()));
             this.networkHandler.sendPacket(new EntityPassengersSetS2CPacket(this));
         }
 
