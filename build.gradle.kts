@@ -22,10 +22,10 @@ private class ModMetadata {
 
     val javaVersion = "${property("java.version")}".toInt(10)
 
-    val minecraftTargetStart = "${property("minecraft.target.start")}"
-    val minecraftTargetEnd = "${property("minecraft.target.end")}"
-    val minecraftTarget =
-        ">=$minecraftTargetStart-" + (" <=$minecraftTargetEnd".takeUnless { minecraftTargetEnd == "latest" } ?: "")
+    val minecraftTarget = "${property("minecraft.target")}".split(' ')
+    val fabricMinecraftTarget = minecraftTarget.let {
+        ">=${it.first()}" + " <=${it.last()}".takeUnless { _ -> it.first() == it.last() }.orEmpty()
+    }
 
     val modrinthId = "${property("mod.modrinth_id")}"
 }
@@ -56,7 +56,7 @@ private val modMetadata = ModMetadata()
 private val modLibs = ModLibraries(modMetadata)
 
 version = "${modMetadata.modVersion}+${modMetadata.minecraftVersion}" + gitDetails.let { details ->
-    "-${details.gitHash}-${details.commitDistance}".takeIf { details.commitDistance > 0 } ?: ""
+    "-${details.gitHash}-${details.commitDistance}".takeIf { details.commitDistance > 0 }.orEmpty()
 }
 group = "dev.rvbsm"
 base.archivesName = rootProject.name
@@ -113,7 +113,7 @@ tasks {
     processResources {
         val properties = mapOf(
             "version" to "$version",
-            "minecraftTarget" to modMetadata.minecraftTarget,
+            "minecraftTarget" to modMetadata.fabricMinecraftTarget,
             "javaTarget" to modMetadata.javaVersion,
         )
 
@@ -156,10 +156,7 @@ publishMods {
         projectId = modMetadata.modrinthId
         featured = true
 
-        minecraftVersionRange {
-            start = modMetadata.minecraftTargetStart
-            end = modMetadata.minecraftTargetEnd
-        }
+        minecraftVersions.addAll(modMetadata.minecraftTarget)
 
         requires("fabric-api", "fabric-language-kotlin")
         optional("modmenu", "yacl")
