@@ -10,6 +10,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
       - uses: actions/setup-java@v4
         with:
           java-version: 21
@@ -34,4 +36,9 @@ jobs:
         with:
           name: 1.20.6
           path: versions/1.20.6/build/libs/*.jar
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 1.21
+          path: versions/1.21/build/libs/*.jar
           if-no-files-found: error
