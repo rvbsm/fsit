@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.4.0
+
+Minecraft Tricky Trials Update 
+
+### Fixed
+
+- After dismounting a player, equipment was desynced for other clients
+
 ## v2.3.4
 
 ### Fixed
