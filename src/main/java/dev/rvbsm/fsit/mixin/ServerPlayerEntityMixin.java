@@ -1,7 +1,6 @@
 package dev.rvbsm.fsit.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.datafixers.util.Pair;
 import dev.rvbsm.fsit.FSitMod;
 import dev.rvbsm.fsit.api.ConfigurableEntity;
 import dev.rvbsm.fsit.api.Crawlable;
@@ -12,38 +11,23 @@ import dev.rvbsm.fsit.entity.PlayerPose;
 import dev.rvbsm.fsit.event.UpdatePoseCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.server.network.EntityTrackerEntry;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerChunkManager;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Consumer;
-
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ConfigurableEntity, Crawlable, ServerPlayerClientVelocity {
-    @Shadow
-    public ServerPlayNetworkHandler networkHandler;
-
     @Unique
     private @Nullable ModConfig config;
     @Unique
@@ -111,7 +95,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
 
         if (passenger.isPlayer()) {
             this.wasPassengerHidden = false;
-            this.showPlayerPassenger((PlayerEntity) passenger);
+            this.showPlayerPassenger((ServerPlayerEntity) passenger);
         }
     }
 
@@ -180,6 +164,17 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     }
 
     @Unique
+    private static EntityTrackerEntry getEntityTrackerEntry(@NotNull ServerPlayerEntity player) {
+        final ServerWorld serverWorld = player.getServerWorld();
+        final ServerChunkManager serverChunkManager = serverWorld.getChunkManager();
+        //? if <1.21-rc.1
+        final var chunkStorage = (ChunkStorageAccessor) serverChunkManager.threadedAnvilChunkStorage;
+        //? if >=1.21-rc.1
+        /*final var chunkStorage = (ChunkStorageAccessor) serverChunkManager.chunkLoadingManager;*/
+        return chunkStorage.getEntityTrackers().get(player.getId()).getEntry();
+    }
+
+    @Unique
     private void playerPassengerTick(@NotNull ServerPlayerEntity passenger) {
         final boolean hidePassenger = this.isSneaking() || this.getPitch() > 0;
 
@@ -192,44 +187,19 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
         this.wasPassengerHidden = hidePassenger;
     }
 
-    /**
-     * @see EntityTrackerEntry#sendPackets(ServerPlayerEntity, Consumer)
-     */
     @Unique
-    private void showPlayerPassenger(@NotNull PlayerEntity player) {
-        final List<Packet<ClientPlayPacketListener>> packets = new ArrayList<>();
-        packets.add(new PlayerSpawnS2CPacket(player));
-
-        final Collection<EntityAttributeInstance> attributes = player.getAttributes().getAttributesToSend();
-        if (!attributes.isEmpty()) {
-            packets.add(new EntityAttributesS2CPacket(player.getId(), attributes));
+    private void showPlayerPassenger(@NotNull ServerPlayerEntity player) {
+        final EntityTrackerEntry trackerEntry = getEntityTrackerEntry(player);
+        if (trackerEntry != null) {
+            trackerEntry.startTracking((ServerPlayerEntity) (Object) this);
         }
-
-        final List<Pair<EquipmentSlot, ItemStack>> equipment = new ArrayList<>();
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
-            final ItemStack itemStack = player.getEquippedStack(slot);
-            if (!itemStack.isEmpty()) {
-                equipment.add(Pair.of(slot, itemStack.copy()));
-            }
-        }
-
-        if (!equipment.isEmpty()) {
-            packets.add(new EntityEquipmentUpdateS2CPacket(player.getId(), equipment));
-        }
-
-        if (player.hasPassengers()) {
-            packets.add(new EntityPassengersSetS2CPacket(player));
-        }
-
-        if (player.getVehicle() != null) {
-            packets.add(new EntityPassengersSetS2CPacket(this));
-        }
-
-        this.networkHandler.sendPacket(new BundleS2CPacket(packets));
     }
 
     @Unique
-    private void hidePlayerPassenger(@NotNull PlayerEntity player) {
-        this.networkHandler.sendPacket(new EntitiesDestroyS2CPacket(player.getId()));
+    private void hidePlayerPassenger(@NotNull ServerPlayerEntity player) {
+        final EntityTrackerEntry trackerEntry = getEntityTrackerEntry(player);
+        if (trackerEntry != null) {
+            trackerEntry.stopTracking((ServerPlayerEntity) (Object) this);
+        }
     }
 }

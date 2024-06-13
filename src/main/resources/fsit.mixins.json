@@ -3,6 +3,8 @@
   "package": "dev.rvbsm.fsit.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ChunkStorageAccessor",
+    "ChunkStorageAccessor$EntityTrackerAccessor",
     "PlayerEntityMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayNetworkHandlerMixin",
