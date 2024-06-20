@@ -2,14 +2,13 @@ package dev.rvbsm.fsit.client.gui.controller
 
 import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.api.utils.Dimension
-import dev.isxander.yacl3.gui.AbstractWidget
 import dev.isxander.yacl3.gui.YACLScreen
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownController
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownControllerElement
 import dev.rvbsm.fsit.registry.find
+import dev.rvbsm.fsit.registry.matchingIdentifiers
 import dev.rvbsm.fsit.util.id
 import dev.rvbsm.fsit.util.literal
-import dev.rvbsm.fsit.registry.matchingIdentifiers
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
@@ -30,9 +29,8 @@ class RegistryController<T>(option: Option<String>, internal val registry: Defau
     override fun getValidValue(value: String, offset: Int) =
         registry.matchingIdentifiers(value).drop(offset).firstOrNull() ?: string
 
-    override fun provideWidget(screen: YACLScreen, widgetDimension: Dimension<Int>): AbstractWidget {
-        return RegistryControllerElement(this, screen, widgetDimension)
-    }
+    override fun provideWidget(screen: YACLScreen, widgetDimension: Dimension<Int>) =
+        RegistryControllerElement(this, screen, widgetDimension)
 }
 
 class RegistryControllerElement<T>(
@@ -53,12 +51,14 @@ class RegistryControllerElement<T>(
         }
     }
 
-    override fun computeMatchingValues(): MutableList<String> {
+    override fun computeMatchingValues(): List<String> {
         val ids = controller.registry.matchingIdentifiers(inputField).toList()
         current = controller.registry.find(inputField)
-        ids.forEach { matching[it] = controller.registry.find(it) ?: controller.registry[it.id()] }
 
-        return ids.toMutableList()
+        matching.clear()
+        matching.putAll(ids.associateWith { (controller.registry.find(it) ?: controller.registry[it.id()]) })
+
+        return ids
     }
 
     override fun renderDropdownEntry(graphics: DrawContext, entryDimension: Dimension<Int>, string: String) {
