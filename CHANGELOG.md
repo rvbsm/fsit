@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.4.1
+
+### Fixed
+
+- Config wasn't saved to a file after saving it in the Mod Menu screen
+
 ## v2.4.0
 
 Minecraft Tricky Trials Update 
