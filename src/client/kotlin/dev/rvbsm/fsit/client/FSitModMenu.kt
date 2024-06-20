@@ -72,14 +72,15 @@ object FSitModMenu : ModMenuApi {
                         descriptionBuilder { addDefaultText(lines = 1) }
                     }
 
-                    groups.register("blocks",
+                    groups.register(
+                        "blocks",
                         ListOption.createBuilder<String>().name("$categoryKey.root.option.blocks".translatable())
                             .description(OptionDescription.of("$categoryKey.root.option.blocks.description".translatable()))
-                            .customController { RegistryController(it, Registries.BLOCK) }
-                            .binding(ModConfig.default.onUse.blocks.toList(),
-                                { FSitMod.config.onUse.blocks.toList() }) {
-                                FSitMod.config.onUse.blocks = it.toRegistrySet(Registries.BLOCK)
-                            }.initial("#slabs").build()
+                            .customController { RegistryController(it, Registries.BLOCK) }.binding(
+                                ModConfig.default.onUse.blocks.toList(),
+                                { FSitMod.config.onUse.blocks.toList() },
+                                { FSitMod.config.onUse.blocks = it.toRegistrySet(Registries.BLOCK) },
+                            ).initial("#slabs").build()
                     )
                 }
 
@@ -105,6 +106,8 @@ object FSitModMenu : ModMenuApi {
                         descriptionBuilder { addDefaultText(lines = 1) }
                     }
                 }
+
+                save { FSitMod.saveConfig() }
             }.generateScreen(screen)
         }
     }
