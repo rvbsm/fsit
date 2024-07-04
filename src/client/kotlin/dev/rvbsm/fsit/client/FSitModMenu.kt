@@ -107,7 +107,7 @@ object FSitModMenu : ModMenuApi {
                     }
                 }
 
-                save { FSitMod.saveConfig() }
+                save { FSitModClient.saveConfig() }
             }.generateScreen(screen)
         }
     }
