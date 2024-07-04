@@ -2,3 +2,5 @@ accessWidener v2 named
 
 accessible class net/minecraft/client/option/GameOptions$Visitor
 accessible class net/minecraft/client/option/SimpleOption$Callbacks
+accessible method net/minecraft/entity/decoration/ArmorStandEntity setMarker (Z)V
+extendable   method net/minecraft/entity/decoration/ArmorStandEntity canClip ()Z
