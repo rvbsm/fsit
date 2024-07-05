@@ -22,7 +22,6 @@ enum class ConfigCommand(
     UseServer({ it::useServer }, BoolArgumentType.bool(), Boolean::class.java),
     ApplyGravityToSeats({ ModConfig::sitting.get(it)::applyGravity }, BoolArgumentType.bool(), Boolean::class.java),
     AllowSittingInAir({ ModConfig::sitting.get(it)::allowInAir }, BoolArgumentType.bool(), Boolean::class.java),
-    HideRider({ ModConfig::riding.get(it)::hideRider }, BoolArgumentType.bool(), Boolean::class.java),
     OnUseSit({ ModConfig::onUse.get(it)::sitting }, BoolArgumentType.bool(), Boolean::class.java),
     OnUseRide({ ModConfig::onUse.get(it)::riding }, BoolArgumentType.bool(), Boolean::class.java),
     OnUseRange({ ModConfig::onUse.get(it)::range }, LongArgumentType.longArg(1, 4), Long::class.java),

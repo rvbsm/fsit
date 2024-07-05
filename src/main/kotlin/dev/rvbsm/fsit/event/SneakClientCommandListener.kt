@@ -1,6 +1,7 @@
 package dev.rvbsm.fsit.event
 
 import dev.rvbsm.fsit.entity.PlayerPose
+import dev.rvbsm.fsit.entity.RideEntity
 import dev.rvbsm.fsit.network.config
 import dev.rvbsm.fsit.network.setPose
 import kotlinx.coroutines.*
@@ -14,6 +15,10 @@ private val scope = CoroutineScope(Dispatchers.IO)
 private val sneaks = mutableMapOf<UUID, Job>()
 
 val ClientCommandSneakListener = ClientCommandCallback onClientCommand@{ player, mode ->
+    if (mode == ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY && player.firstPassenger is RideEntity) {
+        return@onClientCommand player.removeAllPassengers()
+    }
+
     if (mode != ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY || !player.isOnGround) return@onClientCommand
 
     val config = player.config.onDoubleSneak.takeUnless { !it.sitting && !it.crawling } ?: return@onClientCommand

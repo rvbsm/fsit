@@ -1,5 +1,6 @@
 package dev.rvbsm.fsit.network
 
+import dev.rvbsm.fsit.entity.RideEntity
 import dev.rvbsm.fsit.event.completeRideRequest
 import dev.rvbsm.fsit.network.FSitServerNetworking.receive
 import dev.rvbsm.fsit.network.packet.ConfigUpdateC2SPayload
@@ -7,11 +8,8 @@ import dev.rvbsm.fsit.network.packet.PoseRequestC2SPayload
 import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.server.network.ServerPlayerEntity
-import org.slf4j.LoggerFactory
 
 object FSitServerNetworking {
-    private val logger = LoggerFactory.getLogger(FSitServerNetworking::class.java)
-
     fun register() {
         ServerPlayNetworking.registerGlobalReceiver(ConfigUpdateC2SPayload.packetId, ConfigUpdateC2SPayload::receive)
         ServerPlayNetworking.registerGlobalReceiver(PoseRequestC2SPayload.packetId, PoseRequestC2SPayload::receive)
@@ -29,7 +27,7 @@ object FSitServerNetworking {
     }
 
     internal fun RidingResponseC2SPayload.receive(player: ServerPlayerEntity) {
-        if (!response.isAccepted && player.hasPassenger { it.uuid == uuid }) {
+        if (!response.isAccepted && player.hasPassenger { (it as? RideEntity)?.isBelongsTo(uuid) == true }) {
             player.removeAllPassengers()
         }
 

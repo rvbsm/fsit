@@ -2,13 +2,13 @@ package dev.rvbsm.fsit.entity
 
 import dev.rvbsm.fsit.network.clientVelocity
 import dev.rvbsm.fsit.network.config
+import dev.rvbsm.fsit.util.literal
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityPose
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 
@@ -28,7 +28,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
         isCustomNameVisible = false
         isMarker = true
 
-        customName = Text.literal("FSit_SeatEntity")
+        customName = "FSit_SeatEntity".literal()
 
         if (config.sitting.applyGravity) {
             velocity = player.clientVelocity
@@ -45,22 +45,17 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
         }
     }
 
-    // note: height of the boat
+    // note: height of the player
     //? if <1.20.6
     override fun getDimensions(pose: EntityPose): EntityDimensions = player.getDimensions(player.pose)
     //? if >=1.20.6
     /*override fun getBaseDimensions(pose: EntityPose): EntityDimensions = player.getDimensions(player.pose)*/
 
     override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d = pos
-
     override fun getPistonBehavior() = PistonBehavior.NORMAL
-
     override fun hasPlayerRider() = false
-
     override fun shouldSave() = false
-
     override fun hasNoGravity() = !config.sitting.applyGravity
-
     override fun canClip() = !this.hasNoGravity()
 
     companion object {

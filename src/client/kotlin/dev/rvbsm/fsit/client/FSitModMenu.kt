@@ -38,16 +38,6 @@ object FSitModMenu : ModMenuApi {
                             descriptionBuilder { addDefaultText(lines = 1) }
                         }
                     }
-
-                    val riding by groups.registering {
-                        descriptionBuilder { addDefaultText(lines = 1) }
-
-                        val hideRider by options.registering {
-                            controller = tickBox()
-                            binding(FSitMod.config.riding::hideRider, ModConfig.default.riding.hideRider)
-                            descriptionBuilder { addDefaultText(lines = 1) }
-                        }
-                    }
                 }
 
                 val onUse by categories.registering {

@@ -1,6 +1,7 @@
 package dev.rvbsm.fsit.entity
 
 import dev.rvbsm.fsit.network.setCrawl
+import dev.rvbsm.fsit.util.literal
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.nbt.NbtCompound
@@ -9,12 +10,10 @@ import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
 
 // todo: hide shulker's head somehow 😥
 class CrawlEntity(private val player: ServerPlayerEntity) : Entity(EntityType.SHULKER, player.world) {
-    private val crawlPos
-        get() = player.blockPos.toCenterPos()
+    private val crawlPos get() = player.blockPos.toCenterPos()
 
     init {
         setPosition(crawlPos)
@@ -24,7 +23,7 @@ class CrawlEntity(private val player: ServerPlayerEntity) : Entity(EntityType.SH
         isInvulnerable = true
         isCustomNameVisible = false
 
-        customName = Text.literal("FSit_CrawlEntity")
+        customName = "FSit_CrawlEntity".literal()
     }
 
     //? if <=1.20.4

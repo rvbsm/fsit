@@ -32,7 +32,6 @@ data class ModConfig(
     @YamlComment("Whether to use the server-side configuration.")
     var useServer: Boolean = false,
     val sitting: Sitting = Sitting(),
-    val riding: Riding = Riding(),
     val onUse: OnUse = OnUse(),
     val onDoubleSneak: OnDoubleSneak = OnDoubleSneak()
 ) {
@@ -80,12 +79,6 @@ data class Sitting(
     var applyGravity: Boolean = true,
     @YamlComment("Allows sitting even if not standing on a solid block.")
     var allowInAir: Boolean = false,
-)
-
-@Serializable
-data class Riding(
-    @YamlComment("Whether to hide a player's rider when the player is not looking at him.")
-    var hideRider: Boolean = true,
 )
 
 @Serializable

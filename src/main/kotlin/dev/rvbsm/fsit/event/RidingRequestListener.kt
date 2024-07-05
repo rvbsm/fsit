@@ -1,5 +1,6 @@
 package dev.rvbsm.fsit.event
 
+import dev.rvbsm.fsit.entity.RideEntity
 import dev.rvbsm.fsit.network.config
 import dev.rvbsm.fsit.network.packet.RidingRequestS2CPayload
 import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
@@ -64,7 +65,7 @@ private suspend fun ServerPlayerEntity.startRiding(target: ServerPlayerEntity, c
             ensureActive()
 
             server.execute {
-                startRiding(target)
+                RideEntity.create(this@startRiding, target)
                 target.networkHandler.sendPacket(EntityPassengersSetS2CPacket(target))
             }
         }
