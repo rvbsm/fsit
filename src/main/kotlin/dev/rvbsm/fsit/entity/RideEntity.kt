@@ -18,7 +18,6 @@ class RideEntity(private val player: ServerPlayerEntity) :
         radius = 0f
         duration = Int.MAX_VALUE
 
-        setUuid(player.uuid)
         customName = "FSit_RideEntity".literal()
     }
 
