@@ -5,7 +5,7 @@ import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.config.serialization.UUIDSerializer
 import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
+import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
@@ -37,7 +37,8 @@ object RestrictionList {
         }
     }
 
-    private fun save() = restrictionConfigPath.writeText(Json.encodeToString(restrictedPlayers))
+    private fun save() =
+        restrictionConfigPath.writeText(Json.encodeToString(SetSerializer(UUIDSerializer), restrictedPlayers))
 
     fun load() {
         restrictedPlayers = runCatching {
