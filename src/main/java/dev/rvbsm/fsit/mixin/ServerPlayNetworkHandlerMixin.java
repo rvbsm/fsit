@@ -13,12 +13,14 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.UseAction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -38,7 +40,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
     @ModifyVariable(method = "onPlayerInteractBlock", at = @At("STORE"))
     private ActionResult interactBlock(ActionResult interactionActionResult, @Local ServerWorld world, @Local LocalRef<Hand> handRef, @Local BlockHitResult blockHitResult) {
-        if (handRef.get() == Hand.OFF_HAND && interactionActionResult == ActionResult.PASS) {
+        if (interactionActionResult == ActionResult.PASS && isHandPassable(player, handRef.get())) {
             handRef.set(Hand.MAIN_HAND);
 
             return PassedUseBlockCallback.EVENT.invoker().interactBlock(player, world, blockHitResult);
@@ -71,7 +73,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
         // note: idk why there are errors here. mcdev being dumb
         @ModifyVariable(method = "processInteract", at = @At("STORE"))
         private ActionResult interactPlayer(ActionResult interactionActionResult, @Local LocalRef<Hand> handRef) {
-            if (handRef.get() == Hand.OFF_HAND && interactionActionResult == ActionResult.PASS) {
+            if (interactionActionResult == ActionResult.PASS && isHandPassable(field_28963.player, handRef.get())) {
                 handRef.set(Hand.MAIN_HAND);
 
                 return PassedUseEntityCallback.EVENT.invoker().interactEntity(field_28963.player, field_39991, field_28962);
@@ -79,5 +81,10 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
             return interactionActionResult;
         }
+    }
+
+    @Unique
+    private static boolean isHandPassable(ServerPlayerEntity player, Hand hand) {
+        return hand == Hand.OFF_HAND && player.getStackInHand(hand).getUseAction() == UseAction.NONE;
     }
 }
