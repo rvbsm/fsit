@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.5.0
+
+### Changed
+
+- Armor stand markers now used as the seat entities (Geyser compatibility)
+- Area effect cloud used as the _seat_ when riding other players to prevent view obstruction
+- Dismount rider from you by sneaking (previously by attack)
+
+### Fixed
+
+- Config wasn't synced to the server after saving it in the Mod Menu screen
+
+### Removed
+
+- `riding.hide_rider` option as not needed anymore
+
 ## v2.4.1
 
 ### Fixed
