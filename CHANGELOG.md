@@ -11,6 +11,7 @@
 ### Fixed
 
 - Config wasn't synced to the server after saving it in the Mod Menu screen
+- Tools could be used on use interactions (shouldn't have tho)
 
 ### Removed
 
