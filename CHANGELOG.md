@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.5.1
+
+### Fixed
+
+- Player riding didn't work
+
 ## v2.5.0
 
 ### Changed
