@@ -46,7 +46,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
     }
 
     // note: height of the player
-    //? if <1.20.1 && <1.20.6
+    //? if >=1.20.1 && <1.20.6
     override fun getDimensions(pose: EntityPose): EntityDimensions = player.getDimensions(player.pose)
     //? if >=1.20.6
     /*override fun getBaseDimensions(pose: EntityPose): EntityDimensions = player.getDimensions(player.pose)*/
@@ -54,9 +54,9 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
     //? if >=1.20.1 && <1.20.4
     override fun getMountedHeightOffset() = 0.0
     //? if >=1.20.4 && <1.20.6
-    /*override fun getPassengerAttachmentPos(passenger: Entity, dimensions: EntityDimensions, scaleFactor: Float): Vector3f = Vec3d.ZERO.toVector3f()*/
+    /*override fun getPassengerAttachmentPos(passenger: net.minecraft.entity.Entity, dimensions: EntityDimensions, scaleFactor: Float): org.joml.Vector3f = Vec3d.ZERO.toVector3f()*/
     //? if >=1.20.6
-    /*override fun getPassengerAttachmentPos(passenger: Entity, dimensions: EntityDimensions, scaleFactor: Float): Vec3d = Vec3d.ZERO*/
+    /*override fun getPassengerAttachmentPos(passenger: net.minecraft.entity.Entity, dimensions: EntityDimensions, scaleFactor: Float): Vec3d = Vec3d.ZERO*/
 
     override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d = pos
     override fun getPistonBehavior() = PistonBehavior.NORMAL
