@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.5.2
+
+### Fixed
+
+- Server-side position differed from client-side
+
 ## v2.5.1
 
 ### Fixed
