@@ -115,6 +115,7 @@ tasks {
             "version" to "$version",
             "minecraftTarget" to modMetadata.fabricMinecraftTarget,
             "javaTarget" to modMetadata.javaVersion,
+            "kotlinTarget" to libs.versions.fabric.kotlin.get(),
         )
 
         inputs.properties(properties)
