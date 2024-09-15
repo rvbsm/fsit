@@ -72,6 +72,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     }
 
     @Override
+    public boolean hasPlayerRider() {
+        return false;
+    }
+
+    @Override
     public Vec3d updatePassengerForDismount(LivingEntity passenger) {
         return this.getPos();
     }
