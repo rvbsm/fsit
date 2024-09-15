@@ -25,6 +25,8 @@ class RideEntity(private val player: ServerPlayerEntity) :
         if (firstPassenger == null || vehicle == null) {
             discard()
         }
+
+        yaw = player.yaw
     }
 
     override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d = vehicle?.pos ?: pos

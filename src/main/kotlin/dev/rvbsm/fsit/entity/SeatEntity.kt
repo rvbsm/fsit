@@ -42,6 +42,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
             if (firstPassenger == null || (!config.sitting.allowInAir && hasNoGravity() && !hasGroundCollision)) {
                 discard()
             }
+            yaw = player.yaw
         }
     }
 
