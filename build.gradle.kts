@@ -1,63 +1,51 @@
-import com.palantir.gradle.gitversion.VersionDetails
+import proguard.gradle.ProGuardTask
 
-val gitVersion: groovy.lang.Closure<String> by extra
-val versionDetails: groovy.lang.Closure<VersionDetails> by extra
-
-val gitDetails = versionDetails()
+buildscript {
+    dependencies.classpath("com.guardsquare:proguard-gradle:7.5.0")
+}
 
 plugins {
-    kotlin("jvm") version libs.versions.kotlin
-    kotlin("plugin.serialization") version libs.versions.kotlin
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.plugin.serialization)
 
     alias(libs.plugins.fabric.loom)
     alias(libs.plugins.publish)
-    alias(libs.plugins.git)
-    alias(libs.plugins.machete)
+    alias(libs.plugins.shadow)
 }
 
-private class ModMetadata {
-    val modVersion = gitDetails.lastTag.dropFirstIf('v')
-    val minecraftVersion = stonecutter.current.version
-    val minecraftProjectVersion = stonecutter.current.project
+private val modVersion = "git describe --tags".runCommand()?.dropFirstIf('v')!!
+private val minecraftLeastCompatibleVersion = stonecutter.current.project
+private val minecraftVersion = stonecutter.current.version
+private val isLeastEqualsCurrent = minecraftLeastCompatibleVersion == minecraftVersion
 
-    val javaVersion = "${property("java.version")}".toInt(10)
+private val javaVersion = property("java.version").toString().toInt(10)
+private val modrinthId = property("mod.modrinth_id").toString()
 
-    val minecraftTarget = "${property("minecraft.target")}".split(' ')
-    val fabricMinecraftTarget = minecraftTarget.let {
-        ">=${it.first()}" + " <=${it.last()}".takeUnless { _ -> it.first() == it.last() }.orEmpty()
-    }
-
-    val modrinthId = "${property("mod.modrinth_id")}"
-}
-
-private class ModLibraries(metadata: ModMetadata) {
+private class ModLibraries {
     private val fabricYarnBuild = "${property("fabric.yarn_build")}"
-    val fabricApiVersion = "${property("fabric.api")}+${metadata.minecraftProjectVersion}"
-    private val modmenuVersion = "${property("api.modmenu")}"
-    private val yaclVersion = "${property("api.yacl")}+${metadata.minecraftProjectVersion}"
-
-    val minecraft = "com.mojang:minecraft:${metadata.minecraftVersion}"
-    val fabricYarn = "net.fabricmc:yarn:${metadata.minecraftVersion}+build.$fabricYarnBuild:v2"
-    val fabricApiModules = setOf(
+    private val fabricApiVersion = "${property("fabric.api")}+$minecraftVersion"
+    private val fabricApiModules = setOf(
         "fabric-api-base",
         "fabric-command-api-v2",
         "fabric-key-binding-api-v1",
         "fabric-lifecycle-events-v1",
         "fabric-networking-api-v1",
+
+        "fabric-screen-api-v1", // bruh
     )
-    val fabricApi by lazy {
-        fabricApiModules.map { project.fabricApi.module(it, fabricApiVersion) }
-    }
+    private val modmenuVersion = "${property("api.modmenu")}"
+    private val yaclVersion = "${property("api.yacl")}"
+
+    val minecraft = "com.mojang:minecraft:$minecraftVersion"
+    val fabricYarn = "net.fabricmc:yarn:$minecraftVersion+build.$fabricYarnBuild:v2"
+    val fabricApi by lazy { fabricApiModules.map { project.fabricApi.module(it, fabricApiVersion) } }
     val modmenu = "com.terraformersmc:modmenu:$modmenuVersion"
     val yacl = "dev.isxander:yet-another-config-lib:$yaclVersion-fabric"
 }
 
-private val modMetadata = ModMetadata()
-private val modLibs = ModLibraries(modMetadata)
+private val modLibs = ModLibraries()
 
-version = "${modMetadata.modVersion}+${modMetadata.minecraftVersion}" + gitDetails.let { details ->
-    "-${details.gitHash}-${details.commitDistance}".takeIf { details.commitDistance > 0 }.orEmpty()
-}
+version = "$modVersion+mc$minecraftLeastCompatibleVersion"
 group = "dev.rvbsm"
 base.archivesName = rootProject.name
 
@@ -74,21 +62,18 @@ loom {
         ideConfigGenerated(true)
         runDir = "../../run"
     }
-
-    mixin {
-        useLegacyMixinAp = false
-    }
 }
 
 machete {
     json.enabled = false
 }
 
+val shadowInclude: Configuration by configurations.creating
+
 repositories {
     mavenCentral()
     maven("https://maven.terraformersmc.com/releases")
     maven("https://maven.isxander.dev/releases")
-    maven("https://maven.isxander.dev/snapshots")
 }
 
 dependencies {
@@ -97,25 +82,26 @@ dependencies {
 
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.kotlin)
+
     modLibs.fabricApi.forEach(::modImplementation)
-    modLocalRuntime(fabricApi.module("fabric-screen-api-v1", modLibs.fabricApiVersion)) // idk why it complains
 
     modImplementation(modLibs.modmenu)
     modImplementation(modLibs.yacl) {
         exclude("net.fabricmc.fabric-api", "fabric-api")
     }
 
-    implementation(libs.bundles.kaml)
-    include(libs.bundles.kaml)
+    implementation(libs.kaml)
+    shadowInclude(libs.kaml)
 }
 
 tasks {
     processResources {
         val properties = mapOf(
             "version" to "$version",
-            "minecraftTarget" to modMetadata.fabricMinecraftTarget,
-            "javaTarget" to modMetadata.javaVersion,
-            "kotlinTarget" to libs.versions.fabric.kotlin.get(),
+            "minecraftVersion" to ">=$minecraftLeastCompatibleVersion${
+                " <=$minecraftVersion".takeUnless { isLeastEqualsCurrent }.orEmpty()
+            }",
+            "javaVersion" to javaVersion,
         )
 
         inputs.properties(properties)
@@ -125,19 +111,83 @@ tasks {
     }
 
     jar {
-        from("LICENSE")
+        from("LICENSE") {
+            rename { "${it}_${rootProject.name}" }
+        }
+    }
+
+    shadowJar {
+        from(jar)
+
+        archiveClassifier = "all"
+        configurations = listOf(shadowInclude)
+
+        relocate("it.krzeminski.snakeyaml.engine.kmp", "dev.rvbsm.fsit.lib.snakeyaml-kmp")
+        relocate("com.charleskorn.kaml", "dev.rvbsm.fsit.lib.kaml")
+        relocate("okio", "dev.rvbsm.fsit.lib.okio")
+        relocate("net.thauvin.erik.urlencoder", "dev.rvbsm.fsit.lib.urlencoder")
+
+        exclude("kotlin/**")
+        exclude("kotlinx/**")
+        exclude("org/jetbrains/**")
+
+        exclude("META-INF/com.android.tools/**")
+        exclude("META-INF/maven/**")
+        exclude("META-INF/proguard/**")
+        exclude("META-INF/versions/**")
+        exclude("META-INF/kotlin-*.kotlin_module")
+        exclude("META-INF/kotlinx-*.kotlin_module")
+
+        minimize()
+    }
+
+    remapJar {
+        dependsOn(shadowJar)
+        archiveClassifier = "dev"
+
+        inputFile.set(shadowJar.get().archiveFile)
+    }
+
+    val proguardJar by registering(ProGuardTask::class) {
+        dependsOn(remapJar)
+
+        verbose()
+        dontwarn()
+
+        injars(remapJar)
+        outjars(layout.buildDirectory.file("libs/${rootProject.name}-$version.jar"))
+
+        libraryjars("${System.getProperty("java.home")}/jmods")
+
+        dontobfuscate()
+
+        keepattributes()
+        keepparameternames()
+        keepkotlinmetadata()
+
+        keep("class !dev.rvbsm.fsit.lib.** { *; }")
+
+        // blackd "~ the GOAT"
+        // https://github.com/blackd/Inventory-Profiles/blob/c66b8adf57684d94eb272eb741864e74d78f522f/platforms/fabric-1.21/build.gradle.kts#L254-L257
+        doFirst {
+            libraryjars(configurations.compileClasspath.get().files + configurations.runtimeClasspath.get().files)
+        }
+    }
+
+    build {
+        finalizedBy(proguardJar)
     }
 }
 
 java {
     withSourcesJar()
 
-    sourceCompatibility = enumValues<JavaVersion>()[modMetadata.javaVersion - 1]
-    targetCompatibility = enumValues<JavaVersion>()[modMetadata.javaVersion - 1]
+    sourceCompatibility = enumValues<JavaVersion>()[javaVersion - 1]
+    targetCompatibility = enumValues<JavaVersion>()[javaVersion - 1]
 }
 
 kotlin {
-    jvmToolchain(modMetadata.javaVersion)
+    jvmToolchain(javaVersion)
 }
 
 publishMods {
@@ -145,27 +195,36 @@ publishMods {
     additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
     changelog = providers.environmentVariable("CHANGELOG").orElse("No changelog provided.")
     type = when {
-        "alpha" in modMetadata.modVersion -> ALPHA
-        "beta" in modMetadata.modVersion -> BETA
+        "alpha" in modVersion -> ALPHA
+        "beta" in modVersion -> BETA
         else -> STABLE
     }
-    displayName = "[${modMetadata.minecraftVersion}] v${modMetadata.modVersion}"
+    displayName = "[$minecraftVersion] v$modVersion}"
     modLoaders.addAll("fabric", "quilt")
+
+    dryRun = !providers.environmentVariable("MODRINTH_TOKEN").isPresent
 
     modrinth {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-        projectId = modMetadata.modrinthId
+        projectId = modrinthId
         featured = true
 
-        minecraftVersions.addAll(modMetadata.minecraftTarget)
+        if (isLeastEqualsCurrent) {
+            minecraftVersions.add(minecraftVersion)
+        } else minecraftVersionRange {
+            start = minecraftLeastCompatibleVersion
+            end = minecraftVersion
+        }
 
         requires("fabric-api", "fabric-language-kotlin")
         optional("modmenu", "yacl")
-
-        tasks.getByName("publishModrinth") {
-            dependsOn("optimizeOutputsOfRemapJar")
-        }
     }
 }
 
-fun String.dropFirstIf(char: Char) = if (first() == char) drop(1) else this
+private fun String.dropFirstIf(char: Char) = if (first() == char) drop(1) else this
+
+private fun String.runCommand() = runCatching {
+    ProcessBuilder(split(" "))
+        .start().apply { waitFor(10, TimeUnit.SECONDS) }
+        .inputStream.bufferedReader().readText().trim()
+}.onFailure { it.printStackTrace() }.getOrNull()
