@@ -1,8 +1,8 @@
 package dev.rvbsm.fsit.event
 
 import dev.rvbsm.fsit.entity.PlayerPose
-import dev.rvbsm.fsit.network.config
-import dev.rvbsm.fsit.network.setPose
+import dev.rvbsm.fsit.networking.config
+import dev.rvbsm.fsit.networking.setPose
 import dev.rvbsm.fsit.registry.RegistrySet
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState

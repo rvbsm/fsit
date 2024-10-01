@@ -3,8 +3,8 @@ package dev.rvbsm.fsit.event
 import dev.rvbsm.fsit.entity.CrawlEntity
 import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.entity.SeatEntity
-import dev.rvbsm.fsit.network.*
-import dev.rvbsm.fsit.network.packet.PoseUpdateS2CPayload
+import dev.rvbsm.fsit.networking.*
+import dev.rvbsm.fsit.networking.payload.PoseUpdateS2CPayload
 
 val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
     when (pose) {

@@ -1,9 +1,11 @@
 package dev.rvbsm.fsit.client.config
 
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import dev.rvbsm.fsit.FSitMod.MOD_ID
 import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.config.serialization.UUIDSerializer
-import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
+import dev.rvbsm.fsit.networking.payload.RidingResponseC2SPayload
+import dev.rvbsm.fsit.util.literal
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.json.Json
@@ -15,6 +17,11 @@ import kotlin.io.path.writeText
 
 private val restrictionConfigPath = FabricLoader.getInstance().configDir.resolve("$MOD_ID.restrictions.json")
 
+private val alreadyRestrictedException =
+    SimpleCommandExceptionType("Nothing changed. The player is already restricted".literal())
+private val alreadyAllowedException =
+    SimpleCommandExceptionType("Nothing changed. The player isn't restricted".literal())
+
 object RestrictionList {
     private lateinit var restrictedPlayers: MutableSet<@Serializable(UUIDSerializer::class) UUID>
 
@@ -24,8 +31,16 @@ object RestrictionList {
         save()
     }
 
+    fun addOrThrow(uuid: UUID) = add(uuid).also {
+        if (!it) throw alreadyRestrictedException.create()
+    }
+
     @JvmStatic
     fun remove(uuid: UUID) = restrictedPlayers.remove(uuid).also { save() }
+
+    fun removeOrThrow(uuid: UUID) = remove(uuid).also {
+        if (!it) throw alreadyAllowedException.create()
+    }
 
     @JvmStatic
     fun isRestricted(uuid: UUID) = restrictedPlayers.contains(uuid)

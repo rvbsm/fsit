@@ -1,7 +1,6 @@
 package dev.rvbsm.fsit.entity
 
-import dev.rvbsm.fsit.network.clientVelocity
-import dev.rvbsm.fsit.network.config
+import dev.rvbsm.fsit.networking.config
 import dev.rvbsm.fsit.util.literal
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.entity.EntityDimensions

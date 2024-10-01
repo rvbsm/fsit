@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.client.network
+package dev.rvbsm.fsit.client.networking
 
 import dev.rvbsm.fsit.api.Poseable
 import dev.rvbsm.fsit.entity.PlayerPose

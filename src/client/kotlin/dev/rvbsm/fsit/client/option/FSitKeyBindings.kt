@@ -2,10 +2,10 @@ package dev.rvbsm.fsit.client.option
 
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.FSitModClient
-import dev.rvbsm.fsit.client.network.pose
-import dev.rvbsm.fsit.client.network.setPose
+import dev.rvbsm.fsit.client.networking.pose
+import dev.rvbsm.fsit.client.networking.setPose
 import dev.rvbsm.fsit.entity.PlayerPose
-import dev.rvbsm.fsit.network.packet.PoseRequestC2SPayload
+import dev.rvbsm.fsit.networking.payload.PoseRequestC2SPayload
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.MinecraftClient

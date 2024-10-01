@@ -8,8 +8,15 @@ import dev.rvbsm.fsit.command.configArgument
 import dev.rvbsm.fsit.command.isGameMaster
 import dev.rvbsm.fsit.config.ConfigSerializer
 import dev.rvbsm.fsit.config.ModConfig
+import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.event.*
-import dev.rvbsm.fsit.network.FSitServerNetworking
+import dev.rvbsm.fsit.networking.isInPose
+import dev.rvbsm.fsit.networking.payload.ConfigUpdateC2SPayload
+import dev.rvbsm.fsit.networking.payload.PoseRequestC2SPayload
+import dev.rvbsm.fsit.networking.payload.RidingResponseC2SPayload
+import dev.rvbsm.fsit.networking.receive
+import dev.rvbsm.fsit.networking.resetPose
+import dev.rvbsm.fsit.networking.setPose
 import dev.rvbsm.fsit.util.id
 import dev.rvbsm.fsit.util.literal
 import dev.rvbsm.fsit.util.translatable
@@ -17,6 +24,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.server.command.ServerCommandSource
 
 object FSitMod : ModInitializer {
@@ -37,7 +45,7 @@ object FSitMod : ModInitializer {
     override fun onInitialize() = runBlocking {
         loadConfig()
 
-        FSitServerNetworking.register()
+        registerPayloads()
 
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerStoppingListener)
 
@@ -47,6 +55,14 @@ object FSitMod : ModInitializer {
         UpdatePoseCallback.EVENT.register(UpdatePoseListener)
 
         registerCommands()
+    }
+
+    private fun registerPayloads() {
+        ServerPlayNetworking.registerGlobalReceiver(ConfigUpdateC2SPayload.packetId, ConfigUpdateC2SPayload::receive)
+        ServerPlayNetworking.registerGlobalReceiver(PoseRequestC2SPayload.packetId, PoseRequestC2SPayload::receive)
+        ServerPlayNetworking.registerGlobalReceiver(
+            RidingResponseC2SPayload.packetId, RidingResponseC2SPayload::receive
+        )
     }
 
     private fun registerCommands() {

@@ -4,15 +4,16 @@ import com.mojang.serialization.Codec
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.command.command
 import dev.rvbsm.fsit.client.config.RestrictionList
-import dev.rvbsm.fsit.client.network.ClientConnectionListener
-import dev.rvbsm.fsit.client.network.FSitClientNetworking
+import dev.rvbsm.fsit.client.event.ClientConnectionListener
+import dev.rvbsm.fsit.client.networking.receive
 import dev.rvbsm.fsit.client.option.FSitKeyBindings
 import dev.rvbsm.fsit.client.option.KeyBindingMode
-import dev.rvbsm.fsit.compat.CustomPayload
-import dev.rvbsm.fsit.network.packet.ConfigUpdateC2SPayload
+import dev.rvbsm.fsit.networking.payload.ConfigUpdateC2SPayload
+import dev.rvbsm.fsit.networking.payload.CustomPayload
+import dev.rvbsm.fsit.networking.payload.PoseUpdateS2CPayload
+import dev.rvbsm.fsit.networking.payload.RidingRequestS2CPayload
 import dev.rvbsm.fsit.util.literal
 import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.option.SimpleOption
@@ -51,11 +52,9 @@ object FSitModClient : ClientModInitializer {
 
     override fun onInitializeClient() {
         RestrictionList.load()
-
-        FSitClientNetworking.register()
         FSitKeyBindings.register()
 
-        ClientPlayConnectionEvents.JOIN.register(ClientConnectionListener)
+        registerClientPayloads()
         registerClientCommands()
     }
 
@@ -63,10 +62,15 @@ object FSitModClient : ClientModInitializer {
         trySend(ConfigUpdateC2SPayload(FSitMod.config))
     }
 
-    fun <T> trySend(payload: T, orAction: () -> Unit = {}) where T : CustomPayload {
+    fun <T> trySend(payload: T, orAction: () -> Unit = {}) where T : CustomPayload<T> {
         if (ClientPlayNetworking.canSend(payload.id)) {
             ClientPlayNetworking.send(payload)
         } else orAction()
+    }
+
+    private fun registerClientPayloads() {
+        ClientPlayNetworking.registerGlobalReceiver(PoseUpdateS2CPayload.packetId, PoseUpdateS2CPayload::receive)
+        ClientPlayNetworking.registerGlobalReceiver(RidingRequestS2CPayload.packetId, RidingRequestS2CPayload::receive)
     }
 
     // todo: mm spaghetti

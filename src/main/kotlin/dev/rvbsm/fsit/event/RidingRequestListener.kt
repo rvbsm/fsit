@@ -1,10 +1,10 @@
 package dev.rvbsm.fsit.event
 
 import dev.rvbsm.fsit.entity.RideEntity
-import dev.rvbsm.fsit.network.config
-import dev.rvbsm.fsit.network.packet.RidingRequestS2CPayload
-import dev.rvbsm.fsit.network.packet.RidingResponseC2SPayload
-import dev.rvbsm.fsit.network.trySend
+import dev.rvbsm.fsit.networking.config
+import dev.rvbsm.fsit.networking.payload.RidingRequestS2CPayload
+import dev.rvbsm.fsit.networking.payload.RidingResponseC2SPayload
+import dev.rvbsm.fsit.networking.trySend
 import dev.rvbsm.fsit.util.xor
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
