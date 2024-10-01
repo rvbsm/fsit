@@ -2,9 +2,15 @@ package dev.rvbsm.fsit.util
 
 import net.minecraft.util.Identifier
 
-fun Identifier.asString(): String = if (namespace == "minecraft") path else "$namespace:$path"
+val DEFAULT_IDENTIFIER: Identifier =
+    //? if <1.21
+    Identifier("air")
+    //? if >=1.21
+    /*Identifier.ofVanilla("air")*/
 
-fun String.id(namespace: String = Identifier.DEFAULT_NAMESPACE): Identifier? = runCatching {
+fun Identifier?.orDefault(): Identifier = this ?: DEFAULT_IDENTIFIER
+
+fun String.id(namespace: String = Identifier.DEFAULT_NAMESPACE) = runCatching {
     if (Identifier.NAMESPACE_SEPARATOR in this) Identifier.tryParse(lowercase())
     else Identifier.of(namespace, lowercase())
-  }.getOrNull()
+  }.getOrNull() ?: DEFAULT_IDENTIFIER

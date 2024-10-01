@@ -50,7 +50,7 @@ data class OnUse(
     var range: Long = 2,
     @YamlComment("Prevents players from sitting in places where they would suffocate.")
     var checkSuffocation: Boolean = true,
-    @Serializable(RegistrySetSerializer.Block::class)
+    @Serializable(RegistrySet.BlockSerializer::class)
     @YamlComment("List of blocks or block types (e.g., \"oak_log\", \"#logs\") that are available to sit on by interacting with them.")
     var blocks: RegistrySet<@Contextual Block> = registrySetOf(BlockTags.SLABS, BlockTags.STAIRS, BlockTags.LOGS)
 )

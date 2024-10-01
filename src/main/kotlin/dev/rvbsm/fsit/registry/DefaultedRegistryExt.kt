@@ -8,12 +8,6 @@ import net.minecraft.util.Identifier
 import kotlin.jvm.optionals.getOrNull
 import kotlin.streams.asSequence
 
-fun <T> DefaultedRegistry<T>.parseEntries(ids: Iterable<String>) =
-    ids.filter { !it.startsWith('#') }.map { this[it.id()] }
-
-fun <T> DefaultedRegistry<T>.parseTags(ids: Iterable<String>) =
-    ids.filter { it.startsWith('#') }.map { TagKey.of(key, it.drop(1).id()) }
-
 fun DefaultedRegistry<*>.matchingIdentifiers(value: String): Sequence<String> {
     val isTag = value.startsWith('#')
     val input = (if (isTag) value.drop(1) else value).lowercase()
@@ -49,11 +43,11 @@ fun DefaultedRegistry<*>.matchingIdentifiers(value: String): Sequence<String> {
 
 fun <T> DefaultedRegistry<T>.find(string: String): T? {
     if (string.startsWith('#')) {
-        val id = string.drop(1).id() ?: return null
+        val id = string.drop(1).id()
         return find(id)
     }
 
-    val id = string.id() ?: return null
+    val id = string.id()
     return get(id)
 }
 
