@@ -5,6 +5,7 @@ import net.minecraft.entity.AreaEffectCloudEntity
 import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityPose
 import net.minecraft.entity.LivingEntity
+import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
 import java.util.*
@@ -44,6 +45,7 @@ class RideEntity(private val player: ServerPlayerEntity) :
             rider.startRiding(rideEntity, true)
             rider.world.spawnEntity(rideEntity)
             rideEntity.startRiding(target)
+            target.networkHandler.sendPacket(EntityPassengersSetS2CPacket(target))
         }
     }
 }
