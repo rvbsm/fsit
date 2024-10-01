@@ -29,9 +29,9 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
 
         customName = "FSit_SeatEntity".literal()
 
-        if (config.sitting.applyGravity) {
-            velocity = player.clientVelocity
-        }
+//        if (config.sitting.applyGravity) {
+//            velocity = player.clientVelocity // fixme
+//        }
     }
 
     override fun tick() {

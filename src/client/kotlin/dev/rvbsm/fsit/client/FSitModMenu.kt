@@ -69,8 +69,8 @@ object FSitModMenu : ModMenuApi {
                         ListOption.createBuilder<String>().name("$categoryKey.root.option.blocks".translatable())
                             .description(OptionDescription.of("$categoryKey.root.option.blocks.description".translatable()))
                             .customController { RegistryController(it, Registries.BLOCK) }.binding(
-                                defaultConfig.onUse.blocks.toList(),
-                                { FSitMod.config.onUse.blocks.toList() },
+                                defaultConfig.onUse.blocks.map { it.toString() },
+                                { FSitMod.config.onUse.blocks.map { it.toString() } },
                                 { FSitMod.config.onUse.blocks = it.toRegistrySet(Registries.BLOCK) },
                             ).initial("#slabs").build()
                     )

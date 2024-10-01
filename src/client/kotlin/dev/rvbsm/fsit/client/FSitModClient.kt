@@ -18,10 +18,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.option.SimpleOption
 import net.minecraft.command.argument.GameProfileArgumentType
-import org.slf4j.LoggerFactory
 
 object FSitModClient : ClientModInitializer {
-    private val logger = LoggerFactory.getLogger(FSitModClient::class.java)
 
     @JvmStatic
     val isServerFSitCompatible get() = ClientPlayNetworking.canSend(ConfigUpdateC2SPayload.packetId)
@@ -55,6 +53,7 @@ object FSitModClient : ClientModInitializer {
         FSitKeyBindings.register()
 
         registerClientPayloads()
+        registerClientEvents()
         registerClientCommands()
     }
 
@@ -71,6 +70,10 @@ object FSitModClient : ClientModInitializer {
     private fun registerClientPayloads() {
         ClientPlayNetworking.registerGlobalReceiver(PoseUpdateS2CPayload.packetId, PoseUpdateS2CPayload::receive)
         ClientPlayNetworking.registerGlobalReceiver(RidingRequestS2CPayload.packetId, RidingRequestS2CPayload::receive)
+    }
+
+    private fun registerClientEvents() {
+        ClientPlayConnectionEvents.JOIN.register(ClientConnectionListener)
     }
 
     // todo: mm spaghetti

@@ -46,14 +46,7 @@ object FSitMod : ModInitializer {
         loadConfig()
 
         registerPayloads()
-
-        ServerLifecycleEvents.SERVER_STOPPING.register(ServerStoppingListener)
-
-        PassedUseEntityCallback.EVENT.register(StartRidingListener)
-        PassedUseBlockCallback.EVENT.register(SpawnSeatListener)
-        ClientCommandCallback.EVENT.register(ClientCommandSneakListener)
-        UpdatePoseCallback.EVENT.register(UpdatePoseListener)
-
+        registerEvents()
         registerCommands()
     }
 
@@ -63,6 +56,15 @@ object FSitMod : ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(
             RidingResponseC2SPayload.packetId, RidingResponseC2SPayload::receive
         )
+    }
+
+    private fun registerEvents() {
+        ServerLifecycleEvents.SERVER_STOPPING.register(ServerStoppingListener)
+
+        PassedUseEntityCallback.EVENT.register(StartRidingListener)
+        PassedUseBlockCallback.EVENT.register(SpawnSeatListener)
+        ClientCommandCallback.EVENT.register(ClientCommandSneakListener)
+        UpdatePoseCallback.EVENT.register(UpdatePoseListener)
     }
 
     private fun registerCommands() {
