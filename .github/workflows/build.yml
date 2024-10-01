@@ -18,9 +18,6 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - run: ./gradlew printVersion
-        continue-on-error: true
-
       - run: ./gradlew chiseledBuild
       - name: Store test reports
         if: failure()
