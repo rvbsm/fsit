@@ -22,23 +22,31 @@ jobs:
         continue-on-error: true
 
       - run: ./gradlew chiseledBuild
+      - name: Store test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: |
+            **/build/reports/
+            **/build/test-results/
       - uses: actions/upload-artifact@v4
         with:
-          name: 1.20.1
-          path: versions/1.20.1/build/libs/*.jar
+          name: "1.20"
+          path: versions/1.20/build/libs/*.jar
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
-          name: 1.20.4
-          path: versions/1.20.4/build/libs/*.jar
+          name: "1.20.2"
+          path: versions/1.20.2/build/libs/*.jar
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
-          name: 1.20.6
-          path: versions/1.20.6/build/libs/*.jar
+          name: "1.20.5"
+          path: versions/1.20.5/build/libs/*.jar
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
-          name: 1.21
+          name: "1.21"
           path: versions/1.21/build/libs/*.jar
           if-no-files-found: error
