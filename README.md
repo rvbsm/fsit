@@ -40,9 +40,6 @@ sitting:
   apply_gravity: true
   # Allows sitting even if not standing on a solid block.
   allow_in_air: false
-riding:
-  # Whether to hide a player's rider when the player is not looking at him.
-  hide_rider: true
 on_use:
   # Allows to start sitting on specific blocks by interacting with them.
   sitting: false
@@ -94,5 +91,5 @@ This project is licensed under the [MIT License](./LICENSE).
 [modmenu]: [https://modrinth.com/mod/modmenu]
 [yacl]: [https://modrinth.com/mod/yacl]
 
-[stonecutter]: https://github.com/kikugie/stonecutter-kt
-[stonecutter-wiki]: https://github.com/kikugie/stonecutter-kt/wiki
+[stonecutter]: https://github.com/kikugie/stonecutter
+[stonecutter-wiki]: https://stonecutter.kikugie.dev/stonecutter/introduction
