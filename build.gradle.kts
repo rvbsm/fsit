@@ -75,6 +75,7 @@ repositories {
     mavenCentral()
     maven("https://maven.terraformersmc.com/releases")
     maven("https://maven.isxander.dev/releases")
+    maven("https://maven.nucleoid.xyz/")
 }
 
 dependencies {
