@@ -2,7 +2,7 @@ plugins {
     id("dev.kikugie.stonecutter")
     alias(libs.plugins.fabric.loom) apply false
 }
-stonecutter active "1.20.1" /* [SC] DO NOT EDIT */
+stonecutter active "1.20" /* [SC] DO NOT EDIT */
 
 stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {
     group = "project"
