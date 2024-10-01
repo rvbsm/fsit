@@ -1,14 +1,20 @@
 package dev.rvbsm.fsit
 
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
+import com.charleskorn.kaml.YamlNamingStrategy
 import dev.rvbsm.fsit.command.command
 import dev.rvbsm.fsit.command.configArgument
 import dev.rvbsm.fsit.command.isGameMaster
+import dev.rvbsm.fsit.config.ConfigSerializer
 import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.event.*
 import dev.rvbsm.fsit.network.FSitServerNetworking
 import dev.rvbsm.fsit.util.id
 import dev.rvbsm.fsit.util.literal
 import dev.rvbsm.fsit.util.translatable
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.command.ServerCommandSource
@@ -17,10 +23,18 @@ object FSitMod : ModInitializer {
     const val MOD_ID = "fsit"
 
     @JvmStatic
-    lateinit var config: ModConfig
-        private set
+    lateinit var config: ModConfig private set
 
-    override fun onInitialize() {
+    private val yamlConfigSerializer = ConfigSerializer.Writable(
+        format = Yaml(
+            configuration = YamlConfiguration(
+                strictMode = false,
+                yamlNamingStrategy = YamlNamingStrategy.SnakeCase,
+            ),
+        ), MOD_ID, "yml", "yaml"
+    )
+
+    override fun onInitialize() = runBlocking {
         loadConfig()
 
         FSitServerNetworking.register()
@@ -78,6 +92,6 @@ object FSitMod : ModInitializer {
     @JvmStatic
     fun translatable(category: String, path: String, vararg args: Any) = "$category.$MOD_ID.$path".translatable(args)
 
-    fun loadConfig() = run { config = ModConfig.read(MOD_ID) }
-    fun saveConfig() = config.write()
+    private suspend fun loadConfig() = coroutineScope { config = yamlConfigSerializer.read() }
+    fun saveConfig() = yamlConfigSerializer.write(config)
 }
