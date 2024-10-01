@@ -69,9 +69,8 @@ public abstract class ServerPlayNetworkHandlerMixin {
         @Final
         ServerWorld field_39991;
 
-        // note: idk why there are errors here. mcdev being dumb
         @ModifyVariable(method = "processInteract", at = @At("STORE"))
-        private ActionResult interactPlayer(ActionResult interactionActionResult, @Local LocalRef<Hand> handRef) {
+        private ActionResult interactPlayer(ActionResult interactionActionResult, @Local(argsOnly = true) LocalRef<Hand> handRef) {
             if (interactionActionResult == ActionResult.PASS && handRef.get() == Hand.OFF_HAND && field_28963.player.getStackInHand(handRef.get()).getUseAction() == UseAction.NONE) {
                 handRef.set(Hand.MAIN_HAND);
 

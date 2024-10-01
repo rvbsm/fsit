@@ -46,12 +46,12 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
     }
 
     // note: height of the player
-    //? if >=1.20.1 && <1.20.6
+    //? if <=1.20.4
     override fun getDimensions(pose: EntityPose): EntityDimensions = player.getDimensions(player.pose)
-    //? if >=1.20.6
+    //? if >=1.20.5
     /*override fun getBaseDimensions(pose: EntityPose): EntityDimensions = player.getDimensions(player.pose)*/
 
-    //? if >=1.20.1 && <1.20.4
+    //? if <1.20.4
     override fun getMountedHeightOffset() = 0.0
     //? if >=1.20.4 && <1.20.6
     /*override fun getPassengerAttachmentPos(passenger: net.minecraft.entity.Entity, dimensions: EntityDimensions, scaleFactor: Float): org.joml.Vector3f = Vec3d.ZERO.toVector3f()*/

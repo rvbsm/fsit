@@ -26,7 +26,7 @@ public abstract class ControlsOptionsScreenMixin extends GameOptionsScreen {
         this.addDrawableChild(FSitModClient.getSitMode().createWidget(this.gameOptions, i, k.get(), 150));
         this.addDrawableChild(FSitModClient.getCrawlMode().createWidget(this.gameOptions, j, k.get(), 150));
     }
-    /*?} else {*/
+    /*?} else if >=1.20.5 {*/
     /*@Inject(method = "getOptions", at = @At("RETURN"), cancellable = true)
     private static void fsitOptions(GameOptions gameOptions, CallbackInfoReturnable<net.minecraft.client.option.SimpleOption<?>[]> cir) {
         net.minecraft.client.option.SimpleOption<?>[] options = cir.getReturnValue();
