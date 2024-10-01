@@ -10,36 +10,42 @@ import net.minecraft.server.network.ServerPlayerEntity
 
 private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-internal suspend fun ConfigUpdateC2SPayload.receive(player: ServerPlayerEntity) = coroutineScope {
-    player.config = config
+internal fun ConfigUpdateC2SPayload.receive(
+    //? if <=1.20.4
+    player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
+    //? if >=1.20.5
+    /*context: net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.Context*/
+) {
+    //? if >=1.20.5
+    /*val player = context.player()*/
+
+    scope.launch { player.config = config }
 }
 
-internal fun PoseRequestC2SPayload.receive(player: ServerPlayerEntity) {
+internal fun PoseRequestC2SPayload.receive(
+    //? if <=1.20.4
+    player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
+    //? if >=1.20.5
+    /*context: net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.Context*/
+) {
+    //? if >=1.20.5
+    /*val player = context.player()*/
+
     player.setPose(pose)
 }
 
-internal fun RidingResponseC2SPayload.receive(player: ServerPlayerEntity) {
+internal fun RidingResponseC2SPayload.receive(
+    //? if <=1.20.4
+    player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
+    //? if >=1.20.5
+    /*context: net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.Context*/
+) {
+    //? if >=1.20.5
+    /*val player = context.player()*/
+
     if (!response.isAccepted && player.hasPassenger { (it as? RideEntity)?.isBelongsTo(uuid) == true }) {
         player.removeAllPassengers()
     }
 
     completeRidingRequest(player)
 }
-
-/*? if <=1.20.4 {*/
-internal fun ConfigUpdateC2SPayload.receive(
-    player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
-) = scope.launch { receive(player) }
-
-internal fun PoseRequestC2SPayload.receive(
-    player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
-) = receive(player)
-
-internal fun RidingResponseC2SPayload.receive(
-    player: ServerPlayerEntity, responseSender: net.fabricmc.fabric.api.networking.v1.PacketSender
-) = receive(player)
-/*?} else {*/
-/*internal fun ConfigUpdateC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
-internal fun PoseRequestC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
-internal fun RidingResponseC2SPayload.receive(context: ServerPlayNetworking.Context) = receive(context.player())
-*//*?}*/
