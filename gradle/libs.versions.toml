@@ -23,4 +23,7 @@ shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
 fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
 
+fabric-loader-junit = { module = "net.fabricmc:fabric-loader-junit", version.ref = "fabric-loader" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+
 kaml = { module = "com.charleskorn.kaml:kaml-jvm", version.ref = "kaml" }

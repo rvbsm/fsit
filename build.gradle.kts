@@ -64,8 +64,9 @@ loom {
     }
 }
 
-machete {
-    json.enabled = false
+sourceSets.test {
+    compileClasspath += sourceSets["client"].compileClasspath
+    runtimeClasspath += sourceSets["client"].runtimeClasspath
 }
 
 val shadowInclude: Configuration by configurations.creating
@@ -92,6 +93,9 @@ dependencies {
 
     implementation(libs.kaml)
     shadowInclude(libs.kaml)
+
+    testImplementation(libs.fabric.loader.junit)
+    testImplementation(libs.kotlin.test)
 }
 
 tasks {
@@ -176,6 +180,10 @@ tasks {
 
     build {
         finalizedBy(proguardJar)
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
 

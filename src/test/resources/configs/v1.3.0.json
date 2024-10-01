@@ -1,0 +1,16 @@
+{
+  "config_version": 3,
+  "sneak": {
+    "enabled": false,
+    "min_angle": 42.0,
+    "delay": 999
+  },
+  "sittable": {
+    "enabled": false,
+    "blocks": ["minecraft:amethyst_block"],
+    "tags": ["#minecraft:beds", "#minecraft:stairs"]
+  },
+  "misc": {
+    "ride_players": false
+  }
+}

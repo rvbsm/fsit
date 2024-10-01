@@ -1,0 +1,22 @@
+{
+  "use_server": true,
+  "sitting": {
+    "seats_gravity": false,
+    "on_use": {
+      "enabled": false,
+      "range": 1,
+      "blocks": ["minecraft:amethyst_block", "#minecraft:beds", "#minecraft:stairs"]
+    },
+    "on_double_sneak": {
+      "enabled": false,
+      "min_pitch": 42.0,
+      "delay": 999
+    }
+  },
+  "riding": {
+    "on_use": {
+      "enabled": false,
+      "range": 3
+    }
+  }
+}

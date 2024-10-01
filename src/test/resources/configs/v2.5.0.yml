@@ -1,0 +1,18 @@
+use_server: true
+sitting:
+  apply_gravity: false
+  allow_in_air: true
+on_use:
+  sitting: false
+  riding: false
+  range: 1
+  check_suffocation: false
+  blocks:
+    - "amethyst_block"
+    - "#beds"
+    - "#stairs"
+on_double_sneak:
+  sitting: false
+  crawling: false
+  min_pitch: 42.0
+  delay: 999

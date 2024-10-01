@@ -1,0 +1,12 @@
+{
+  "sneak": {
+    "enabled": false,
+    "min_angle": 42.0,
+    "delay": 999
+  },
+  "on_double_sneak": {
+    "sitting": true,
+    "min_pitch": 69.0,
+    "delay": 420
+  }
+}
