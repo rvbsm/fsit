@@ -17,12 +17,14 @@ internal val configDirPath = FabricLoader.getInstance().configDir
 
 internal open class ConfigSerializer(private val format: StringFormat) : StringFormat by format {
     fun encode(config: ModConfig): String = encodeToString(config)
-    fun decode(string: String): ModConfig = when (format) {
-        is Json -> format.decodeFromJsonElement(format.parseToJsonElement(string).jsonObject.let { it.migrate(it.migrations) })
-        is Yaml -> format.decodeFromYamlNode(format.parseToYamlNode(string).yamlMap.let { it.migrate(it.migrations) })
+    fun decode(string: String): ModConfig = runCatching {
+      when (format) {
+        is Json -> format.decodeFromJsonElement<ModConfig>(format.parseToJsonElement(string).jsonObject.let { it.migrate(it.migrations) })
+        is Yaml -> format.decodeFromYamlNode<ModConfig>(format.parseToYamlNode(string).yamlMap.let { it.migrate(it.migrations) })
 
-        else -> decodeFromString(string)
-    }
+        else -> decodeFromString<ModConfig>(string)
+      }
+    }.getOrNull() ?: ModConfig()
 
     internal class Writable(
         format: StringFormat,
