@@ -17,6 +17,8 @@ jobs:
           distribution: temurin
           cache: gradle
 
+      - run: ./gradlew chiseledBuild
+
       - name: Parse changelog
         run: |
           content="$(awk -v version="$GITHUB_REF_NAME" '/^## /{ if (p) { exit }; if ($2 == version) { p = 1; next } } p' CHANGELOG.md | tail -n+2)"
