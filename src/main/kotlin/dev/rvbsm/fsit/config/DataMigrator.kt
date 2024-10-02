@@ -1,6 +1,8 @@
 package dev.rvbsm.fsit.config
 
 import com.charleskorn.kaml.*
+import dev.rvbsm.fsit.util.join
+import dev.rvbsm.fsit.util.plus
 import dev.rvbsm.fsit.util.splitOnce
 import kotlinx.serialization.json.*
 
@@ -38,17 +40,6 @@ internal fun JsonObject.migrate(migrations: Map<String, String>): JsonObject {
     return migratedOptions.asJsonObject() + jsonObjectModified
 }
 
-private fun Collection<JsonElement>.join() = if (size == 1) first()
-else when (first()) {
-    is JsonPrimitive -> JsonPrimitive(joinToString(separator = "") { (it as? JsonPrimitive)?.content ?: "" })
-
-    is JsonArray -> JsonArray(flatMap { it as? JsonArray ?: listOf() })
-
-    is JsonObject -> JsonObject(fold(mutableMapOf()) { acc, obj ->
-        acc.apply { putAll(obj as? JsonObject ?: mapOf()) }
-    })
-}
-
 internal fun YamlMap.migrate(migrations: Map<String, String>): YamlMap {
     if (migrations.isEmpty()) return this
 
@@ -71,18 +62,6 @@ internal fun YamlMap.migrate(migrations: Map<String, String>): YamlMap {
     }
 
     return migratedOptions.asYamlMap(yamlMapModified) + yamlMapModified
-}
-
-private fun Collection<YamlNode>.join() = if (size == 1) first()
-else when (val firstElement = first()) {
-    is YamlScalar -> firstElement.copy(joinToString(separator = "") { (it as? YamlScalar)?.content ?: "" })
-    is YamlList -> firstElement.copy(map { (it as? YamlList)?.items ?: listOf() }.flatten())
-
-    is YamlMap -> firstElement.copy(fold(mutableMapOf()) { acc, obj ->
-        acc.apply { putAll((obj as? YamlMap)?.entries ?: mapOf()) }
-    })
-
-    else -> null
 }
 
 private fun JsonObject.removePath(path: String): JsonObject {
@@ -136,8 +115,6 @@ private fun Map<String, YamlNode>.asYamlMap(originalMap: YamlMap?): YamlMap = Ya
     }
 }, originalMap?.path ?: YamlPath.root)
 
-private operator fun JsonObject.plus(json: JsonObject) = JsonObject(this as Map<String, JsonElement> + json)
-private operator fun YamlMap.plus(yaml: YamlMap): YamlMap = copy(entries = yamlMap.entries + yaml.entries)
 
 // todo: i wrote this crap at 3 am
 private fun String.applyModifiers(modifiers: String) = buildString {
