@@ -22,7 +22,7 @@ private val javaVersion = property("java.version").toString().toInt(10)
 private val modrinthId = property("mod.modrinth_id").toString()
 
 private class ModLibraries {
-    private val fabricYarnBuild = "${property("fabric.yarn_build")}"
+    private val fabricYarnBuild = property("fabric.yarn_build").toString()
     private val fabricApiVersion = "${property("fabric.api")}+$minecraftVersion"
     private val fabricApiModules = setOf(
         "fabric-api-base",
@@ -33,8 +33,8 @@ private class ModLibraries {
 
         "fabric-screen-api-v1", // bruh
     )
-    private val modmenuVersion = "${property("api.modmenu")}"
-    private val yaclVersion = "${property("api.yacl")}"
+    private val modmenuVersion = property("api.modmenu").toString()
+    private val yaclVersion = property("api.yacl").toString()
 
     val minecraft = "com.mojang:minecraft:$minecraftVersion"
     val fabricYarn = "net.fabricmc:yarn:$minecraftVersion+build.$fabricYarnBuild:v2"
@@ -125,7 +125,7 @@ tasks {
         from(jar)
 
         archiveClassifier = "all"
-        destinationDirectory = layout.buildDirectory.map { it.dir("moddevlibs") }
+        destinationDirectory = rootProject.layout.buildDirectory.map { it.dir("devlibs") }
 
         configurations = listOf(shadowInclude)
 
@@ -152,9 +152,13 @@ tasks {
         dependsOn(shadowJar)
 
         archiveClassifier = "dev"
-        destinationDirectory = layout.buildDirectory.map { it.dir("moddevlibs") }
+        destinationDirectory = rootProject.layout.buildDirectory.map { it.dir("devlibs") }
 
         inputFile.set(shadowJar.get().archiveFile)
+    }
+
+    remapSourcesJar {
+        destinationDirectory = rootProject.layout.buildDirectory.map { it.dir("libs") }
     }
 
     val proguardJar by registering(ProGuardTask::class) {
@@ -164,7 +168,7 @@ tasks {
         dontwarn()
 
         injars(remapJar)
-        outjars(layout.buildDirectory.file("libs/${rootProject.name}-$version.jar"))
+        outjars(rootProject.layout.buildDirectory.map { it.file("libs/${rootProject.name}-$version.jar") })
 
         libraryjars("${System.getProperty("java.home")}/jmods")
 
