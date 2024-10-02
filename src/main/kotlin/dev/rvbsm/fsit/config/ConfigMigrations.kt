@@ -1,7 +1,6 @@
 package dev.rvbsm.fsit.config
 
 import com.charleskorn.kaml.YamlMap
-import com.charleskorn.kaml.YamlScalar
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
@@ -65,7 +64,7 @@ private val JsonObject.version get() =
         ?: if ("config_version" in this) ANCIENT_VERSION else LEGACY_VERSION
 
 private val YamlMap.version get() =
-    getScalar("version")?.runCatching(YamlScalar::toInt)?.getOrNull()
+    runCatching { getScalar("version")?.toInt() }.getOrNull()
         ?: if (getKey("config_version") != null) ANCIENT_VERSION else LEGACY_VERSION
 
 internal val JsonObject.migrations get() = getMigrations(version)
