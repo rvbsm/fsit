@@ -125,6 +125,8 @@ tasks {
         from(jar)
 
         archiveClassifier = "all"
+        destinationDirectory = layout.buildDirectory.map { it.dir("moddevlibs") }
+
         configurations = listOf(shadowInclude)
 
         relocate("it.krzeminski.snakeyaml.engine.kmp", "dev.rvbsm.fsit.lib.snakeyaml-kmp")
@@ -148,7 +150,9 @@ tasks {
 
     remapJar {
         dependsOn(shadowJar)
+
         archiveClassifier = "dev"
+        destinationDirectory = layout.buildDirectory.map { it.dir("moddevlibs") }
 
         inputFile.set(shadowJar.get().archiveFile)
     }
