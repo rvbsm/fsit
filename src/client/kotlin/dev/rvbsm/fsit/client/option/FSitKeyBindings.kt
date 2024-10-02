@@ -14,10 +14,18 @@ import org.lwjgl.glfw.GLFW
 
 object FSitKeyBindings : ClientTickEvents.EndTick {
     private val sitKey = HybridKeyBinding(
-        "key.fsit.sit", GLFW.GLFW_KEY_RIGHT_CONTROL, KeyBinding.MISC_CATEGORY, 20, FSitModClient.sitMode::getValue
+        "key.fsit.sit",
+        GLFW.GLFW_KEY_RIGHT_CONTROL,
+        KeyBinding.MISC_CATEGORY,
+        10,
+        FSitModClient.sitMode::getValue,
     )
     private val crawlKey = HybridKeyBinding(
-        "key.fsit.crawl", GLFW.GLFW_KEY_RIGHT_ALT, KeyBinding.MISC_CATEGORY, 20, FSitModClient.crawlMode::getValue
+        "key.fsit.crawl",
+        GLFW.GLFW_KEY_RIGHT_ALT,
+        KeyBinding.MISC_CATEGORY,
+        10,
+        FSitModClient.crawlMode::getValue,
     )
 
     private var wasPoseUpdatedFromKeybinding = false
