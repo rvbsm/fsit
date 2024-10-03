@@ -8,6 +8,7 @@ import dev.isxander.yacl3.dsl.*
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.gui.controller.RegistryController
 import dev.rvbsm.fsit.config.ModConfig
+import dev.rvbsm.fsit.config.Sitting
 import dev.rvbsm.fsit.registry.RegistryIdentifier
 import dev.rvbsm.fsit.registry.toRegistrySet
 import dev.rvbsm.fsit.util.translatable
@@ -24,21 +25,16 @@ object FSitModMenu : ModMenuApi {
                     val useServer by rootOptions.registering {
                         controller = tickBox()
                         binding(FSitMod.config::useServer, defaultConfig.useServer)
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
                     }
 
                     val sitting by groups.registering {
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
 
-                        val applyGravity by options.registering {
-                            controller = tickBox()
-                            binding(FSitMod.config.sitting::applyGravity, defaultConfig.sitting.applyGravity)
-                            descriptionBuilder { addDefaultText(lines = 1) }
-                        }
-                        val allowInAir by options.registering {
-                            controller = tickBox()
-                            binding(FSitMod.config.sitting::allowInAir, defaultConfig.sitting.allowInAir)
-                            descriptionBuilder { addDefaultText(lines = 1) }
+                        val behaviour by options.registering {
+                            controller = enumSwitch<Sitting.Behaviour>()
+                            binding(FSitMod.config.sitting::behaviour, defaultConfig.sitting.behaviour)
+                            descriptionBuilder { addDefaultText() }
                         }
                     }
                 }
@@ -47,22 +43,22 @@ object FSitModMenu : ModMenuApi {
                     val sitting by rootOptions.registering {
                         controller = tickBox()
                         binding(FSitMod.config.onUse::sitting, defaultConfig.onUse.sitting)
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
                     }
                     val riding by rootOptions.registering {
                         controller = tickBox()
                         binding(FSitMod.config.onUse::riding, defaultConfig.onUse.riding)
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
                     }
                     val range by rootOptions.registering {
                         controller = slider(range = 1..4L)
                         binding(FSitMod.config.onUse::range, defaultConfig.onUse.range)
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
                     }
                     val checkSuffocation by rootOptions.registering {
                         controller = tickBox()
                         binding(FSitMod.config.onUse::checkSuffocation, defaultConfig.onUse.checkSuffocation)
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
                     }
 
                     groups.register("blocks",
@@ -83,22 +79,22 @@ object FSitModMenu : ModMenuApi {
                     val sitting by rootOptions.registering {
                         controller = tickBox()
                         binding(FSitMod.config.onDoubleSneak::sitting, defaultConfig.onDoubleSneak.sitting)
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
                     }
                     val riding by rootOptions.registering {
                         controller = tickBox()
                         binding(FSitMod.config.onDoubleSneak::crawling, defaultConfig.onDoubleSneak.crawling)
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
                     }
                     val minPitch by rootOptions.registering {
                         controller = slider(range = -90.0..90.0)
                         binding(FSitMod.config.onDoubleSneak::minPitch, defaultConfig.onDoubleSneak.minPitch)
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
                     }
                     val delay by rootOptions.registering {
                         controller = slider(range = 100..2000L)
                         binding(FSitMod.config.onDoubleSneak::delay, defaultConfig.onDoubleSneak.delay)
-                        descriptionBuilder { addDefaultText(lines = 1) }
+                        descriptionBuilder { addDefaultText() }
                     }
                 }
 

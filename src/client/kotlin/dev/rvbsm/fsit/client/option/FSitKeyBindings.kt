@@ -48,8 +48,8 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
         val player = client.player ?: return
         val currentPose = player.pose()
 
-        val canSitMidAir = FSitMod.config.sitting.allowInAir || player.isOnGround
-        if (currentPose == PlayerPose.Standing && (player.hasVehicle() || !canSitMidAir)) return
+        val canStartSitting = !FSitMod.config.sitting.behaviour.shouldDiscardWithoutSupport || player.isOnGround
+        if (currentPose == PlayerPose.Standing && (player.hasVehicle() || !canStartSitting)) return
 
         val pose = when {
             sitKey.isPressed -> PlayerPose.Sitting

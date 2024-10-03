@@ -38,9 +38,10 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
         if (!world.isClient && !isRemoved) {
             super.tickMovement()
 
-            if (firstPassenger == null || (!config.sitting.allowInAir && hasNoGravity() && !hasGroundCollision)) {
+            if (firstPassenger == null || (config.sitting.behaviour.shouldDiscardWithoutSupport && !hasGroundCollision)) {
                 discard()
             }
+
             yaw = player.yaw
         }
     }
@@ -62,7 +63,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
     override fun getPistonBehavior() = PistonBehavior.NORMAL
     override fun hasPlayerRider() = false
     override fun shouldSave() = false
-    override fun hasNoGravity() = !config.sitting.applyGravity
+    override fun hasNoGravity() = !config.sitting.behaviour.shouldMove
     override fun canClip() = !this.hasNoGravity()
 
     companion object {

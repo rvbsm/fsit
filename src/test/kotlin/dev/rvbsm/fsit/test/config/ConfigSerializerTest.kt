@@ -21,7 +21,7 @@ import kotlin.time.measureTimedValue
 
 @OptIn(ExperimentalSerializationApi::class)
 private val jsonSerializer = ConfigSerializer(format = Json {
-    encodeDefaults = true; ignoreUnknownKeys = true; namingStrategy = JsonNamingStrategy.SnakeCase
+    ignoreUnknownKeys = true; namingStrategy = JsonNamingStrategy.SnakeCase
 })
 
 private val yamlSerializer = ConfigSerializer(
@@ -50,8 +50,7 @@ object ConfigSerializerTest {
         ModConfig(
             useServer = false,
             sitting = Sitting(
-                applyGravity = true,
-                allowInAir = false,
+                behaviour = Sitting.Behaviour.Nothing,
             ),
             onUse = OnUse(
                 sitting = false,
@@ -129,7 +128,7 @@ object ConfigSerializerTest {
             "v2.1.0" to ModConfig(
                 useServer = true,
                 sitting = Sitting(
-                    applyGravity = false,
+//                    applyGravity = false,
                 ),
                 onUse = OnUse(
                     sitting = false,
@@ -147,8 +146,8 @@ object ConfigSerializerTest {
             "v2.2.0" to ModConfig(
                 useServer = true,
                 sitting = Sitting(
-                    applyGravity = false,
-                    allowInAir = true,
+//                    applyGravity = false,
+//                    allowInAir = true,
                 ),
                 onUse = OnUse(
                     sitting = false,
@@ -168,8 +167,8 @@ object ConfigSerializerTest {
             "v2.5.0" to ModConfig(
                 useServer = true,
                 sitting = Sitting(
-                    applyGravity = false,
-                    allowInAir = true,
+//                    applyGravity = false,
+//                    allowInAir = true,
                 ),
                 onUse = OnUse(
                     sitting = false,

@@ -5,6 +5,7 @@ import dev.rvbsm.fsit.registry.RegistrySet
 import dev.rvbsm.fsit.registry.registrySetOf
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Transient
 import net.minecraft.block.Block
 import net.minecraft.registry.tag.BlockTags
@@ -33,11 +34,20 @@ data class ModConfig(
 
 @Serializable
 data class Sitting(
-    @YamlComment("Controls whether gravity affects seats.")
-    var applyGravity: Boolean = true,
-    @YamlComment("Allows sitting even if not standing on a solid block.")
-    var allowInAir: Boolean = false,
-)
+    @YamlComment("Controls sitting behaviour. Possible values: nothing, discard (if no block underneath sitting player), gravity.")
+    var behaviour: Behaviour = Behaviour.Gravity,
+) {
+
+    @Serializable
+    enum class Behaviour {
+        @SerialName("nothing") Nothing,
+        @SerialName("discard") Discard,
+        @SerialName("gravity") Gravity;
+
+        val shouldMove get() = this == Gravity
+        val shouldDiscardWithoutSupport get() = this == Discard
+    }
+}
 
 @Serializable
 data class OnUse(
