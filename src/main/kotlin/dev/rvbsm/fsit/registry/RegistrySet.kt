@@ -45,14 +45,14 @@ class RegistryLinkedHashSet<E>(
         RegistryLinkedHashSet(registry, (this as Set<RegistryIdentifier>) + other)
 }
 
-internal fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg entries: E) =
+fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg entries: E) =
     entries.map { RegistryIdentifier(registry.getId(it), isTag = false) }.toCollection(RegistryLinkedHashSet(registry))
 
-internal fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg tags: TagKey<E>) =
+fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg tags: TagKey<E>) =
     tags.map { RegistryIdentifier(it.id, isTag = true) }.toCollection(RegistryLinkedHashSet(registry))
 
-internal fun registrySetOf(vararg blocks: Block) = registrySetOf(Registries.BLOCK, *blocks)
-internal fun registrySetOf(vararg tags: TagKey<Block>) = registrySetOf(Registries.BLOCK, *tags)
+fun registrySetOf(vararg blocks: Block) = registrySetOf(Registries.BLOCK, *blocks)
+fun registrySetOf(vararg tags: TagKey<Block>) = registrySetOf(Registries.BLOCK, *tags)
 
-fun <E> Iterable<String>.toRegistrySet(registry: DefaultedRegistry<E>) =
-    map(RegistryIdentifier::of).toCollection(RegistryLinkedHashSet(registry))
+fun <E> Iterable<RegistryIdentifier>.toRegistrySet(registry: DefaultedRegistry<E>) =
+    toCollection(RegistryLinkedHashSet(registry))

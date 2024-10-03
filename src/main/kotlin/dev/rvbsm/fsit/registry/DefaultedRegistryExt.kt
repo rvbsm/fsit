@@ -1,58 +1,49 @@
 package dev.rvbsm.fsit.registry
 
-import dev.rvbsm.fsit.util.id
 import net.minecraft.item.ItemConvertible
 import net.minecraft.registry.DefaultedRegistry
 import net.minecraft.registry.tag.TagKey
-import net.minecraft.util.Identifier
 import kotlin.jvm.optionals.getOrNull
 import kotlin.streams.asSequence
 
-fun DefaultedRegistry<*>.matchingIdentifiers(value: String): Sequence<String> {
-    val isTag = value.startsWith('#')
-    val input = (if (isTag) value.drop(1) else value).lowercase()
-    val sep = input.indexOf(Identifier.NAMESPACE_SEPARATOR)
+fun DefaultedRegistry<*>.matchingIdentifiers(value: String): Sequence<RegistryIdentifier> {
+    val registryId = RegistryIdentifier.of(value)
+    val input = if (registryId.isTag) value.drop(1) else value
 
-    val ids = streamTags().map { it.id }.map { id -> id to "#$id" }.asSequence() + if (!isTag) {
-        streamEntries().map { it.registryKey().value }.map { id -> id to "$id" }.asSequence()
-    } else emptySequence()
+    val ids = streamTags().map {
+        RegistryIdentifier(it.id, true)
+    }.asSequence() + if (!registryId.isTag) streamEntries().map {
+        RegistryIdentifier(it.registryKey().value, false)
+    }.asSequence() else emptySequence()
 
     return ids.filter {
-        if (sep == -1) {
-            it.first.path.contains(input) || (getOrEmpty(it.first).getOrNull() as? ItemConvertible
-                ?: return@filter false).asItem().name.string.lowercase().contains(input)
-        } else {
-            val namespace = input.substring(0, sep)
-            val path = input.substring(sep + 1)
-
-            it.first.namespace == namespace && it.first.path.startsWith(path)
-        }
+        it == registryId
+            || it.id.path.contains(registryId.id.path)
+            || (this[it.id] as? ItemConvertible)?.asItem()?.name?.string?.contains(input, ignoreCase = true) ?: false
     }.sortedWith { id1, id2 ->
-        val path = (if (sep == -1) input else input.substring(sep + 1)).lowercase()
-        val id1StartsWith = id1.first.path.lowercase().startsWith(path)
-        val id2StartsWith = id2.first.path.lowercase().startsWith(path)
+        val id1StartsWith = id1.id.path.startsWith(registryId.id.path)
+        val id2StartsWith = id2.id.path.startsWith(registryId.id.path)
 
         when {
-            id1StartsWith && id2StartsWith -> id1.first.compareTo(id2.first)
+            id1StartsWith && id2StartsWith -> id1.id.compareTo(id2.id)
             id1StartsWith -> -1
             id2StartsWith -> 1
-            else -> id1.first.compareTo(id2.first)
+            else -> id1.id.compareTo(id2.id)
         }
-    }.map { it.second }
-}
-
-fun <T> DefaultedRegistry<T>.find(string: String): T? {
-    if (string.startsWith('#')) {
-        val id = string.drop(1).id()
-        return find(id)
     }
-
-    val id = string.id()
-    return get(id)
 }
 
-fun <T> DefaultedRegistry<T>.find(id: Identifier): T? {
-    val tag = streamTags().filter { it.id == id }.findFirst().orElse(TagKey.of(key, id))
+operator fun DefaultedRegistry<*>.contains(id: RegistryIdentifier) = if (id.isTag) {
+    val tagsIterator = streamTags().iterator()
+    !tagsIterator.hasNext() || tagsIterator.asSequence().any { it.id == id.id }
+} else containsId(id.id)
 
-    return getEntryList(tag).getOrNull()?.firstOrNull()?.value()
+fun <T> DefaultedRegistry<T>.find(string: String) = find(RegistryIdentifier.of(string))
+
+fun <T> DefaultedRegistry<T>.find(id: RegistryIdentifier): T {
+    return if (id.isTag) {
+        val tag = streamTags().asSequence().find { it.id == id.id } ?: TagKey.of(key, id.id)
+
+        getEntryList(tag).getOrNull()?.firstOrNull()?.value() ?: this[defaultId]
+    } else this[id.id]
 }

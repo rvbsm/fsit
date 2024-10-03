@@ -16,6 +16,8 @@ data class RegistryIdentifier(val id: Identifier, val isTag: Boolean) {
     override fun toString() = if (isTag) "#$id" else "$id"
 
     companion object {
+        val defaultId = RegistryIdentifier(id = DEFAULT_IDENTIFIER, isTag = false)
+
         fun of(id: String) = if (id.startsWith('#')) {
             RegistryIdentifier(id.drop(1).id().orDefault(), isTag = true)
         } else RegistryIdentifier(id.id().orDefault(), isTag = false)

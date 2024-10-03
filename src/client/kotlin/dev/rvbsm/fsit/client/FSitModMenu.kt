@@ -8,6 +8,7 @@ import dev.isxander.yacl3.dsl.*
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.gui.controller.RegistryController
 import dev.rvbsm.fsit.config.ModConfig
+import dev.rvbsm.fsit.registry.RegistryIdentifier
 import dev.rvbsm.fsit.registry.toRegistrySet
 import dev.rvbsm.fsit.util.translatable
 import net.minecraft.registry.Registries
@@ -64,16 +65,18 @@ object FSitModMenu : ModMenuApi {
                         descriptionBuilder { addDefaultText(lines = 1) }
                     }
 
-                    groups.register(
-                        "blocks",
-                        ListOption.createBuilder<String>().name("$categoryKey.root.option.blocks".translatable())
+                    groups.register("blocks",
+                        ListOption.createBuilder<RegistryIdentifier>()
+                            .name("$categoryKey.root.option.blocks".translatable()).description(
+                                OptionDescription.createBuilder()
+                                    .apply { addDefaultText("$categoryKey.root.option.blocks.description") }.build()
+                            )
                             .description(OptionDescription.of("$categoryKey.root.option.blocks.description".translatable()))
                             .customController { RegistryController(it, Registries.BLOCK) }.binding(
-                                defaultConfig.onUse.blocks.map { it.toString() },
-                                { FSitMod.config.onUse.blocks.map { it.toString() } },
-                                { FSitMod.config.onUse.blocks = it.toRegistrySet(Registries.BLOCK) },
-                            ).initial("#slabs").build()
-                    )
+                                defaultConfig.onUse.blocks.toList(),
+                                FSitMod.config.onUse.blocks::toList,
+                            ) { FSitMod.config.onUse.blocks = it.toRegistrySet(Registries.BLOCK) }
+                            .initial(RegistryIdentifier.defaultId).build())
                 }
 
                 val onSneak by categories.registering {
