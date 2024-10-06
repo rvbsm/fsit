@@ -45,7 +45,7 @@ data class Sitting(
         @SerialName("gravity") Gravity;
 
         val shouldMove get() = this == Gravity
-        val shouldDiscardWithoutSupport get() = this == Discard
+        val shouldDiscard get() = this == Discard
     }
 }
 

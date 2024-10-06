@@ -38,7 +38,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
         if (!world.isClient && !isRemoved) {
             super.tickMovement()
 
-            if (firstPassenger == null || (config.sitting.behaviour.shouldDiscardWithoutSupport && !hasGroundCollision)) {
+            if (firstPassenger == null || (config.sitting.behaviour.shouldDiscard && !hasGroundCollision)) {
                 discard()
             }
 

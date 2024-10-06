@@ -48,7 +48,7 @@ object FSitKeyBindings : ClientTickEvents.EndTick {
         val player = client.player ?: return
         val currentPose = player.pose()
 
-        val canStartSitting = !FSitMod.config.sitting.behaviour.shouldDiscardWithoutSupport || player.isOnGround
+        val canStartSitting = !FSitMod.config.sitting.behaviour.shouldDiscard || player.isOnGround
         if (currentPose == PlayerPose.Standing && (player.hasVehicle() || !canStartSitting)) return
 
         val pose = when {
