@@ -30,4 +30,4 @@ var ServerPlayerEntity.config
     set(config) = (this as ConfigurableEntity).`fsit$setConfig`(config)
 fun ServerPlayerEntity.hasConfig() = (this as ConfigurableEntity).`fsit$hasConfig`()
 
-val ServerPlayerEntity.clientVelocity: Vec3d get() = (this as ServerPlayerClientVelocity).`fsit$getClientVelocity`()
+val ServerPlayerEntity.clientVelocity get() = (this as ServerPlayerClientVelocity).`fsit$getClientVelocity`()

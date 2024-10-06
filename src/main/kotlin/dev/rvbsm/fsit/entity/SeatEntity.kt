@@ -1,7 +1,9 @@
 package dev.rvbsm.fsit.entity
 
+import dev.rvbsm.fsit.networking.clientVelocity
 import dev.rvbsm.fsit.networking.config
 import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.math.times
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityPose
@@ -29,9 +31,9 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
 
         customName = "FSit_SeatEntity".literal()
 
-//        if (config.sitting.applyGravity) {
-//            velocity = player.clientVelocity // fixme
-//        }
+        if (config.sitting.behaviour.shouldMove) {
+            velocity = player.clientVelocity * velocityMultiplier.toDouble()
+        }
     }
 
     override fun tick() {

@@ -17,3 +17,5 @@ fun Vec3d.addHorizontal(speed: Float, yaw: Float): Vec3d = add(
     0.0,
     speed * cos(yaw / 180.0 * PI),
 )
+
+operator fun Vec3d.times(value: Double): Vec3d = multiply(value)

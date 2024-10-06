@@ -126,12 +126,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     }
 
     @Override
-    public void fsit$setClientVelocity(Vec3d velocity) {
+    public void fsit$setClientVelocity(@NotNull Vec3d velocity) {
         this.clientVelocity = velocity;
     }
 
     @Override
-    public Vec3d fsit$getClientVelocity() {
+    public @NotNull Vec3d fsit$getClientVelocity() {
         return this.clientVelocity;
     }
 }
