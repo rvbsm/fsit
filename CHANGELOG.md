@@ -1,5 +1,25 @@
 # Changelog
 
+## v2.6.0-beta.1
+
+### Changed
+
+- Better(?) config migrations
+- Asynchronous config update packet handler
+- Packed with Shadow and Proguard Gradle plugins
+- `sitting.apply_gravity` and `sitting.allow_in_air` had a little conflict and were replaced with `sitting.behaviour`. `sitting.behaviour` can
+  have three values: 
+  - `nothing`: does nothing
+  - `discard`: discards seats if they don't have any supporting block underneath them
+  - `gravity`: applies movement to seats, e.g. gravity, getting pushed by pistons, fluids
+
+### Fixed
+
+- Incorrect seat rotation. Thanks #41
+- Ridden player was unloaded with rider. Thanks #42
+- Kotlin's and mod's UUID serializers name clash. Thanks #43
+- Crash if config's numeric values were not in range
+
 ## v2.5.2
 
 ### Fixed
