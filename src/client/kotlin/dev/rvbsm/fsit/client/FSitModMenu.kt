@@ -11,7 +11,7 @@ import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.config.Sitting
 import dev.rvbsm.fsit.registry.RegistryIdentifier
 import dev.rvbsm.fsit.registry.toRegistrySet
-import dev.rvbsm.fsit.util.translatable
+import dev.rvbsm.fsit.util.text.translatable
 import net.minecraft.registry.Registries
 
 // todo: make it look better 👽
@@ -31,6 +31,7 @@ object FSitModMenu : ModMenuApi {
                     val sitting by groups.registering {
                         descriptionBuilder { addDefaultText() }
 
+                        // todo: do i need to add some visuals?
                         val behaviour by options.registering {
                             controller = enumSwitch<Sitting.Behaviour>()
                             binding(FSitMod.config.sitting::behaviour, defaultConfig.sitting.behaviour)

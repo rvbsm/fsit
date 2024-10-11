@@ -2,7 +2,7 @@ package dev.rvbsm.fsit.entity
 
 import dev.rvbsm.fsit.networking.clientVelocity
 import dev.rvbsm.fsit.networking.config
-import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.text.literal
 import dev.rvbsm.fsit.util.math.times
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.entity.EntityDimensions
@@ -61,7 +61,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
     //? if >=1.20.6
     /*override fun getPassengerAttachmentPos(passenger: net.minecraft.entity.Entity, dimensions: EntityDimensions, scaleFactor: Float): Vec3d = Vec3d.ZERO*/
 
-    override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d = pos
+    override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d = pos // todo: find normal pos
     override fun getPistonBehavior() = PistonBehavior.NORMAL
     override fun hasPlayerRider() = false
     override fun shouldSave() = false

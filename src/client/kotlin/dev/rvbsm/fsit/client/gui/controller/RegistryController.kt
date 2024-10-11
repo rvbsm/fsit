@@ -9,7 +9,7 @@ import dev.rvbsm.fsit.registry.RegistryIdentifier
 import dev.rvbsm.fsit.registry.contains
 import dev.rvbsm.fsit.registry.find
 import dev.rvbsm.fsit.registry.matchingIdentifiers
-import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.text.literal
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack

@@ -6,7 +6,7 @@ import com.charleskorn.kaml.YamlNamingStrategy
 import dev.rvbsm.fsit.command.command
 import dev.rvbsm.fsit.command.configArgument
 import dev.rvbsm.fsit.command.isGameMaster
-import dev.rvbsm.fsit.config.ConfigSerializer
+import dev.rvbsm.fsit.config.serialization.ConfigSerializer
 import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.event.*
@@ -18,8 +18,8 @@ import dev.rvbsm.fsit.networking.receive
 import dev.rvbsm.fsit.networking.resetPose
 import dev.rvbsm.fsit.networking.setPose
 import dev.rvbsm.fsit.util.id
-import dev.rvbsm.fsit.util.literal
-import dev.rvbsm.fsit.util.translatable
+import dev.rvbsm.fsit.util.text.literal
+import dev.rvbsm.fsit.util.text.translatable
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.api.ModInitializer

@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.command
 
 import dev.rvbsm.fsit.FSitMod
-import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.text.literal
 import net.minecraft.server.command.ServerCommandSource
 import kotlin.reflect.KMutableProperty0
 

@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.util
+package dev.rvbsm.fsit.util.text
 
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text

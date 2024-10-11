@@ -14,7 +14,8 @@ val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
         }
 
         PlayerPose.Sitting -> {
-            if (player.config.sitting.behaviour.shouldDiscard && !player.isOnGround) {
+            // note: prevents from creating seats in the air without gravity
+            if (!player.config.sitting.behaviour.shouldMove && !player.isOnGround) {
                 return@update player.setPose(PlayerPose.Standing, pos)
             }
 

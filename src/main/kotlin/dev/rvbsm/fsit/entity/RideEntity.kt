@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.entity
 
-import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.text.literal
 import net.minecraft.entity.AreaEffectCloudEntity
 import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityPose

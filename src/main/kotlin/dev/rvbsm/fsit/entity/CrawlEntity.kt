@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.entity
 
 import dev.rvbsm.fsit.networking.setCrawl
-import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.text.literal
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.nbt.NbtCompound

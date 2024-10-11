@@ -12,7 +12,7 @@ import dev.rvbsm.fsit.networking.payload.ConfigUpdateC2SPayload
 import dev.rvbsm.fsit.networking.payload.CustomPayload
 import dev.rvbsm.fsit.networking.payload.PoseUpdateS2CPayload
 import dev.rvbsm.fsit.networking.payload.RidingRequestS2CPayload
-import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.text.literal
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking

@@ -1,4 +1,4 @@
-package dev.rvbsm.fsit.util
+package dev.rvbsm.fsit.util.text
 
 fun String.lowercaseFirst() = replaceFirstChar { it.lowercase() }
 

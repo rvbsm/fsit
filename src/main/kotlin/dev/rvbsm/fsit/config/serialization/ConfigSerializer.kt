@@ -1,8 +1,9 @@
-package dev.rvbsm.fsit.config
+package dev.rvbsm.fsit.config.serialization
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.yamlMap
-import dev.rvbsm.fsit.util.decodeFromYamlNode
+import dev.rvbsm.fsit.config.ModConfig
+import dev.rvbsm.fsit.config.migrations
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString

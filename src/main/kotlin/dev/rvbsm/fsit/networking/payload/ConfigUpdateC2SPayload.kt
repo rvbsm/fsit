@@ -1,7 +1,7 @@
 package dev.rvbsm.fsit.networking.payload
 
 import dev.rvbsm.fsit.config.ModConfig
-import dev.rvbsm.fsit.config.ConfigSerializer
+import dev.rvbsm.fsit.config.serialization.ConfigSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNamingStrategy

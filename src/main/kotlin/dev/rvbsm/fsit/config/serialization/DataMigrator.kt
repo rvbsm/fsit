@@ -1,9 +1,7 @@
-package dev.rvbsm.fsit.config
+package dev.rvbsm.fsit.config.serialization
 
 import com.charleskorn.kaml.*
-import dev.rvbsm.fsit.util.join
-import dev.rvbsm.fsit.util.plus
-import dev.rvbsm.fsit.util.splitOnce
+import dev.rvbsm.fsit.util.text.splitOnce
 import kotlinx.serialization.json.*
 
 // todo: make another refactor after a while
@@ -28,7 +26,7 @@ internal fun JsonObject.migrate(migrations: Map<String, String>): JsonObject {
 
                 fromKeys.fold<String, JsonElement?>(jsonObjectModified) { acc, key -> (acc as? JsonObject)?.get(key) }
                     .also { jsonObjectModified = jsonObjectModified.removePath(fromPath) }?.applyModifiers(modifiers)
-            }.takeIf { it.isNotEmpty() }?.join() ?: continue
+            }.takeIf { it.isNotEmpty() }?.joinToJsonElement() ?: continue
 
             val toPath = migration.value.takeIf { it.endsWith(FORCE_MIGRATION) }?.dropLast(1)
                 ?.also { jsonObjectModified = jsonObjectModified.removePath(it) } ?: migration.value
@@ -52,7 +50,7 @@ internal fun YamlMap.migrate(migrations: Map<String, String>): YamlMap {
 
                 fromKeys.fold<String, YamlNode?>(yamlMapModified) { acc, key -> (acc as? YamlMap)?.get(key) }
                     .also { yamlMapModified = yamlMapModified.removePath(fromPath) }?.applyModifiers(modifiers)
-            }.takeIf { it.isNotEmpty() }?.join() ?: continue
+            }.takeIf { it.isNotEmpty() }?.joinToYamlNode() ?: continue
 
             val toPath = migration.value.takeIf { it.endsWith(FORCE_MIGRATION) }?.dropLast(1)
                 ?.also { yamlMapModified = yamlMapModified.removePath(it) } ?: migration.value

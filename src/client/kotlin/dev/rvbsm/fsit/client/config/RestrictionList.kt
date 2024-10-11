@@ -5,7 +5,7 @@ import dev.rvbsm.fsit.FSitMod.MOD_ID
 import dev.rvbsm.fsit.client.FSitModClient
 import dev.rvbsm.fsit.config.serialization.UUIDSerializer
 import dev.rvbsm.fsit.networking.payload.RidingResponseC2SPayload
-import dev.rvbsm.fsit.util.literal
+import dev.rvbsm.fsit.util.text.literal
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.json.Json

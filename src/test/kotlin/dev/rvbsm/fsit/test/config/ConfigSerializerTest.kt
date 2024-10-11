@@ -4,7 +4,11 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlNamingStrategy
 import com.google.common.io.Resources
-import dev.rvbsm.fsit.config.*
+import dev.rvbsm.fsit.config.ModConfig
+import dev.rvbsm.fsit.config.OnDoubleSneak
+import dev.rvbsm.fsit.config.OnUse
+import dev.rvbsm.fsit.config.Sitting
+import dev.rvbsm.fsit.config.serialization.ConfigSerializer
 import dev.rvbsm.fsit.registry.registrySetOf
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
