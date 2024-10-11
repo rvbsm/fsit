@@ -73,7 +73,7 @@ data class OnDoubleSneak(
     var crawling: Boolean = true,
 
     @YamlComment("The minimum angle must be looking down (in degrees) with double sneak.")
-    var minPitch: Double = 66.6,
+    var minPitch: Double = 60.0,
     @YamlComment("The window between sneaks to sit down (in milliseconds).")
     var delay: Long = 600,
 )
