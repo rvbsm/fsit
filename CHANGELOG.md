@@ -15,10 +15,15 @@
 
 ### Fixed
 
+- Crash if config's numeric values were not in range
+
+## v2.5.3
+
+### Fixed
+
 - Incorrect seat rotation. Thanks #41
 - Ridden player was unloaded with rider. Thanks #42
 - Kotlin's and mod's UUID serializers name clash. Thanks #43
-- Crash if config's numeric values were not in range
 
 ## v2.5.2
 
