@@ -216,7 +216,7 @@ publishMods {
         "beta" in modVersion -> BETA
         else -> STABLE
     }
-    displayName = "[$minecraftVersion] v$modVersion"
+    displayName = "[$minecraftLeastCompatibleVersion] v$modVersion"
     modLoaders.addAll("fabric", "quilt")
 
     dryRun = !providers.environmentVariable("MODRINTH_TOKEN").isPresent
