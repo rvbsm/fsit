@@ -23,7 +23,7 @@ private val modrinthId = property("mod.modrinth_id").toString()
 
 private class ModLibraries {
     private val fabricYarnBuild = property("fabric.yarn_build").toString()
-    private val fabricApiVersion = "${property("fabric.api")}+$minecraftVersion"
+    private val fabricApiVersion = property("fabric.api").toString()
     private val fabricApiModules = setOf(
         "fabric-api-base",
         "fabric-command-api-v2",
