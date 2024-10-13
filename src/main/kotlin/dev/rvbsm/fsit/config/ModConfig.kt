@@ -26,9 +26,9 @@ data class ModConfig(
     val onDoubleSneak: OnDoubleSneak = OnDoubleSneak(),
 ) {
     init {
-        onUse.range = onUse.range.coerceIn(1L..4)
-        onDoubleSneak.minPitch = onDoubleSneak.minPitch.coerceIn(-90.0..90.0)
-        onDoubleSneak.delay = onDoubleSneak.delay.coerceIn(100L..2000)
+        onUse.range = onUse.range.coerceIn(1, 4)
+        onDoubleSneak.minPitch = onDoubleSneak.minPitch.coerceIn(-90.0, 90.0)
+        onDoubleSneak.delay = onDoubleSneak.delay.coerceIn(100, 2000)
     }
 }
 
@@ -36,6 +36,8 @@ data class ModConfig(
 data class Sitting(
     @YamlComment("Controls sitting behaviour. Possible values: nothing, discard (if no block underneath sitting player), gravity.")
     var behaviour: Behaviour = Behaviour.Gravity,
+    @YamlComment("Places seat in the center of the block")
+    var shouldCenter: Boolean = false,
 ) {
 
     @Serializable

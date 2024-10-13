@@ -5,6 +5,8 @@ import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.entity.SeatEntity
 import dev.rvbsm.fsit.networking.*
 import dev.rvbsm.fsit.networking.payload.PoseUpdateS2CPayload
+import dev.rvbsm.fsit.util.math.centered
+import net.minecraft.util.math.Vec3d
 
 val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
     when (pose) {
@@ -18,8 +20,11 @@ val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
             if (!player.config.sitting.behaviour.shouldMove && !player.isOnGround) {
                 return@update player.setPose(PlayerPose.Standing, pos)
             }
+            val seatPos = if (player.config.sitting.shouldCenter) {
+                pos?.centered() ?: Vec3d.ofBottomCenter(player.blockPos)
+            } else pos ?: player.pos
 
-            SeatEntity.create(player, pos ?: player.pos)
+            SeatEntity.create(player, seatPos)
         }
 
         PlayerPose.Crawling -> if (!player.hasConfig()) {

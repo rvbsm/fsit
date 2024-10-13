@@ -37,6 +37,12 @@ object FSitModMenu : ModMenuApi {
                             binding(FSitMod.config.sitting::behaviour, defaultConfig.sitting.behaviour)
                             descriptionBuilder { addDefaultText() }
                         }
+
+                        val shouldCenter by options.registering {
+                            controller = tickBox()
+                            binding(FSitMod.config.sitting::shouldCenter, defaultConfig.sitting.shouldCenter)
+                            descriptionBuilder { addDefaultText() }
+                        }
                     }
                 }
 

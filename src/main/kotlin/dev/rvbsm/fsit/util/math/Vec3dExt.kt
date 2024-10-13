@@ -19,3 +19,5 @@ fun Vec3d.addHorizontal(speed: Float, yaw: Float): Vec3d = add(
 )
 
 operator fun Vec3d.times(value: Double): Vec3d = multiply(value)
+
+fun Vec3d.centered() = Vec3d(x.toInt() + 0.5, y, z.toInt() + 0.5)
