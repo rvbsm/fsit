@@ -7,14 +7,16 @@ import kotlin.reflect.KMutableProperty0
 
 inline fun <reified T> CommandBuilder<ServerCommandSource, *>.configArgument(
     name: String,
-    property: KMutableProperty0<T>,
+    crossinline propertyGetter: () -> KMutableProperty0<T>,
 ) = literal(name) {
     executes {
+        val property = propertyGetter()
         source.sendFeedback("Config option $name is currently set to: ${property.get()}"::literal, false)
     }
 
     argument<T>("value") {
         executes {
+            val property = propertyGetter()
             property.set(it()).also { FSitMod.saveConfig() }
             source.sendFeedback("Config option $name is now set to: ${property.get()}"::literal, true)
         }

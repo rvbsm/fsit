@@ -78,15 +78,16 @@ object FSitMod : ModInitializer {
                 }
             }
 
-            configArgument("useServer", config::useServer)
-            configArgument("onUseSit", config.onUse::sitting)
-            configArgument("onUseRide", config.onUse::riding)
-            configArgument("onUseRange", config.onUse::range)
-            configArgument("onUseCheckSuffocation", config.onUse::checkSuffocation)
-            configArgument("onSneakSit", config.onDoubleSneak::sitting)
-            configArgument("onSneakCrawl", config.onDoubleSneak::crawling)
-            configArgument("onSneakMinPitch", config.onDoubleSneak::minPitch)
-            configArgument("onSneakDelay", config.onDoubleSneak::delay)
+            configArgument("useServer") { config::useServer }
+            configArgument("centerSeats") { config.sitting::shouldCenter }
+            configArgument("onUseSit") { config.onUse::sitting }
+            configArgument("onUseRide") { config.onUse::riding }
+            configArgument("onUseRange") { config.onUse::range }
+            configArgument("onUseCheckSuffocation") { config.onUse::checkSuffocation }
+            configArgument("onSneakSit") { config.onDoubleSneak::sitting }
+            configArgument("onSneakCrawl") { config.onDoubleSneak::crawling }
+            configArgument("onSneakMinPitch") { config.onDoubleSneak::minPitch }
+            configArgument("onSneakDelay") { config.onDoubleSneak::delay }
         }
 
         arrayOf("sit" to PlayerPose.Sitting, "crawl" to PlayerPose.Crawling).forEach {
