@@ -10,6 +10,7 @@
 
   "yacl3.config.fsit.category.general.root.option.useServer": "Use Server Configuration",
   "yacl3.config.fsit.category.general.group.sitting.option.behaviour": "Seats behaviour",
+  "yacl3.config.fsit.category.general.group.sitting.option.shouldCenter": "Seats centering",
   "yacl3.config.fsit.category.onUse.root.option.sitting": "Sit on Blocks",
   "yacl3.config.fsit.category.onUse.root.option.riding": "Ride players",
   "yacl3.config.fsit.category.onUse.root.option.range": "Interaction Range",
@@ -25,6 +26,7 @@
   "yacl3.config.fsit.category.general.group.sitting.option.behaviour.description.2": "§lNothing§r: just exists.",
   "yacl3.config.fsit.category.general.group.sitting.option.behaviour.description.3": "§lDiscard§r: gets discarded without supporting block underneath them.",
   "yacl3.config.fsit.category.general.group.sitting.option.behaviour.description.4": "§lGravity§r: applies movement (pistons, fluids, falling, etc.).",
+  "yacl3.config.fsit.category.general.group.sitting.option.shouldCenter.description": "Controls whether seats should be centered at the position.",
   "yacl3.config.fsit.category.onUse.root.option.sitting.description": "Allows to start sitting on specific blocks by interacting with them.",
   "yacl3.config.fsit.category.onUse.root.option.riding.description": "Allows to start riding other players by interaction with them.",
   "yacl3.config.fsit.category.onUse.root.option.range.description": "The maximum distance to a target to interact.",
