@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-private val modVersion = "git describe --tags".runCommand()?.dropFirstIf('v')!!
+private val modVersion = "git describe --tags --dirty --always".runCommand()?.dropFirstIf('v')!!
 private val minecraftLeastCompatibleVersion = stonecutter.current.project
 private val minecraftVersion = stonecutter.current.version
 private val isLeastEqualsCurrent = minecraftLeastCompatibleVersion == minecraftVersion
@@ -169,7 +169,6 @@ tasks {
         useJUnitPlatform()
     }
 }
-
 
 val proguardJar by tasks.registering(ProGuardTask::class) {
     dependsOn(tasks.remapJar)
