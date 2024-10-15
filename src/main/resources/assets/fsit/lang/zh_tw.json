@@ -1,0 +1,47 @@
+{
+  "yacl3.config.fsit.category.general": "一般",
+  "yacl3.config.fsit.category.onUse": "使用互動",
+  "yacl3.config.fsit.category.onSneak": "潛行互動",
+
+  "yacl3.config.fsit.category.general.group.sitting": "坐下",
+  "yacl3.config.fsit.category.general.group.riding": "騎乘",
+  "yacl3.config.fsit.category.general.group.sitting.description": "坐下功能。",
+  "yacl3.config.fsit.category.general.group.riding.description": "騎乘功能。",
+
+  "yacl3.config.fsit.category.general.root.option.useServer": "使用伺服器設定",
+  "yacl3.config.fsit.category.general.group.sitting.option.behaviour": "座位行為",
+  "yacl3.config.fsit.category.general.group.sitting.option.shouldCenter": "座位置中",
+  "yacl3.config.fsit.category.onUse.root.option.sitting": "坐在方塊上",
+  "yacl3.config.fsit.category.onUse.root.option.riding": "騎乘玩家",
+  "yacl3.config.fsit.category.onUse.root.option.range": "互動距離",
+  "yacl3.config.fsit.category.onUse.root.option.checkSuffocation": "窒息檢查",
+  "yacl3.config.fsit.category.onUse.root.option.blocks": "可坐方塊",
+  "yacl3.config.fsit.category.onSneak.root.option.sitting": "按兩下潛行鍵坐下",
+  "yacl3.config.fsit.category.onSneak.root.option.crawling": "按兩下潛行鍵爬行（靠近一格高的縫隙時）",
+  "yacl3.config.fsit.category.onSneak.root.option.minPitch": "最小俯角",
+  "yacl3.config.fsit.category.onSneak.root.option.delay": "潛行間延遲",
+
+  "yacl3.config.fsit.category.general.root.option.useServer.description.1": "是否使用伺服器端設定。",
+  "yacl3.config.fsit.category.general.group.sitting.option.behaviour.description.1": "控制座位行為。\n",
+  "yacl3.config.fsit.category.general.group.sitting.option.behaviour.description.2": "§l無§r：僅存在。",
+  "yacl3.config.fsit.category.general.group.sitting.option.behaviour.description.3": "§l丟棄§r：在下方沒有支撐方塊時會被丟棄。",
+  "yacl3.config.fsit.category.general.group.sitting.option.behaviour.description.4": "§l重力§r：套用移動（活塞、流體、掉落等）。",
+  "yacl3.config.fsit.category.general.group.sitting.option.shouldCenter.description.1": "控制座位是否應該置中於該位置。",
+  "yacl3.config.fsit.category.onUse.root.option.sitting.description.1": "允許透過與特定方塊互動來開始坐在上面。",
+  "yacl3.config.fsit.category.onUse.root.option.riding.description.1": "允許透過與其他玩家互動來開始騎乘他們。",
+  "yacl3.config.fsit.category.onUse.root.option.range.description.1": "與目標互動的最大距離。",
+  "yacl3.config.fsit.category.onUse.root.option.checkSuffocation.description.1": "防止坐在玩家會窒息的地方。",
+  "yacl3.config.fsit.category.onUse.root.option.blocks.description.1": "可透過互動來坐下的特定方塊類型清單（例如「oak_log」）。",
+  "yacl3.config.fsit.category.onSneak.root.option.sitting.description.1": "允許透過在向下看時按兩下潛行鍵來開始坐下。",
+  "yacl3.config.fsit.category.onSneak.root.option.crawling.description.1": "允許透過在一格高的縫隙附近按兩下潛行鍵來開始爬行。",
+  "yacl3.config.fsit.category.onSneak.root.option.minPitch.description.1": "按兩下潛行鍵時必須向下看的最小角度（以度為單位）。",
+  "yacl3.config.fsit.category.onSneak.root.option.delay.description.1": "潛行之間的時間間隔（以毫秒為單位）。",
+
+  "key.fsit.sit": "坐下",
+  "key.fsit.crawl": "爬行",
+  "option.fsit.key.hybrid": "混合",
+
+  "gui.fsit.socialInteractions.restrict": "禁止騎乘",
+  "gui.fsit.socialInteractions.allow": "允許騎乘",
+  "gui.fsit.socialInteractions.disabled": "玩家騎乘已停用"
+}
