@@ -20,9 +20,10 @@ val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
             if (!player.config.sitting.behaviour.shouldMove && !player.isOnGround) {
                 return@update player.setPose(PlayerPose.Standing, pos)
             }
-            val seatPos = if (player.config.sitting.shouldCenter) {
-                pos?.centered() ?: Vec3d.ofBottomCenter(player.blockPos)
-            } else pos ?: player.pos
+            val seatPos = (pos ?: player.pos).let {
+                if (player.config.sitting.shouldCenter) it.centered()
+                else it
+            }
 
             SeatEntity.create(player, seatPos)
         }
