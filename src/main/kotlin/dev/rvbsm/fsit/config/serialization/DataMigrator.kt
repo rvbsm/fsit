@@ -1,8 +1,19 @@
 package dev.rvbsm.fsit.config.serialization
 
-import com.charleskorn.kaml.*
+import com.charleskorn.kaml.YamlList
+import com.charleskorn.kaml.YamlMap
+import com.charleskorn.kaml.YamlNode
+import com.charleskorn.kaml.YamlPath
+import com.charleskorn.kaml.YamlScalar
+import com.charleskorn.kaml.yamlMap
+import com.charleskorn.kaml.yamlScalar
 import dev.rvbsm.fsit.util.text.splitOnce
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 // todo: make another refactor after a while
 private const val PATH_SEPARATOR = '.'
@@ -24,8 +35,11 @@ internal fun JsonObject.migrate(migrations: Map<String, String>): JsonObject {
                 val (fromPath, modifiers) = fromKey.splitOnce(*MODIFIERS)
                 val fromKeys = fromPath.split(PATH_SEPARATOR)
 
-                fromKeys.fold<String, JsonElement?>(jsonObjectModified) { acc, key -> (acc as? JsonObject)?.get(key) }
-                    .also { jsonObjectModified = jsonObjectModified.removePath(fromPath) }?.applyModifiers(modifiers)
+                if (fromPath in this) remove(fromPath) else {
+                    fromKeys.fold<String, JsonElement?>(jsonObjectModified) { acc, key -> (acc as? JsonObject)?.get(key) }
+                        .also { jsonObjectModified = jsonObjectModified.removePath(fromPath) }
+                        ?.applyModifiers(modifiers)
+                } as? JsonElement
             }.takeIf { it.isNotEmpty() }?.joinToJsonElement() ?: continue
 
             val toPath = migration.value.takeIf { it.endsWith(FORCE_MIGRATION) }?.dropLast(1)
@@ -48,8 +62,10 @@ internal fun YamlMap.migrate(migrations: Map<String, String>): YamlMap {
                 val (fromPath, modifiers) = fromKey.splitOnce(*MODIFIERS)
                 val fromKeys = fromPath.split(PATH_SEPARATOR)
 
-                fromKeys.fold<String, YamlNode?>(yamlMapModified) { acc, key -> (acc as? YamlMap)?.get(key) }
-                    .also { yamlMapModified = yamlMapModified.removePath(fromPath) }?.applyModifiers(modifiers)
+                if (fromPath in this) remove(fromPath) else {
+                    fromKeys.fold<String, YamlNode?>(yamlMapModified) { acc, key -> (acc as? YamlMap)?.get(key) }
+                        .also { yamlMapModified = yamlMapModified.removePath(fromPath) }?.applyModifiers(modifiers)
+                } as? YamlNode
             }.takeIf { it.isNotEmpty() }?.joinToYamlNode() ?: continue
 
             val toPath = migration.value.takeIf { it.endsWith(FORCE_MIGRATION) }?.dropLast(1)
