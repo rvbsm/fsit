@@ -2,8 +2,8 @@ package dev.rvbsm.fsit.entity
 
 import dev.rvbsm.fsit.networking.clientVelocity
 import dev.rvbsm.fsit.networking.config
-import dev.rvbsm.fsit.util.text.literal
 import dev.rvbsm.fsit.util.math.times
+import dev.rvbsm.fsit.util.text.literal
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityPose
@@ -40,8 +40,12 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
         if (!world.isClient && !isRemoved) {
             super.tickMovement()
 
-            if (firstPassenger == null || (config.sitting.behaviour.shouldDiscard && !hasGroundCollision)) {
+            if (firstPassenger == null) {
                 discard()
+            }
+
+            if (config.sitting.behaviour.shouldDiscard && !hasGroundCollision) {
+                detach()
             }
 
             yaw = player.yaw
