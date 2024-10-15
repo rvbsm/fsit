@@ -6,10 +6,18 @@ import com.charleskorn.kaml.YamlNamingStrategy
 import dev.rvbsm.fsit.command.command
 import dev.rvbsm.fsit.command.configArgument
 import dev.rvbsm.fsit.command.isGameMaster
-import dev.rvbsm.fsit.config.serialization.ConfigSerializer
 import dev.rvbsm.fsit.config.ModConfig
+import dev.rvbsm.fsit.config.serialization.ConfigSerializer
 import dev.rvbsm.fsit.entity.PlayerPose
-import dev.rvbsm.fsit.event.*
+import dev.rvbsm.fsit.event.ClientCommandCallback
+import dev.rvbsm.fsit.event.ClientCommandSneakListener
+import dev.rvbsm.fsit.event.PassedUseBlockCallback
+import dev.rvbsm.fsit.event.PassedUseEntityCallback
+import dev.rvbsm.fsit.event.ServerStoppingListener
+import dev.rvbsm.fsit.event.SpawnSeatListener
+import dev.rvbsm.fsit.event.StartRidingListener
+import dev.rvbsm.fsit.event.UpdatePoseCallback
+import dev.rvbsm.fsit.event.UpdatePoseListener
 import dev.rvbsm.fsit.networking.isInPose
 import dev.rvbsm.fsit.networking.payload.ConfigUpdateC2SPayload
 import dev.rvbsm.fsit.networking.payload.PoseRequestC2SPayload
@@ -39,7 +47,7 @@ object FSitMod : ModInitializer {
                 strictMode = false,
                 yamlNamingStrategy = YamlNamingStrategy.SnakeCase,
             ),
-        ), MOD_ID, "yml", "yaml"
+        ), id = MOD_ID, "yml", "yaml"
     )
 
     override fun onInitialize() = runBlocking {
@@ -54,7 +62,8 @@ object FSitMod : ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(ConfigUpdateC2SPayload.packetId, ConfigUpdateC2SPayload::receive)
         ServerPlayNetworking.registerGlobalReceiver(PoseRequestC2SPayload.packetId, PoseRequestC2SPayload::receive)
         ServerPlayNetworking.registerGlobalReceiver(
-            RidingResponseC2SPayload.packetId, RidingResponseC2SPayload::receive
+            RidingResponseC2SPayload.packetId,
+            RidingResponseC2SPayload::receive,
         )
     }
 

@@ -13,4 +13,4 @@ fun Identifier?.orDefault(): Identifier = this ?: DEFAULT_IDENTIFIER
 fun String.id(namespace: String = Identifier.DEFAULT_NAMESPACE) = runCatching {
     if (Identifier.NAMESPACE_SEPARATOR in this) Identifier.tryParse(lowercase())
     else Identifier.of(namespace, lowercase())
-  }.getOrNull() ?: DEFAULT_IDENTIFIER
+  }.getOrNull().orDefault()
