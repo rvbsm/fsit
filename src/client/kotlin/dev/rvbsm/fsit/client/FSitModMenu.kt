@@ -85,22 +85,22 @@ object FSitModMenu : ModMenuApi {
                 val onSneak by categories.registering {
                     val sitting by rootOptions.registering {
                         controller = tickBox()
-                        binding(FSitMod.config.onDoubleSneak::sitting, defaultConfig.onDoubleSneak.sitting)
+                        binding(FSitMod.config.onSneak::sitting, defaultConfig.onSneak.sitting)
                         descriptionBuilder { addDefaultText() }
                     }
                     val riding by rootOptions.registering {
                         controller = tickBox()
-                        binding(FSitMod.config.onDoubleSneak::crawling, defaultConfig.onDoubleSneak.crawling)
+                        binding(FSitMod.config.onSneak::crawling, defaultConfig.onSneak.crawling)
                         descriptionBuilder { addDefaultText() }
                     }
                     val minPitch by rootOptions.registering {
                         controller = slider(range = -90.0..90.0)
-                        binding(FSitMod.config.onDoubleSneak::minPitch, defaultConfig.onDoubleSneak.minPitch)
+                        binding(FSitMod.config.onSneak::minPitch, defaultConfig.onSneak.minPitch)
                         descriptionBuilder { addDefaultText() }
                     }
                     val delay by rootOptions.registering {
                         controller = slider(range = 100..2000L)
-                        binding(FSitMod.config.onDoubleSneak::delay, defaultConfig.onDoubleSneak.delay)
+                        binding(FSitMod.config.onSneak::delay, defaultConfig.onSneak.delay)
                         descriptionBuilder { addDefaultText() }
                     }
                 }

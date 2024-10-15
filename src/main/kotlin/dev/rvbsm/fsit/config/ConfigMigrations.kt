@@ -48,7 +48,18 @@ private val legacyMigrations by lazy {
 
 private val v0Migrations by lazy {
     mapOf(
-        "version=1"                         to "version!"
+        "version=1"                         to "version!",
+    )
+}
+
+private val v1Migrations by lazy {
+    mapOf(
+        "version=2"                         to "version!",
+
+        "on_double_sneak.sitting"           to "on_sneak.sitting",
+        "on_double_sneak.crawling"          to "on_sneak.crawling",
+        "on_double_sneak.min_pitch"         to "on_sneak.min_pitch",
+        "on_double_sneak.delay"             to "on_sneak.delay",
     )
 }
 
@@ -56,7 +67,8 @@ private fun getMigrations(version: Int = 0) = buildMap {
     if (version <= ANCIENT_VERSION) putAll(ancientMigrations)
     if (version <= LEGACY_VERSION) putAll(legacyMigrations)
 
-    if (version <= 0) putAll(v0Migrations)
+    if (version < 1) putAll(v0Migrations)
+    if (version < 2) putAll(v1Migrations)
 }
 
 private val JsonObject.version get() =

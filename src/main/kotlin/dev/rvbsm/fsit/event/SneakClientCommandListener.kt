@@ -21,7 +21,7 @@ val ClientCommandSneakListener = ClientCommandCallback onClientCommand@{ player,
 
     if (mode != ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY || !player.isOnGround) return@onClientCommand
 
-    val config = player.config.onDoubleSneak.takeUnless { !it.sitting && !it.crawling } ?: return@onClientCommand
+    val config = player.config.onSneak.takeUnless { !it.sitting && !it.crawling } ?: return@onClientCommand
     if (player.pitch < config.minPitch) return@onClientCommand
 
     if (player.uuid !in sneaks) {

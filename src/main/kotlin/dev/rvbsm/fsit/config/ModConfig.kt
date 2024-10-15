@@ -11,7 +11,7 @@ import net.minecraft.block.Block
 import net.minecraft.registry.tag.BlockTags
 import java.nio.file.Path
 
-internal const val CURRENT_VERSION = 1
+internal const val CURRENT_VERSION = 2
 
 @Serializable
 data class ModConfig(
@@ -23,12 +23,12 @@ data class ModConfig(
     var useServer: Boolean = false,
     val sitting: Sitting = Sitting(),
     val onUse: OnUse = OnUse(),
-    val onDoubleSneak: OnDoubleSneak = OnDoubleSneak(),
+    val onSneak: OnSneak = OnSneak(),
 ) {
     init {
         onUse.range = onUse.range.coerceIn(1, 4)
-        onDoubleSneak.minPitch = onDoubleSneak.minPitch.coerceIn(-90.0, 90.0)
-        onDoubleSneak.delay = onDoubleSneak.delay.coerceIn(100, 2000)
+        onSneak.minPitch = onSneak.minPitch.coerceIn(-90.0, 90.0)
+        onSneak.delay = onSneak.delay.coerceIn(100, 2000)
     }
 }
 
@@ -68,7 +68,7 @@ data class OnUse(
 )
 
 @Serializable
-data class OnDoubleSneak(
+data class OnSneak(
     @YamlComment("Allows to start sitting by double sneaking while looking down.")
     var sitting: Boolean = true,
     @YamlComment("Allows to start crawling by double sneaking near a one-block gap.")

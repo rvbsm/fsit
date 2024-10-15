@@ -93,10 +93,10 @@ object FSitMod : ModInitializer {
             configArgument("onUseRide") { config.onUse::riding }
             configArgument("onUseRange") { config.onUse::range }
             configArgument("onUseCheckSuffocation") { config.onUse::checkSuffocation }
-            configArgument("onSneakSit") { config.onDoubleSneak::sitting }
-            configArgument("onSneakCrawl") { config.onDoubleSneak::crawling }
-            configArgument("onSneakMinPitch") { config.onDoubleSneak::minPitch }
-            configArgument("onSneakDelay") { config.onDoubleSneak::delay }
+            configArgument("onSneakSit") { config.onSneak::sitting }
+            configArgument("onSneakCrawl") { config.onSneak::crawling }
+            configArgument("onSneakMinPitch") { config.onSneak::minPitch }
+            configArgument("onSneakDelay") { config.onSneak::delay }
         }
 
         arrayOf("sit" to PlayerPose.Sitting, "crawl" to PlayerPose.Crawling).forEach {

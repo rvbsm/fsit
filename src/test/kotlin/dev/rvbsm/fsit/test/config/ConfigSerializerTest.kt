@@ -5,7 +5,7 @@ import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlNamingStrategy
 import com.google.common.io.Resources
 import dev.rvbsm.fsit.config.ModConfig
-import dev.rvbsm.fsit.config.OnDoubleSneak
+import dev.rvbsm.fsit.config.OnSneak
 import dev.rvbsm.fsit.config.OnUse
 import dev.rvbsm.fsit.config.Sitting
 import dev.rvbsm.fsit.config.serialization.ConfigSerializer
@@ -63,7 +63,7 @@ object ConfigSerializerTest {
                 checkSuffocation = true,
                 blocks = registrySetOf(Blocks.AMETHYST_BLOCK) + registrySetOf(BlockTags.BEDS, BlockTags.STAIRS),
             ),
-            onDoubleSneak = OnDoubleSneak(
+            onSneak = OnSneak(
                 sitting = false,
                 crawling = true,
                 minPitch = 42.0,
@@ -75,7 +75,7 @@ object ConfigSerializerTest {
     private val expectedAncientConfigs by lazy {
         mapOf(
             "v1.3.0" to ModConfig(
-                onDoubleSneak = OnDoubleSneak(
+                onSneak = OnSneak(
                     sitting = false,
                     minPitch = 42.0,
                     delay = 999,
@@ -88,7 +88,7 @@ object ConfigSerializerTest {
             ),
 
             "v1.3.1" to ModConfig(
-                onDoubleSneak = OnDoubleSneak(
+                onSneak = OnSneak(
                     sitting = false,
                     minPitch = 42.0,
                     delay = 999,
@@ -102,7 +102,7 @@ object ConfigSerializerTest {
             ),
 
             "v1.4.0" to ModConfig(
-                onDoubleSneak = OnDoubleSneak(
+                onSneak = OnSneak(
                     sitting = false,
                     minPitch = 42.0,
                     delay = 999,
@@ -140,7 +140,7 @@ object ConfigSerializerTest {
                     blocks = registrySetOf(Blocks.AMETHYST_BLOCK) + registrySetOf(BlockTags.BEDS, BlockTags.STAIRS),
                     riding = false,
                 ),
-                onDoubleSneak = OnDoubleSneak(
+                onSneak = OnSneak(
                     sitting = false,
                     minPitch = 42.0,
                     delay = 999,
@@ -160,7 +160,7 @@ object ConfigSerializerTest {
                     checkSuffocation = false,
                     blocks = registrySetOf(Blocks.AMETHYST_BLOCK) + registrySetOf(BlockTags.BEDS, BlockTags.STAIRS),
                 ),
-                onDoubleSneak = OnDoubleSneak(
+                onSneak = OnSneak(
                     sitting = false,
                     crawling = false,
                     minPitch = 42.0,
@@ -181,7 +181,7 @@ object ConfigSerializerTest {
                     checkSuffocation = false,
                     blocks = registrySetOf(Blocks.AMETHYST_BLOCK) + registrySetOf(BlockTags.BEDS, BlockTags.STAIRS),
                 ),
-                onDoubleSneak = OnDoubleSneak(
+                onSneak = OnSneak(
                     sitting = false,
                     crawling = false,
                     minPitch = 42.0,
@@ -244,7 +244,7 @@ object ConfigSerializerTest {
     fun `test JSON ancient (mod v1) + legacy (mod v2)`() {
         val jsonConfig = readResource("configs/v1.4.0+v2.1.0.json")
         val expectedConfig = ModConfig(
-            onDoubleSneak = OnDoubleSneak(
+            onSneak = OnSneak(
                 sitting = true,
                 minPitch = 69.0,
                 delay = 420,
