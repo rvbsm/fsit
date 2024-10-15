@@ -5,12 +5,15 @@ import dev.rvbsm.fsit.networking.config
 import dev.rvbsm.fsit.util.math.times
 import dev.rvbsm.fsit.util.text.literal
 import net.minecraft.block.piston.PistonBehavior
+import net.minecraft.entity.Dismounting
 import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityPose
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 
 class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
@@ -65,7 +68,34 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
     //? if >=1.20.6
     /*override fun getPassengerAttachmentPos(passenger: net.minecraft.entity.Entity, dimensions: EntityDimensions, scaleFactor: Float): Vec3d = Vec3d.ZERO*/
 
-    override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d = pos // todo: find normal pos
+    /**
+     * @see net.minecraft.entity.vehicle.AbstractMinecartEntity.updatePassengerForDismount
+     * @see net.minecraft.entity.vehicle.BoatEntity.updatePassengerForDismount
+     */
+    override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d {
+        val dismountOffsets = arrayOf(
+            intArrayOf(0, 0),
+            *Dismounting.getDismountOffsets(Direction.fromRotation(passenger.yaw.toDouble())),
+        )
+
+        for (dismountOffset in dismountOffsets) {
+            val dismountBlockPos = BlockPos.ofFloored(x + dismountOffset[0], y, z + dismountOffset[1])
+            val dismountHeight = world.getDismountHeight(dismountBlockPos)
+
+            for (passengerPose in passenger.poses) {
+                if (Dismounting.canDismountInBlock(dismountHeight)) {
+                    val dismountPos = Vec3d.ofCenter(dismountBlockPos, dismountHeight)
+                    if (Dismounting.canPlaceEntityAt(world, dismountPos, passenger, passengerPose)) {
+                        passenger.pose = passengerPose
+                        return dismountPos
+                    }
+                }
+            }
+        }
+
+        return pos
+    }
+
     override fun getPistonBehavior() = PistonBehavior.NORMAL
     override fun hasPlayerRider() = false
     override fun shouldSave() = false
