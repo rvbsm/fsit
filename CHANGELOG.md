@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.6.0-beta.2
+
+### Added
+
+- `sitting.should_center` option that controls if seats should be placed in the center of a block
+
+### Changed
+
+- Seats trying to find safe to dismount position
+- Seats checks for entity collisions too (like boats), when `sitting.behaviour` is `Discard`
+
+### Fixed
+
+- Option descriptions didn't show up in configuration menu (Mod Menu, YACL)
+
 ## v2.6.0-beta.1
 
 ### Changed
