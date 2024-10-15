@@ -29,12 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class ServerPlayNetworkHandlerMixin {
 
-    @Unique
-    //? if <=1.21.1
-    private static final net.minecraft.util.UseAction USE_ACTION_NONE = net.minecraft.util.UseAction.NONE;
-    //? if >=1.21.2-alpha.0
-    /*private static final net.minecraft.item.consume.UseAction USE_ACTION_NONE = net.minecraft.item.consume.UseAction.NONE;*/
-
     @Shadow
     public ServerPlayerEntity player;
 
@@ -45,7 +39,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
     @ModifyVariable(method = "onPlayerInteractBlock", at = @At("STORE"))
     private ActionResult interactBlock(ActionResult interactionActionResult, @Local ServerWorld world, @Local LocalRef<Hand> handRef, @Local BlockHitResult blockHitResult) {
-        if (interactionActionResult == ActionResult.PASS && handRef.get() == Hand.OFF_HAND && player.getStackInHand(handRef.get()).getUseAction() == USE_ACTION_NONE) {
+        if (interactionActionResult == ActionResult.PASS && handRef.get() == Hand.OFF_HAND && player.getStackInHand(handRef.get()).getUseAction().ordinal() == 0) {
             handRef.set(Hand.MAIN_HAND);
 
             return PassedUseBlockCallback.EVENT.invoker().interactBlock(player, world, blockHitResult);
@@ -77,7 +71,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
         @ModifyVariable(method = "processInteract", at = @At("STORE"))
         private ActionResult interactPlayer(ActionResult interactionActionResult, @Local(argsOnly = true) LocalRef<Hand> handRef) {
-            if (interactionActionResult == ActionResult.PASS && handRef.get() == Hand.OFF_HAND && field_28963.player.getStackInHand(handRef.get()).getUseAction() == USE_ACTION_NONE) {
+            if (interactionActionResult == ActionResult.PASS && handRef.get() == Hand.OFF_HAND && field_28963.player.getStackInHand(handRef.get()).getUseAction().ordinal() == 0) {
                 handRef.set(Hand.MAIN_HAND);
 
                 return PassedUseEntityCallback.EVENT.invoker().interactEntity(field_28963.player, field_39991, field_28962);
