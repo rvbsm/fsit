@@ -1,5 +1,23 @@
 # Changelog
 
+## v2.6.0-beta.3
+
+### New Contributors
+
+- @yichifauzi made their first contribution at https://github.com/rvbsm/fsit/pull/45
+
+### Added
+
+- Traditional Chinese translation by @yichifauzi at https://github.com/rvbsm/fsit/pull/45. Thank you!
+
+### Changed
+
+- Configuration category `on_double_sneak` was renamed to `on_sneak` (will automatically migrate)
+
+### Fixed
+
+- Crash when the configuration file does not exist. Thanks [#46](https://github.com/rvbsm/fsit/issues/46)
+
 ## v2.6.0-beta.2
 
 ### Added
