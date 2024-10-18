@@ -14,9 +14,9 @@ plugins {
 }
 
 private val modVersion = "git describe --tags --dirty --always".runCommand()?.dropFirstIf('v')!!
-private val minecraftLeastCompatibleVersion = stonecutter.current.project
-private val minecraftVersion = stonecutter.current.version
-private val isLeastEqualsCurrent = minecraftLeastCompatibleVersion == minecraftVersion
+private val minecraftProjectVersion = stonecutter.current.project
+private val minecraftTargetVersion = stonecutter.current.version
+private val isMinecraftVersionRange = stonecutter.eval(minecraftTargetVersion, ">$minecraftProjectVersion")
 
 private val javaVersion = property("java.version").toString().toInt(10)
 private val modrinthId = property("mod.modrinth_id").toString()
@@ -36,8 +36,8 @@ private class ModLibraries {
     private val modmenuVersion = property("api.modmenu").toString()
     private val yaclVersion = property("api.yacl").toString()
 
-    val minecraft = "com.mojang:minecraft:$minecraftVersion"
-    val fabricYarn = "net.fabricmc:yarn:$minecraftVersion+build.$fabricYarnBuild:v2"
+    val minecraft = "com.mojang:minecraft:$minecraftTargetVersion"
+    val fabricYarn = "net.fabricmc:yarn:$minecraftTargetVersion+build.$fabricYarnBuild:v2"
     val fabricApi by lazy { fabricApiModules.map { project.fabricApi.module(it, fabricApiVersion) } }
     val modmenu = "com.terraformersmc:modmenu:$modmenuVersion"
     val yacl = "dev.isxander:yet-another-config-lib:$yaclVersion-fabric"
@@ -45,7 +45,7 @@ private class ModLibraries {
 
 private val modLibs = ModLibraries()
 
-version = "$modVersion+mc$minecraftLeastCompatibleVersion"
+version = "$modVersion+mc$minecraftProjectVersion"
 group = "dev.rvbsm"
 base.archivesName = rootProject.name
 
@@ -103,8 +103,8 @@ tasks {
     processResources {
         val properties = mapOf(
             "version" to "$version",
-            "minecraftVersion" to ">=$minecraftLeastCompatibleVersion${
-                " <=$minecraftVersion".takeUnless { isLeastEqualsCurrent }.orEmpty()
+            "minecraftVersion" to ">=$minecraftProjectVersion-${
+                " <=$minecraftTargetVersion".takeIf { isMinecraftVersionRange }.orEmpty()
             }",
             "javaVersion" to javaVersion,
         )
@@ -195,6 +195,7 @@ val proguardJar by tasks.registering(ProGuardTask::class) {
         libraryjars(configurations.compileClasspath.get().files + configurations.runtimeClasspath.get().files)
     }
 }
+
 java {
     withSourcesJar()
 
@@ -215,7 +216,7 @@ publishMods {
         "beta" in modVersion -> BETA
         else -> STABLE
     }
-    displayName = "[$minecraftLeastCompatibleVersion] v$modVersion"
+    displayName = "[$minecraftProjectVersion] v$modVersion"
     modLoaders.addAll("fabric", "quilt")
 
     dryRun = !providers.environmentVariable("MODRINTH_TOKEN").isPresent
@@ -226,8 +227,8 @@ publishMods {
         featured = true
 
         minecraftVersionRange {
-            start = minecraftLeastCompatibleVersion
-            end = minecraftVersion
+            start = minecraftProjectVersion
+            end = minecraftTargetVersion
         }
 
         requires("fabric-api", "fabric-language-kotlin")
