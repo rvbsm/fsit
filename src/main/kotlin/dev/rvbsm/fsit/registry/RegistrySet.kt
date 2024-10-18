@@ -47,10 +47,14 @@ class RegistryLinkedHashSet<E>(
 }
 
 fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg entries: E) =
-    entries.map { RegistryIdentifier(registry.getId(it), isTag = false) }.toCollection(RegistryLinkedHashSet(registry))
+    RegistryLinkedHashSet(registry).apply {
+        entries.forEach { this += RegistryIdentifier(registry.getId(it), isTag = false) }
+    }
 
 fun <E> registrySetOf(registry: DefaultedRegistry<E>, vararg tags: TagKey<E>) =
-    tags.map { RegistryIdentifier(it.id, isTag = true) }.toCollection(RegistryLinkedHashSet(registry))
+    RegistryLinkedHashSet(registry).apply {
+        tags.forEach { this += RegistryIdentifier(it.id, isTag = true) }
+    }
 
 fun registrySetOf(vararg blocks: Block) = registrySetOf(Registries.BLOCK, *blocks)
 fun registrySetOf(vararg tags: TagKey<Block>) = registrySetOf(Registries.BLOCK, *tags)
