@@ -2,6 +2,7 @@ package dev.rvbsm.fsit.entity
 
 import dev.rvbsm.fsit.networking.clientVelocity
 import dev.rvbsm.fsit.networking.config
+import dev.rvbsm.fsit.util.math.plus
 import dev.rvbsm.fsit.util.math.times
 import dev.rvbsm.fsit.util.text.literal
 import net.minecraft.block.piston.PistonBehavior
@@ -15,6 +16,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3i
 
 class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
     ArmorStandEntity(player.world, pos.x, pos.y, pos.z) {
@@ -55,17 +57,16 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
         }
     }
 
-    // note: height of the player
     //? if <=1.20.4
     override fun getDimensions(pose: EntityPose): EntityDimensions = player.getDimensions(player.pose)
     //? if >=1.20.5
     /*override fun getBaseDimensions(pose: EntityPose): EntityDimensions = player.getDimensions(player.pose)*/
 
-    //? if <1.20.4
+    //? if <=1.20.1
     override fun getMountedHeightOffset() = 0.0
-    //? if >=1.20.4 && <1.20.6
+    //? if >=1.20.2 <=1.20.4
     /*override fun getPassengerAttachmentPos(passenger: net.minecraft.entity.Entity, dimensions: EntityDimensions, scaleFactor: Float): org.joml.Vector3f = Vec3d.ZERO.toVector3f()*/
-    //? if >=1.20.6
+    //? if >=1.20.5
     /*override fun getPassengerAttachmentPos(passenger: net.minecraft.entity.Entity, dimensions: EntityDimensions, scaleFactor: Float): Vec3d = Vec3d.ZERO*/
 
     /**
@@ -76,10 +77,10 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
         val dismountOffsets = arrayOf(
             intArrayOf(0, 0),
             *Dismounting.getDismountOffsets(Direction.fromRotation(passenger.yaw.toDouble())),
-        )
+        ).map { Vec3i(it.first(), 0, it.last()) }
 
         for (dismountOffset in dismountOffsets) {
-            val dismountBlockPos = BlockPos.ofFloored(x + dismountOffset[0], y, z + dismountOffset[1])
+            val dismountBlockPos = BlockPos.ofFloored(pos + dismountOffset)
             val dismountHeight = world.getDismountHeight(dismountBlockPos)
 
             for (passengerPose in passenger.poses) {
