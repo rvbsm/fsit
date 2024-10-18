@@ -40,7 +40,7 @@ private class ModLibraries {
     val fabricYarn = "net.fabricmc:yarn:$minecraftTargetVersion+build.$fabricYarnBuild:v2"
     val fabricApi by lazy { fabricApiModules.map { project.fabricApi.module(it, fabricApiVersion) } }
     val modmenu = "com.terraformersmc:modmenu:$modmenuVersion"
-    val yacl = "dev.isxander:yet-another-config-lib:$yaclVersion-fabric"
+    val yacl = "dev.isxander:yet-another-config-lib:$yaclVersion-fabric".takeUnless { yaclVersion.isBlank() }
 }
 
 private val modLibs = ModLibraries()
@@ -88,8 +88,10 @@ dependencies {
     modLibs.fabricApi.forEach(::modImplementation)
 
     modImplementation(modLibs.modmenu)
-    modImplementation(modLibs.yacl) {
-        exclude("net.fabricmc.fabric-api", "fabric-api")
+    modLibs.yacl?.let {
+        modImplementation(it) {
+            exclude("net.fabricmc.fabric-api", "fabric-api")
+        }
     }
 
     implementation(libs.kaml)
