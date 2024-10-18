@@ -2,7 +2,6 @@ package dev.rvbsm.fsit.registry
 
 import dev.rvbsm.fsit.util.DEFAULT_IDENTIFIER
 import dev.rvbsm.fsit.util.id
-import dev.rvbsm.fsit.util.orDefault
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -13,14 +12,20 @@ import net.minecraft.util.Identifier
 
 @Serializable(RegistryIdentifier.Serializer::class)
 data class RegistryIdentifier(val id: Identifier, val isTag: Boolean) {
-    override fun toString() = if (isTag) "#$id" else "$id"
+    override fun toString() = buildString {
+        if (isTag) append('#')
+        append(id)
+    }
 
     companion object {
         val defaultId = RegistryIdentifier(id = DEFAULT_IDENTIFIER, isTag = false)
 
-        fun of(id: String) = if (id.startsWith('#')) {
-            RegistryIdentifier(id.drop(1).id().orDefault(), isTag = true)
-        } else RegistryIdentifier(id.id().orDefault(), isTag = false)
+        fun of(string: String): RegistryIdentifier {
+            val isTag = string.startsWith('#')
+            val id = string.let { if (isTag) it.drop(1) else it }.id()
+
+            return RegistryIdentifier(id, isTag)
+        }
     }
 
     object Serializer : KSerializer<RegistryIdentifier> {
