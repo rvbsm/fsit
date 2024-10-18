@@ -35,12 +35,10 @@ internal fun JsonObject.migrate(migrations: Map<String, String>): JsonObject {
                 val (fromPath, modifiers) = fromKey.splitOnce(*MODIFIERS)
                 val fromKeys = fromPath.split(PATH_SEPARATOR)
 
-                if (fromPath in this) remove(fromPath) else {
-                    fromKeys.fold<String, JsonElement?>(jsonObjectModified) { acc, key -> (acc as? JsonObject)?.get(key) }
-                        .also { jsonObjectModified = jsonObjectModified.removePath(fromPath) }
-                        ?.applyModifiers(modifiers)
-                } as? JsonElement
-            }.takeIf { it.isNotEmpty() }?.joinToJsonElement() ?: continue
+                if (fromPath in this) remove(fromPath)
+                else fromKeys.fold<String, JsonElement?>(jsonObjectModified) { acc, key -> (acc as? JsonObject)?.get(key) }
+                    .also { jsonObjectModified = jsonObjectModified.removePath(fromPath) }?.applyModifiers(modifiers)
+            }.joinToJsonElement() ?: continue
 
             val toPath = migration.value.takeIf { it.endsWith(FORCE_MIGRATION) }?.dropLast(1)
                 ?.also { jsonObjectModified = jsonObjectModified.removePath(it) } ?: migration.value
@@ -62,11 +60,10 @@ internal fun YamlMap.migrate(migrations: Map<String, String>): YamlMap {
                 val (fromPath, modifiers) = fromKey.splitOnce(*MODIFIERS)
                 val fromKeys = fromPath.split(PATH_SEPARATOR)
 
-                if (fromPath in this) remove(fromPath) else {
-                    fromKeys.fold<String, YamlNode?>(yamlMapModified) { acc, key -> (acc as? YamlMap)?.get(key) }
-                        .also { yamlMapModified = yamlMapModified.removePath(fromPath) }?.applyModifiers(modifiers)
-                } as? YamlNode
-            }.takeIf { it.isNotEmpty() }?.joinToYamlNode() ?: continue
+                if (fromPath in this) remove(fromPath)
+                else fromKeys.fold<String, YamlNode?>(yamlMapModified) { acc, key -> (acc as? YamlMap)?.get(key) }
+                    .also { yamlMapModified = yamlMapModified.removePath(fromPath) }?.applyModifiers(modifiers)
+            }.joinToYamlNode() ?: continue
 
             val toPath = migration.value.takeIf { it.endsWith(FORCE_MIGRATION) }?.dropLast(1)
                 ?.also { yamlMapModified = yamlMapModified.removePath(it) } ?: migration.value

@@ -5,7 +5,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
-internal fun Collection<JsonElement>.joinToJsonElement() = if (size == 1) first()
+internal fun Collection<JsonElement>.joinToJsonElement() = if (isEmpty()) null
+else if (size == 1) first()
 else when (first()) {
     is JsonPrimitive -> JsonPrimitive(joinToString(separator = "") { (it as? JsonPrimitive)?.content ?: "" })
 

@@ -11,7 +11,8 @@ import kotlinx.serialization.serializer
 inline fun <reified T> Yaml.decodeFromYamlNode(node: YamlNode): T =
     decodeFromYamlNode(serializersModule.serializer(), node)
 
-internal fun Collection<YamlNode>.joinToYamlNode() = if (size == 1) first()
+internal fun Collection<YamlNode>.joinToYamlNode() = if (isEmpty()) null
+else if (size == 1) first()
 else when (val firstElement = first()) {
     is YamlScalar -> firstElement.copy(joinToString(separator = "") { (it as? YamlScalar)?.content ?: "" })
     is YamlList -> firstElement.copy(map { (it as? YamlList)?.items ?: listOf() }.flatten())
