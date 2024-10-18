@@ -3,7 +3,7 @@ package dev.rvbsm.fsit.networking.payload
 import dev.rvbsm.fsit.networking.readEnumConstant
 import net.minecraft.network.NetworkSide
 import net.minecraft.network.PacketByteBuf
-import java.util.*
+import java.util.UUID
 
 data class RidingResponseC2SPayload(val uuid: UUID, val response: ResponseType) :
     CustomPayload<RidingResponseC2SPayload>(packetId) {

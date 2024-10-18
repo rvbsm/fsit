@@ -4,8 +4,8 @@ import com.charleskorn.kaml.YamlComment
 import dev.rvbsm.fsit.registry.RegistrySet
 import dev.rvbsm.fsit.registry.registrySetOf
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import net.minecraft.block.Block
 import net.minecraft.registry.tag.BlockTags

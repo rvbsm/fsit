@@ -1,6 +1,6 @@
 package dev.rvbsm.fsit.util
 
-import java.util.*
+import java.util.UUID
 
 /**
  * THIS IS FINE.

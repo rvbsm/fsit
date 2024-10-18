@@ -4,7 +4,10 @@ import dev.rvbsm.fsit.networking.setCrawl
 import dev.rvbsm.fsit.util.text.literal
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.mob.ShulkerEntity
-import net.minecraft.network.packet.s2c.play.*
+import net.minecraft.network.packet.s2c.play.BundleS2CPacket
+import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket
+import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
 
@@ -15,9 +18,9 @@ class CrawlEntity(private val player: ServerPlayerEntity) : ShulkerEntity(Entity
     private val entityDestroyPayload = EntitiesDestroyS2CPacket(id)
     private val positionSyncPayload get() =
         //? if <=1.21.1
-        EntityPositionS2CPacket(this)
+        net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket(this)
         //? if >=1.21.2-alpha.0
-        /*EntityPositionSyncS2CPacket.create(this)*/
+        /*net.minecraft.network.packet.s2c.play.EntityPositionSyncS2CPacket.create(this)*/
 
     init {
         setPosition(crawlPos)

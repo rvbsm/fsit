@@ -1,12 +1,12 @@
 package dev.rvbsm.fsit.networking
 
-import dev.rvbsm.fsit.api.ServerPlayerClientVelocity
 import dev.rvbsm.fsit.api.ConfigurableEntity
 import dev.rvbsm.fsit.api.Crawlable
 import dev.rvbsm.fsit.api.Poseable
-import dev.rvbsm.fsit.networking.payload.CustomPayload
+import dev.rvbsm.fsit.api.ServerPlayerClientVelocity
 import dev.rvbsm.fsit.entity.CrawlEntity
 import dev.rvbsm.fsit.entity.PlayerPose
+import dev.rvbsm.fsit.networking.payload.CustomPayload
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d

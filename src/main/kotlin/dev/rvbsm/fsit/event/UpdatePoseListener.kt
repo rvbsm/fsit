@@ -3,10 +3,14 @@ package dev.rvbsm.fsit.event
 import dev.rvbsm.fsit.entity.CrawlEntity
 import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.entity.SeatEntity
-import dev.rvbsm.fsit.networking.*
+import dev.rvbsm.fsit.networking.config
+import dev.rvbsm.fsit.networking.hasConfig
+import dev.rvbsm.fsit.networking.hasCrawl
 import dev.rvbsm.fsit.networking.payload.PoseUpdateS2CPayload
+import dev.rvbsm.fsit.networking.removeCrawl
+import dev.rvbsm.fsit.networking.setPose
+import dev.rvbsm.fsit.networking.trySend
 import dev.rvbsm.fsit.util.math.centered
-import net.minecraft.util.math.Vec3d
 
 val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
     when (pose) {

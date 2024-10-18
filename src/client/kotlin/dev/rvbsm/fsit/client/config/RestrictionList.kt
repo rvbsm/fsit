@@ -11,7 +11,7 @@ import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
-import java.util.*
+import java.util.UUID
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 

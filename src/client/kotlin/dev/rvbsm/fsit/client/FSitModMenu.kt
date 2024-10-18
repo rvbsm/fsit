@@ -4,7 +4,14 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import dev.isxander.yacl3.api.ListOption
 import dev.isxander.yacl3.api.OptionDescription
-import dev.isxander.yacl3.dsl.*
+import dev.isxander.yacl3.dsl.YetAnotherConfigLib
+import dev.isxander.yacl3.dsl.addDefaultText
+import dev.isxander.yacl3.dsl.binding
+import dev.isxander.yacl3.dsl.controller
+import dev.isxander.yacl3.dsl.descriptionBuilder
+import dev.isxander.yacl3.dsl.enumSwitch
+import dev.isxander.yacl3.dsl.slider
+import dev.isxander.yacl3.dsl.tickBox
 import dev.rvbsm.fsit.FSitMod
 import dev.rvbsm.fsit.client.gui.controller.RegistryController
 import dev.rvbsm.fsit.config.ModConfig

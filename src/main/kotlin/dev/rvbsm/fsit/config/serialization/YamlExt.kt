@@ -1,6 +1,11 @@
 package dev.rvbsm.fsit.config.serialization
 
-import com.charleskorn.kaml.*
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlList
+import com.charleskorn.kaml.YamlMap
+import com.charleskorn.kaml.YamlNode
+import com.charleskorn.kaml.YamlScalar
+import com.charleskorn.kaml.yamlMap
 import kotlinx.serialization.serializer
 
 inline fun <reified T> Yaml.decodeFromYamlNode(node: YamlNode): T =

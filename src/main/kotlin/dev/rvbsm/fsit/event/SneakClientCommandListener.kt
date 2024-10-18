@@ -4,12 +4,16 @@ import dev.rvbsm.fsit.entity.PlayerPose
 import dev.rvbsm.fsit.entity.RideEntity
 import dev.rvbsm.fsit.networking.config
 import dev.rvbsm.fsit.networking.setPose
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.minecraft.entity.EntityPose
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Direction
-import java.util.*
+import java.util.UUID
 
 private val scope = CoroutineScope(Dispatchers.IO)
 private val sneaks = mutableMapOf<UUID, Job>()

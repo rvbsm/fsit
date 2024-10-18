@@ -1,6 +1,12 @@
 package dev.rvbsm.fsit.command
 
-import com.mojang.brigadier.arguments.*
+import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.arguments.BoolArgumentType
+import com.mojang.brigadier.arguments.DoubleArgumentType
+import com.mojang.brigadier.arguments.FloatArgumentType
+import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.arguments.LongArgumentType
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
@@ -15,7 +21,7 @@ import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.command.argument.UuidArgumentType
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.util.Identifier
-import java.util.*
+import java.util.UUID
 
 val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 

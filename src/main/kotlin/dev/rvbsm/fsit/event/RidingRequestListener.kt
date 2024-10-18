@@ -6,13 +6,19 @@ import dev.rvbsm.fsit.networking.payload.RidingRequestS2CPayload
 import dev.rvbsm.fsit.networking.payload.RidingResponseC2SPayload
 import dev.rvbsm.fsit.networking.trySend
 import dev.rvbsm.fsit.util.xor
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.ActionResult
-import java.util.*
+import java.util.UUID
 
 private const val TIMEOUT = 5000L
 private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())

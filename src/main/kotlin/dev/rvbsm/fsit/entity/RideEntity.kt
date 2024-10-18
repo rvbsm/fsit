@@ -8,7 +8,7 @@ import net.minecraft.entity.LivingEntity
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
-import java.util.*
+import java.util.UUID
 
 class RideEntity(private val player: ServerPlayerEntity) :
     AreaEffectCloudEntity(player.world, player.pos.x, player.pos.y, player.pos.z) {
