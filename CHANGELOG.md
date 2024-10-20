@@ -1,14 +1,20 @@
 # Changelog
 
+## v2.6.0-beta.4
+
+### Added
+
+- 1.21.2 support (RC)
+
 ## v2.6.0-beta.3
 
 ### New Contributors
 
-- @yichifauzi made their first contribution at https://github.com/rvbsm/fsit/pull/45
+- @yichifauzi made their first contribution at [#45](https://github.com/rvbsm/fsit/pull/45)
 
 ### Added
 
-- Traditional Chinese translation by @yichifauzi at https://github.com/rvbsm/fsit/pull/45. Thank you!
+- Traditional Chinese translation by @yichifauzi at [#45](https://github.com/rvbsm/fsit/pull/45). Thank you!
 
 ### Changed
 
@@ -22,7 +28,7 @@
 
 ### Added
 
-- `sitting.should_center` option that controls if seats should be placed in the center of a block
+- `sitting.should_center` option that controls if seats should be placed in the centre of a block
 
 ### Changed
 
@@ -37,26 +43,26 @@
 
 ### Changed
 
-- Better(?) config migrations
-- Asynchronous config update packet handler
+- Better(?) configuration migrations
+- Asynchronous configuration update packet handler
 - Packed with Shadow and Proguard Gradle plugins
 - `sitting.apply_gravity` and `sitting.allow_in_air` had a little conflict and were replaced with `sitting.behaviour`. `sitting.behaviour` can
   have three values: 
   - `nothing`: does nothing
-  - `discard`: discards seats if they don't have any supporting block underneath them
+  - `discard`: discards seats if they do not have any supporting block underneath them
   - `gravity`: applies movement to seats, e.g. gravity, getting pushed by pistons, fluids
 
 ### Fixed
 
-- Crash if config's numeric values were not in range
+- Crash if configuration's numeric values were not in range
 
 ## v2.5.3
 
 ### Fixed
 
-- Incorrect seat rotation. Thanks #41
-- Ridden player was unloaded with rider. Thanks #42
-- Kotlin's and mod's UUID serializers name clash. Thanks #43
+- Incorrect seat rotation. Thanks [#41](https://github.com/rvbsm/fsit/issues/41)
+- Ridden player was unloaded with rider. Thanks [#42](https://github.com/rvbsm/fsit/issues/42)
+- Kotlin's and mod's UUID serializers name clash. Thanks [#43](https://github.com/rvbsm/fsit/issues/43)
 
 ## v2.5.2
 
@@ -68,7 +74,7 @@
 
 ### Fixed
 
-- Player riding didn't work
+- Player riding did not work
 
 ## v2.5.0
 
@@ -80,18 +86,18 @@
 
 ### Fixed
 
-- Config wasn't synced to the server after saving it in the Mod Menu screen
-- Tools could be used on use interactions (shouldn't have tho)
+- Configuration was not synced to the server after saving it in the Mod Menu screen
+- Tools could be used on use interactions (should not have tho)
 
 ### Removed
 
-- `riding.hide_rider` option as not needed anymore
+- `riding.hide_rider` option as not needed any more
 
 ## v2.4.1
 
 ### Fixed
 
-- Config wasn't saved to a file after saving it in the Mod Menu screen
+- Configuration was not saved to a file after saving it in the Mod Menu screen
 
 ## v2.4.0
 
@@ -99,13 +105,13 @@ Minecraft Tricky Trials Update
 
 ### Fixed
 
-- After dismounting a player, equipment was desynced for other clients
+- After dismounting a player, equipment was desynchronized for other clients
 
 ## v2.3.4
 
 ### Fixed
 
-- Non-modded clients couldn't ride other players
+- Non-modded clients could not ride other players
 - Minecraft client crashes during launch if `fsit.restrictions.json` doesn't exist
 
 ## v2.3.3
@@ -121,7 +127,7 @@ Minecraft Tricky Trials Update
 - Riding didn't work
 - “Allow” button on the Social Interactions screen didn't work
 - Incorrectly calculated seat velocity when yaw and movement direction differed
-- Some migrated config options were missing
+- Some migrated configuration options were missing
 
 ## v2.3.1
 
@@ -129,13 +135,13 @@ Minecraft Tricky Trials Update
 
 - Minecraft crash in 1.20.6
 - Server crash because `fabric-key-binding-api-v1` is not available
-- Double sneak didn't work
+- Double sneak did not work
 
 ## v2.3.0
 
 ### Added
 
-- Migrate v1 config `sneak` category
+- Migrate v1 configuration `sneak` category
 - Block slipperiness affects seats (if `sitting.apply_gravity`)
 - Fluids affect seats (if `sitting.apply_gravity`)
 
@@ -150,42 +156,42 @@ Minecraft Tricky Trials Update
 
 ### Removed
 
-- Logs about migrated config options
+- Logs about migrated configuration options
 
 ## v2.2.0
 
 ### New Contributors
 
-- @TheWhiteDog9487 made their first contribution in https://github.com/rvbsm/fsit/pull/35
+- @TheWhiteDog9487 made their first contribution at https://github.com/rvbsm/fsit/pull/35
 
 ### Added
 
-- Simplified Chinese translation by @TheWhiteDog9487 at https://github.com/rvbsm/fsit/pull/35
+- Simplified Chinese translation by @TheWhiteDog9487 at https://github.com/rvbsm/fsit/pull/35. Thank you!
 - Support Minecraft 1.20.5
 - Try to start riding on passed uses (totems in offhand, food, etc.)
 - Start crawling by double sneaking near a one-block gap
 - Preventing from sitting in places where players would suffocate
 - Discard seat if `sitting.apply_gravity` and `sitting.allow_in_air` are disabled
-- New config options:
+- New configuration options:
   - `sitting.allow_in_air`
   - `riding.hide_rider`
   - `on_use.check_suffocation`
   - `on_double_sneak.crawling`
-- New config command options:
+- New configuration command options:
   - `allowSittingInAir <bool>`
   - `hideRider <bool>`
   - `onUseCheckSuffocation <bool>`
   - `onSneakCrawl <bool>`
-- Add config comments
+- Add configuration comments
 - Use Machete Gradle plugin to minify JAR size
 
 ### Changed
 
 - Rename `/fsit <allow|restrict>` to `/fsit:client <allow|restrict>`
-- Rename config options:
+- Rename configuration options:
   - `sitting.on_use` + `riding.on_use` → `on_use`
   - `sitting.on_double_sneak` → `on_double_sneak`
-- Rename config command names:
+- Rename configuration command names:
   - `sitOnUse` → `onUseSit`
   - `rideOnUse` → `onUseRide`
   - `sitOnUseRange` + `rideOnUseRange` → `onUseRange`
@@ -197,10 +203,10 @@ Minecraft Tricky Trials Update
 
 ### Fixed
 
-- Fake player interactions on player caused crash #34
+- Fake player interactions on player caused crash [#34](https://github.com/rvbsm/fsit/issues/34)
 - Client and server main command clash
 - `/fsit reload` could be called by anyone
-- Wrong config option name feedback
+- Wrong configuration option name feedback
 - Version semantics
 
 ### Removed
@@ -214,9 +220,9 @@ Minecraft Tricky Trials Update
 ### Added
 
 - Start sitting on double sneak
-- Config migrator (for v1+ JSON and v2 YAML)
+- Configuration migrator (for v1+ JSON and v2 YAML)
 - Optionally apply gravity to seats (`sitting.seats_gravity`)
-- Config command options:
+- Configuration command options:
   - `seatsGravity <bool>`
   - `sitOnSneak <bool>`
   - `sitOnSneakMinPitch <float>`
@@ -224,8 +230,8 @@ Minecraft Tricky Trials Update
 
 ### Changed
 
-- Try to sit on passed uses (item wouldn't or can't be used)
-- Rename config command names:
+- Try to sit on passed uses (item would not or cannot be used)
+- Rename configuration command names:
   - `sittableEnabled` → `sitOnUse`
   - `sittableRadius` → `sitOnUseRange`
   - `ridingEnabled` → `rideOnUse`
@@ -233,7 +239,7 @@ Minecraft Tricky Trials Update
 
 ### Fixed
 
-- After respawning, player config was lost
+- After respawning, player configuration was lost
 - Player's pose could be changed in the vehicle
 - Player would swim in the air while crawling
 - Clipping through a floor when using sit keybinding on servers
@@ -244,7 +250,7 @@ Minecraft Tricky Trials Update
 
 ### Added
 
-- Restriction buttons in 1.20-1.20.1
+- Restriction buttons in 1.20–1.20.1
 - Check if connected server is compatible with FSit
 
 ### Changed
@@ -265,7 +271,7 @@ Minecraft Tricky Trials Update
 
 ### New Contributors
 
-- @JustAlittleWolf made their first contribution in https://github.com/rvbsm/fsit/pull/30
+- @JustAlittleWolf made their first contribution at https://github.com/rvbsm/fsit/pull/30
 
 ### Added
 
@@ -279,11 +285,11 @@ Minecraft Tricky Trials Update
 
 ### Changed
 
-- Config now uses YAML
-- Hide the rider for the player if he isn't looking at him #31
+- Configuration now uses YAML
+- Hide the rider for the player if he is not looking at him [#31](https://github.com/rvbsm/fsit/issues/31)
 - `/fsit config`, `/fsit get`, and `/fsit set` were replaced by `/fsit <key> [value]`
-- Cloth Config was replaced with YetAnotherConfigLib
-- `/sit`, `/crawl` are also available in single-player worlds #32
+- Cloth Configuration was replaced with YetAnotherConfigLib
+- `/sit`, `/crawl` are also available in single-player worlds [#32](https://github.com/rvbsm/fsit/issues/32)
 - Player restrictions are handled by the client and no longer synced to the server
 
 ### Removed
@@ -300,7 +306,7 @@ Minecraft Tricky Trials Update
 
 ### Removed
 
-- `/fsit get` and `/fsit set` commands autocompletion #27
+- `/fsit get` and `/fsit set` commands autocompletion [#27](https://github.com/rvbsm/fsit/issues/27)
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.5.0-1.20.2...v1.5.1-1.20.2
 
@@ -308,12 +314,12 @@ Minecraft Tricky Trials Update
 
 ### Added
 
-- `/fsit get` and `/fsit set` commands to edit config options
+- `/fsit get` and `/fsit set` commands to edit configuration options
 - Discard empty seats if they exist after world reload
 
 ### Fixed
 
-- The server crashed when the player tried to ride himself (e.g., free cam) #25
+- The server crashed when the player tried to ride himself (e.g., free cam) [#25](https://github.com/rvbsm/fsit/issues/25)
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.4.2...v1.5.0-1.20.2
 
@@ -329,7 +335,7 @@ Minecraft Tricky Trials Update
 
 ### Fixed
 
-- Client config wasn't sent to server :grin:
+- Client configuration was not sent to server :grin:
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.4.0...v1.4.1
 
@@ -344,7 +350,7 @@ _P.S. Thanks for 2K downloads at Modrinth_ :heart:
 ### Added
 
 - Support Minecraft 1.20.2
-- Config migration
+- Configuration migration
 
 ### Changed
 
@@ -361,7 +367,7 @@ _P.S. Thanks for 2K downloads at Modrinth_ :heart:
 
 ### Fixed
 
-- Config manager had been resetting some fields
+- Configuration manager had been resetting some fields
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.3.1...v1.3.2
 
@@ -377,11 +383,11 @@ _P.S. Thanks for 2K downloads at Modrinth_ :heart:
 ### Fixed
 
 - Game crashes without Mod Menu installed
-- Player stops crawling if a block above is non-full #20
+- Player stops crawling if a block above is non-full [#20](https://github.com/rvbsm/fsit/issues/20)
 - Doubled messages after pose changing
-- Crawling support entity didn't disappear
+- Crawling support entity did not disappear
 - Crawling with Speed II and Swift Sneak III
-- Config was sent to the server even if the player wasn't connected to one
+- Configuration was sent to the server even if the player was not connected to one
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.3.0...v1.3.1
 
@@ -395,14 +401,14 @@ _FSit-client is now a part of the FSit_
 - Adjusting the radius to start riding
 - Sitting on honey blocks works like standing on honey
 - Send an overlay message to player on pose change
-- Reload config with `/fsit reload`
+- Reload configuration with `/fsit reload`
 - The server will respect players' configuration if they have a mod installed
 - Player riding restrictions at Social Interactions screen
 
 ### Fixed
 
 - The player immediately stopped sitting on the edge of a block
-- Random crashes with invalid config
+- Random crashes with invalid configuration
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.2.0...v1.3.0
 
@@ -414,7 +420,7 @@ _FSit-client is now a part of the FSit_
 
 ### Changed
 
-- [revert] Do not start sitting by interaction if player is sneaking
+- [revert] Does not start sitting by interaction if a player is sneaking
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.1.3...v1.2.0
 
@@ -422,7 +428,7 @@ _FSit-client is now a part of the FSit_
 
 ### Fixed
 
-- The rider's position wasn't updated if the player didn't have a client-side mod installed
+- The rider's position was not updated if the player did not have a client-side mod installed
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.1.2...v1.1.3
 
@@ -448,14 +454,14 @@ _FSit-client is now a part of the FSit_
 
 ### Added
 
-- Config version field
+- Configuration version field
 - Make sit on double sneak optional (`sneak_sit`)
 - Swing hand on successful sit and ride interactions
 
 ### Changed
 
-- Clear config without deleting config file
-- Rename config options:
+- Clear configuration without deleting a configuration file
+- Rename configuration options:
   - `min_angle` → `sneak.min_angle`
   - `shift_delay` → `sneak.sneak_delay`
   - `sittable_blocks` → `sittable.blocks`
@@ -507,7 +513,7 @@ another beta
 
 ### Fixed
 
-- The player's position didn't change for other clients when he started riding another player
+- The player's position did not change for other clients when he started riding another player
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.7...v1.0.0-beta.8
 
@@ -515,7 +521,7 @@ another beta
 
 ### Added
 
-- Player riding (disabled in config by default)
+- Player riding (disabled in configuration by default)
 
 ### Fixed
 
@@ -527,7 +533,7 @@ another beta
 
 ### Added
 
-- Add default options to be able to reset config
+- Add default options to be able to reset configuration
 
 ### Changed
 
@@ -540,7 +546,7 @@ another beta
 ### Added
 
 - Check if block is in sittable position
-- Use Cloth Config for Mod Menu integration
+- Use Cloth Configuration for Mod Menu integration
 - Include `toml4j`
 
 **Full Changelog**: https://github.com/rvbsm/fsit/compare/v1.0.0-beta.4...v1.0.0-beta.5
