@@ -11,20 +11,21 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.option.KeyBinding
 import org.lwjgl.glfw.GLFW
+import kotlin.time.Duration.Companion.milliseconds
 
 object FSitKeyBindings : ClientTickEvents.EndTick {
     private val sitKey = HybridKeyBinding(
         "key.fsit.sit",
         GLFW.GLFW_KEY_RIGHT_CONTROL,
         KeyBinding.MISC_CATEGORY,
-        10,
+        500.milliseconds,
         FSitModClient.sitMode::getValue,
     )
     private val crawlKey = HybridKeyBinding(
         "key.fsit.crawl",
         GLFW.GLFW_KEY_RIGHT_ALT,
         KeyBinding.MISC_CATEGORY,
-        10,
+        500.milliseconds,
         FSitModClient.crawlMode::getValue,
     )
 
