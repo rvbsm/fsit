@@ -8,7 +8,7 @@ import dev.rvbsm.fsit.networking.hasConfig
 import dev.rvbsm.fsit.networking.hasCrawl
 import dev.rvbsm.fsit.networking.payload.PoseUpdateS2CPayload
 import dev.rvbsm.fsit.networking.removeCrawl
-import dev.rvbsm.fsit.networking.setPose
+import dev.rvbsm.fsit.networking.resetPose
 import dev.rvbsm.fsit.networking.trySend
 import dev.rvbsm.fsit.util.math.centered
 
@@ -22,7 +22,7 @@ val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
         PlayerPose.Sitting -> {
             // note: prevents from creating seats in the air without gravity
             if (!player.config.sitting.behaviour.shouldMove && !player.isOnGround) {
-                return@update player.setPose(PlayerPose.Standing, pos)
+                return@update player.resetPose()
             }
             val seatPos = (pos ?: player.pos).let {
                 if (player.config.sitting.shouldCenter) it.centered()
