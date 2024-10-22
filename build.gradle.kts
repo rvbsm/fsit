@@ -172,6 +172,9 @@ tasks {
 
 val proguardJar by tasks.registering(ProGuardTask::class) {
     dependsOn(tasks.remapJar)
+    mustRunAfter(stonecutter.versions.takeWhile {
+        stonecutter.eval(stonecutter.current.project, ">${it.project}")
+    }.map { ":${it.project}:$name" })
 
     verbose()
     dontwarn()
