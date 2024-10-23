@@ -1,10 +1,33 @@
 # Changelog
 
-## v2.6.0-beta.4
+## v2.6.0
+
+Minecraft Bundles of Bravery Update
 
 ### Added
 
-- 1.21.2 support (RC)
+- Better(?) configuration migrations
+- Asynchronous configuration update packet handler
+- Packed with Shadow and Proguard Gradle plugins
+- `sitting.apply_gravity` and `sitting.allow_in_air` had a little conflict and were replaced with `sitting.behaviour`. It can
+  have three values:
+  - `nothing`: does nothing
+  - `discard`: discards seats if they do not have any supporting block underneath them
+  - `gravity`: applies movement to seats, e.g. gravity, getting pushed by pistons, fluids
+- `sitting.should_center` option that controls if seats should be placed in the centre of a block
+- Traditional Chinese translation by @yichifauzi at [#45](https://github.com/rvbsm/fsit/pull/45). Thank you!
+
+### Changed
+
+- Configuration category `on_double_sneak` was renamed to `on_sneak` (will automatically migrate)
+- Seats trying to find safe to dismount position
+- Seats checks for entity collisions too (like boats), when `sitting.behaviour` is `Discard`
+- Asynchronous configuration packet deserialization
+
+### Fixed
+
+- Option descriptions didn't show up in configuration menu (Mod Menu, YACL)
+- Crash if configuration's numeric values were not in range
 
 ## v2.6.0-beta.3
 
