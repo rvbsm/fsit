@@ -8,3 +8,4 @@ extendable method   net/minecraft/entity/decoration/ArmorStandEntity canClip ()Z
 
 accessible field    net/minecraft/entity/Entity vehicle Lnet/minecraft/entity/Entity;
 accessible method   net/minecraft/entity/Entity addPassenger (Lnet/minecraft/entity/Entity;)V
+accessible method   net/minecraft/entity/Entity getPassengerDismountOffset (DDF)Lnet/minecraft/util/math/Vec3d;

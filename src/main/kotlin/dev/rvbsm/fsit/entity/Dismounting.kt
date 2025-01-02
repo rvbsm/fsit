@@ -1,34 +1,49 @@
 package dev.rvbsm.fsit.entity
 
-import dev.rvbsm.fsit.util.math.toHorizontalDirection
-import net.minecraft.entity.Dismounting.canDismountInBlock
-import net.minecraft.entity.Dismounting.canPlaceEntityAt
-import net.minecraft.entity.Dismounting.getDismountOffsets
+import dev.rvbsm.fsit.util.math.plus
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
+import net.minecraft.util.shape.VoxelShape
 
-/**
- * @see net.minecraft.entity.vehicle.AbstractMinecartEntity.updatePassengerForDismount
- * @see net.minecraft.entity.vehicle.BoatEntity.updatePassengerForDismount
- */
+/** @see net.minecraft.entity.vehicle.BoatEntity.updatePassengerForDismount */
 fun getDismountPosition(vehicle: Entity, passenger: LivingEntity): Vec3d {
     val world = vehicle.world
-    val vehiclePos = vehicle.pos
 
-    val dismountOffsets = getDismountOffsets(passenger.yaw.toHorizontalDirection())
-    for ((xOffset, zOffset) in sequenceOf(intArrayOf(0, 0), *dismountOffsets)) {
-        val dismountPos = vehiclePos.add(xOffset.toDouble(), 0.0, zOffset.toDouble()).let { dismountPos ->
-            world.getDismountHeight(BlockPos.ofFloored(dismountPos)).takeIf(::canDismountInBlock)
-                ?.let { dismountHeight -> dismountPos.add(0.0, dismountHeight, 0.0) }
-        } ?: continue
+    val dismountSequence = sequence<Vec3d> {
+        val vehicleDismountHeight = world.getDismountHeight(vehicle.blockPos)
+        if (vehicleDismountHeight.isFinite() && vehicleDismountHeight < 1) {
+            yield(vehicle.pos)
+        }
 
-        passenger.poses.find { canPlaceEntityAt(world, dismountPos, passenger, it) }?.let {
-            passenger.pose = it
-            return dismountPos
+        val dismountOffset = Entity.getPassengerDismountOffset(
+            vehicle.width.toDouble() * MathHelper.SQUARE_ROOT_OF_TWO,
+            passenger.width.toDouble(),
+            passenger.yaw,
+        )
+
+        var dismountBlockPos = BlockPos.ofFloored(vehicle.pos + dismountOffset)
+        repeat(2) {
+            val dismountHeight = world.getDismountHeight(dismountBlockPos)
+            if (dismountHeight.isFinite() && dismountHeight < 1) {
+                yield(Vec3d.add(dismountBlockPos, 0.5, dismountHeight, 0.5))
+            }
+
+            dismountBlockPos = dismountBlockPos.down()
         }
     }
 
-    return vehiclePos
+    for (dismountPos in dismountSequence) {
+        val dismountPose = passenger.poses.find { passengerPose ->
+            val poseBox = passenger.getBoundingBox(passengerPose).offset(dismountPos)
+            world.getCollisions(passenger, poseBox).all(VoxelShape::isEmpty) && poseBox in world.worldBorder
+        } ?: continue
+
+        passenger.pose = dismountPose
+        return dismountPos
+    }
+
+    return vehicle.pos
 }
