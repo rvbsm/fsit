@@ -28,6 +28,12 @@ fun ServerPlayerEntity.setPose(pose: ModPose, pos: Vec3d? = null) = (this as Pla
 fun ServerPlayerEntity.resetPose() = (this as PlayerPose).`fsit$resetPose`()
 fun ServerPlayerEntity.isInPose() = (this as PlayerPose).`fsit$isInPose`()
 
+var ServerPlayerEntity.modPose: ModPose
+    get() = (this as PlayerPose).`fsit$getPose`()
+    set(modPose) = setPose(modPose)
+
+val ServerPlayerEntity.prevModPose: ModPose? get() = (this as PlayerPose).`fsit$getPrevPose`()
+
 fun ServerPlayerEntity.setCrawl(crawlEntity: CrawlEntity) = (this as PlayerCrawl).`fsit$startCrawling`(crawlEntity)
 fun ServerPlayerEntity.removeCrawl() = (this as PlayerCrawl).`fsit$stopCrawling`()
 fun ServerPlayerEntity.hasCrawl() = (this as PlayerCrawl).`fsit$isCrawling`()

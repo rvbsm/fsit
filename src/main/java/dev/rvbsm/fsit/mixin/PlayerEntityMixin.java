@@ -19,6 +19,9 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements Pla
     @Unique
     protected @NotNull ModPose modPose = ModPose.Standing;
 
+    @Unique
+    private @Nullable ModPose prevModPose = null;
+
     @Shadow
     public abstract PlayerAbilities getAbilities();
 
@@ -29,11 +32,17 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements Pla
 
     @Override
     public void fsit$setPose(@NotNull ModPose pose, @Nullable Vec3d pos) {
+        this.prevModPose = this.modPose;
         this.modPose = pose;
     }
 
     @Override
     public @NotNull ModPose fsit$getPose() {
         return this.modPose;
+    }
+
+    @Override
+    public @Nullable ModPose fsit$getPrevPose() {
+        return this.prevModPose;
     }
 }

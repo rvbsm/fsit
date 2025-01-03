@@ -9,7 +9,9 @@ public interface PlayerPose {
 
     void fsit$setPose(@NotNull ModPose pose, @Nullable Vec3d pos);
 
-    ModPose fsit$getPose();
+    @NotNull ModPose fsit$getPose();
+
+    @Nullable ModPose fsit$getPrevPose();
 
     default void fsit$resetPose() {
         this.fsit$setPose(ModPose.Standing, null);

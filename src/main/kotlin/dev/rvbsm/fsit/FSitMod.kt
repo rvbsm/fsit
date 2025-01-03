@@ -21,11 +21,11 @@ import dev.rvbsm.fsit.networking.ConfigUpdateC2SHandler
 import dev.rvbsm.fsit.networking.PoseRequestC2SHandler
 import dev.rvbsm.fsit.networking.RidingResponseC2SHandler
 import dev.rvbsm.fsit.networking.isInPose
+import dev.rvbsm.fsit.networking.modPose
 import dev.rvbsm.fsit.networking.payload.ConfigUpdateC2SPayload
 import dev.rvbsm.fsit.networking.payload.PoseRequestC2SPayload
 import dev.rvbsm.fsit.networking.payload.RidingResponseC2SPayload
 import dev.rvbsm.fsit.networking.resetPose
-import dev.rvbsm.fsit.networking.setPose
 import dev.rvbsm.fsit.serialization.UUIDSerializer
 import dev.rvbsm.fsit.serialization.Yaml
 import dev.rvbsm.fsit.serialization.asReader
@@ -161,7 +161,7 @@ object FSitMod : ModInitializer {
                 if (player.hasVehicle()) return@executes
 
                 if (player.isInPose()) player.resetPose()
-                else player.setPose(pose)
+                else player.modPose = pose
             }
         }
 

@@ -4,7 +4,7 @@ import dev.rvbsm.fsit.api.event.ClientCommandCallback
 import dev.rvbsm.fsit.entity.ModPose
 import dev.rvbsm.fsit.networking.config
 import dev.rvbsm.fsit.networking.lastSneakTime
-import dev.rvbsm.fsit.networking.setPose
+import dev.rvbsm.fsit.networking.modPose
 import dev.rvbsm.fsit.util.math.toHorizontalDirection
 import net.minecraft.entity.EntityPose
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket
@@ -18,8 +18,8 @@ val SneakListener = ClientCommandCallback { player, mode ->
         else if (player.pitch < player.config.onSneak.minPitch) return@ClientCommandCallback
 
         if (Util.getMeasuringTimeMs() - player.lastSneakTime <= player.config.onSneak.delay) when {
-            player.config.onSneak.crawling && player.isNearGap() -> player.setPose(ModPose.Crawling)
-            player.config.onSneak.sitting -> player.setPose(ModPose.Sitting)
+            player.config.onSneak.crawling && player.isNearGap() -> player.modPose = ModPose.Crawling
+            player.config.onSneak.sitting -> player.modPose = ModPose.Sitting
         }
     }
 }

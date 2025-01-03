@@ -8,6 +8,7 @@ import dev.rvbsm.fsit.networking.config
 import dev.rvbsm.fsit.networking.hasConfig
 import dev.rvbsm.fsit.networking.hasCrawl
 import dev.rvbsm.fsit.networking.payload.PoseUpdateS2CPayload
+import dev.rvbsm.fsit.networking.prevModPose
 import dev.rvbsm.fsit.networking.removeCrawl
 import dev.rvbsm.fsit.networking.resetPose
 import dev.rvbsm.fsit.networking.trySend
@@ -23,6 +24,8 @@ val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
     }
 
     when (pose) {
+        player.prevModPose -> return@update
+
         ModPose.Standing -> {
             if (player.vehicle is SeatEntity) player.stopRiding()
             else if (player.hasCrawl()) player.removeCrawl()
