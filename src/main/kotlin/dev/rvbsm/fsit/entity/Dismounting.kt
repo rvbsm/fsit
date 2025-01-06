@@ -9,9 +9,9 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.shape.VoxelShape
 
 /** @see net.minecraft.entity.vehicle.BoatEntity.updatePassengerForDismount */
-internal fun Entity.findDismountPos(passenger: LivingEntity, checkVehiclePosition: Boolean = false): Vec3d {
+internal fun Entity.findDismountPos(passenger: LivingEntity, includeOrigin: Boolean = false): Vec3d {
     val dismountSequence = sequence<Vec3d> {
-        if (checkVehiclePosition) {
+        if (includeOrigin) {
             yield(pos)
         }
 
@@ -24,6 +24,7 @@ internal fun Entity.findDismountPos(passenger: LivingEntity, checkVehiclePositio
 
         yield(dismountPos)
         yield(dismountPos.subtract(0.0, 1.0, 0.0))
+        yield(dismountPos.add(0.0, 1.0, 0.0)) // why not
     }.mapNotNull { dismountPos ->
         val dismountHeight = world.getDismountHeight(BlockPos.ofFloored(dismountPos)).takeIf { it.isFinite() && it < 1 }
 
