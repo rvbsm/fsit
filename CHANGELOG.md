@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.7.3
+
+### Fixed
+
+- Random player burial after sitting
+- Sneaks where registered in the air
+- Dismounting a player placed a rider at the position of the player
+
 ## v2.7.2
 
 ### Fixed
