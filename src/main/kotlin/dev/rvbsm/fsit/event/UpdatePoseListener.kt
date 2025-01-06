@@ -13,10 +13,6 @@ import dev.rvbsm.fsit.networking.removeCrawl
 import dev.rvbsm.fsit.networking.resetPose
 import dev.rvbsm.fsit.networking.trySend
 import dev.rvbsm.fsit.util.math.centered
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Vec3d
-import net.minecraft.world.BlockView
 
 val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
     if (pose != ModPose.Standing && player.isSneaking) {
@@ -39,7 +35,7 @@ val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
             val seatPos = (pos ?: player.pos).let {
                 if (player.config.sitting.shouldCenter) it.centered()
                 else it
-            }.optimizeHeight(player.world)
+            }
 
             SeatEntity.create(player, seatPos)
         }
@@ -52,16 +48,4 @@ val UpdatePoseListener = UpdatePoseCallback update@{ player, pose, pos ->
     }
 
     player.trySend(PoseUpdateS2CPayload(pose, pos ?: player.pos))
-}
-
-/**
- * spamming sit creation buries player :skull:
- */
-private fun Vec3d.optimizeHeight(world: BlockView): Vec3d {
-    val blockPos = BlockPos.ofFloored(this)
-    val blockState = world.getBlockState(blockPos)
-    val blockCollisions = blockState.getCollisionShape(world, blockPos)
-    val blockHeight = blockCollisions.getMax(Direction.Axis.Y).coerceIn(1.0, 2.0)
-
-    return add(0.0, blockHeight - 1.0, 0.0)
 }
