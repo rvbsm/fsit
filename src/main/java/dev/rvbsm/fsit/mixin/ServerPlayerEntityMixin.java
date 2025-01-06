@@ -2,17 +2,15 @@ package dev.rvbsm.fsit.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.api.event.UpdatePoseCallback;
+import dev.rvbsm.fsit.api.network.ServerPlayerVelocity;
 import dev.rvbsm.fsit.api.player.PlayerConfig;
 import dev.rvbsm.fsit.api.player.PlayerCrawl;
 import dev.rvbsm.fsit.api.player.PlayerLastSneakTime;
-import dev.rvbsm.fsit.api.event.UpdatePoseCallback;
-import dev.rvbsm.fsit.api.network.ServerPlayerVelocity;
 import dev.rvbsm.fsit.config.ModConfig;
 import dev.rvbsm.fsit.entity.CrawlEntity;
-import dev.rvbsm.fsit.entity.DismountingKt;
 import dev.rvbsm.fsit.entity.ModPose;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Util;
@@ -27,8 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin
-        implements PlayerConfig, PlayerCrawl, ServerPlayerVelocity, PlayerLastSneakTime {
+public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements PlayerConfig, PlayerCrawl, ServerPlayerVelocity, PlayerLastSneakTime {
 
     @Shadow
     public abstract void stopRiding();
@@ -85,11 +82,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin
     @Override
     public boolean hasPlayerRider(boolean original) {
         return false;
-    }
-
-    @Override
-    public Vec3d updatePassengerForDismount(Vec3d original, LivingEntity passenger) {
-        return DismountingKt.getDismountPosition((ServerPlayerEntity) (Object) this, passenger);
     }
 
     @Override

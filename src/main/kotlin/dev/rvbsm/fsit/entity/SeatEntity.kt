@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3d
 
 class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
     ArmorStandEntity(player.world, pos.x, pos.y, pos.z) {
+
     private val config get() = player.config
     private val groundCollisionBox
         get() = Box.of(pos, width.toDouble(), 1.0e-6, width.toDouble())
@@ -35,7 +36,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
         if (!world.isClient && !isRemoved) {
             super.tickMovement()
 
-            if (firstPassenger == null) {
+            if (!hasPassengers()) {
                 discard()
             }
 
@@ -59,8 +60,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
     //? if >=1.20.5
     /*override fun getPassengerAttachmentPos(passenger: net.minecraft.entity.Entity, dimensions: EntityDimensions, scaleFactor: Float): Vec3d = Vec3d.ZERO*/
 
-    override fun updatePassengerForDismount(passenger: LivingEntity) = getDismountPosition(this, passenger)
-
+    override fun updatePassengerForDismount(passenger: LivingEntity) = findDismountPos(passenger, true)
     override fun getPistonBehavior() = PistonBehavior.NORMAL
     override fun hasPlayerRider() = false
     override fun shouldSave() = false

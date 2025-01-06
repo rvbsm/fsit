@@ -9,11 +9,11 @@ import net.minecraft.entity.EntityPose
 import net.minecraft.entity.LivingEntity
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.util.math.Vec3d
 import java.util.UUID
 
 class RideEntity(private val player: ServerPlayerEntity) :
-    AreaEffectCloudEntity(player.world, player.pos.x, player.pos.y, player.pos.z) {
+    AreaEffectCloudEntity(player.world, player.x, player.y, player.z) {
+
     init {
         isInvisible = true
         isInvulnerable = true
@@ -25,14 +25,20 @@ class RideEntity(private val player: ServerPlayerEntity) :
     }
 
     override fun tick() {
-        if (firstPassenger == null || vehicle == null) {
-            discard()
-        }
+        if (!world.isClient && !isRemoved) {
+            if (!hasPassengers()) {
+                discard()
+            }
 
-        yaw = player.yaw
+            if (vehicle == null) {
+                detach()
+            }
+
+            yaw = player.yaw
+        }
     }
 
-    override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d = vehicle?.pos ?: pos
+    override fun updatePassengerForDismount(passenger: LivingEntity) = findDismountPos(passenger)
     override fun hasPlayerRider() = false
     override fun shouldSave() = false
 

@@ -9,29 +9,26 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.shape.VoxelShape
 
 /** @see net.minecraft.entity.vehicle.BoatEntity.updatePassengerForDismount */
-fun getDismountPosition(vehicle: Entity, passenger: LivingEntity): Vec3d {
-    val world = vehicle.world
-
+internal fun Entity.findDismountPos(passenger: LivingEntity, checkVehiclePosition: Boolean = false): Vec3d {
     val dismountSequence = sequence<Vec3d> {
-        val vehicleDismountHeight = world.getDismountHeight(vehicle.blockPos)
-        if (vehicleDismountHeight.isFinite() && vehicleDismountHeight < 1) {
-            yield(vehicle.pos)
+        if (checkVehiclePosition) {
+            yield(pos)
         }
 
-        val dismountOffset = Entity.getPassengerDismountOffset(
-            vehicle.width.toDouble() * MathHelper.SQUARE_ROOT_OF_TWO,
-            passenger.width.toDouble(),
-            passenger.yaw,
-        )
+        val vehicleWidth = width.toDouble() * MathHelper.SQUARE_ROOT_OF_TWO
+        val passengerWidth = passenger.width.toDouble()
+        val passengerYaw = passenger.yaw
 
-        var dismountBlockPos = BlockPos.ofFloored(vehicle.pos + dismountOffset)
-        repeat(2) {
-            val dismountHeight = world.getDismountHeight(dismountBlockPos)
-            if (dismountHeight.isFinite() && dismountHeight < 1) {
-                yield(Vec3d.add(dismountBlockPos, 0.5, dismountHeight, 0.5))
-            }
+        val dismountOffset = Entity.getPassengerDismountOffset(vehicleWidth, passengerWidth, passengerYaw)
+        val dismountPos = pos + dismountOffset
 
-            dismountBlockPos = dismountBlockPos.down()
+        yield(dismountPos)
+        yield(dismountPos.subtract(0.0, 1.0, 0.0))
+    }.mapNotNull { dismountPos ->
+        val dismountHeight = world.getDismountHeight(BlockPos.ofFloored(dismountPos)).takeIf { it.isFinite() && it < 1 }
+
+        dismountHeight?.let {
+            dismountPos.add(0.0, dismountHeight, 0.0)
         }
     }
 
@@ -45,5 +42,5 @@ fun getDismountPosition(vehicle: Entity, passenger: LivingEntity): Vec3d {
         return dismountPos
     }
 
-    return vehicle.pos
+    return pos
 }
