@@ -17,7 +17,7 @@ class SeatEntity(private val player: ServerPlayerEntity, pos: Vec3d) :
 
     private val config get() = player.config
     private val groundCollisionBox
-        get() = Box.of(pos, width.toDouble(), 1.0e-6, width.toDouble())
+        get() = Box.of(pos, width.toDouble(), 1.0e-3, width.toDouble())
     private val hasGroundCollision
         get() = world.getCollisions(this, groundCollisionBox).any { !it.isEmpty }
 
