@@ -46,16 +46,6 @@ public abstract class ServerPlayNetworkHandlerMixin implements RidingRequestHand
     @Inject(method = "onClientCommand", at = @At("TAIL"))
     public void onClientCommand(@NotNull ClientCommandC2SPacket packet, CallbackInfo ci) {
         ClientCommandCallback.EVENT.invoker().process(this.player, packet.getMode());
-
-        switch (packet.getMode()) {
-            case PRESS_SHIFT_KEY -> {
-                if (this.player.getFirstPassenger() instanceof RideEntity rideEntity) {
-                    rideEntity.stopRiding();
-                }
-            }
-
-            case RELEASE_SHIFT_KEY -> ((PlayerLastSneakTime) player).fsit$updateLastSneakTime();
-        }
     }
 
     @ModifyVariable(method = "onPlayerInteractBlock", at = @At("STORE"))

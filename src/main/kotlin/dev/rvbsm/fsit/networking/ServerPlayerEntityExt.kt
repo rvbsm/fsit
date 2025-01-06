@@ -52,5 +52,8 @@ fun ServerPlayerEntity.newRidingRequest(playerUUID: UUID, timeout: Duration) =
 fun ServerPlayerEntity.completeRidingRequest(response: RidingResponseC2SPayload) =
     (networkHandler as RidingRequestHandler).`fsit$completeRidingRequest`(response)
 
+fun ServerPlayerEntity.updateLastSneakTime() = (this as PlayerLastSneakTime).`fsit$updateLastSneakTime`()
+fun ServerPlayerEntity.resetLastSneakTime() = (this as PlayerLastSneakTime).`fsit$resetLastSneakTime`()
+
 val ServerPlayerEntity.lastSneakTime: Long
     get() = (this as PlayerLastSneakTime).`fsit$getLastSneakTime`()

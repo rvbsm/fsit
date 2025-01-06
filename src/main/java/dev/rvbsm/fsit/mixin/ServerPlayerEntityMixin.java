@@ -139,6 +139,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     }
 
     @Override
+    public void fsit$resetLastSneakTime() {
+        this.lastSneakTime = 0L;
+    }
+
+    @Override
     public long fsit$getLastSneakTime() {
         return this.lastSneakTime;
     }
