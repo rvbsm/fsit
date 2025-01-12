@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.7.4
+
+### Fixed
+
+- Interactions ignored `on_use.sneak`
+- Centering was a little bit off (by whole one block) in some cases
+
 ## v2.7.3
 
 ### Fixed
