@@ -7,7 +7,7 @@ fabric-kotlin = "1.13.0+kotlin.2.1.0"
 
 kaml = "0.66.+"
 
-mod-publish = "0.8.1"
+mod-publish = "0.8.3"
 shadow = "8.3.+"
 
 junit = "5.10.1"
