@@ -36,6 +36,7 @@ val SpawnSeatListener = PassedUseBlockCallback interact@{ player, _, hitResult -
 
 private fun ServerPlayerEntity.canSitOn(hitResult: BlockHitResult) =
     if (!pos.isInRange(hitResult.pos, config.onUse.range.toDouble())) false
+    else if (!config.onUse.sitting) false
     else if (config.onUse.checkSuffocation && world.willBlockVision(this, hitResult.pos)) false
     else world.getBlockState(hitResult.blockPos).let { hitState ->
         hitState.isSittableSide() && config.onUse.blocks.test(hitState)
