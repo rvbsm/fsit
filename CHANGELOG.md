@@ -1,10 +1,10 @@
 # Changelog
 
-## v2.7.5
+## v2.7.5-beta.1
 
 ### Changed
 
-- (1.20–1.21.1) Use barrier block to enforce crawling for non-modded players
+- (1.20–1.21.1) Use barrier block to enforce crawling for non-modded players. Thanks [#49](https://github.com/rvbsm/fsit/issues/49)
 
 ## v2.7.4
 
