@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.7.5
+
+### Changed
+
+- (1.20–1.21.1) Use barrier block to enforce crawling for non-modded players
+
 ## v2.7.4
 
 ### Fixed
@@ -67,7 +73,7 @@
 ### Fixed
 
 - `/fsit:client allow` and `/fsit:client restrict` did opposite things
-- Hybrid key bindings mode was working wrong
+- Key bindings with Hybrid mode were working wrongly
 
 ## v2.6.0
 
@@ -239,7 +245,7 @@ Minecraft Tricky Trials Update
 
 ### Changed
 
-- Blocks and Tags options were merged in Mod Menu too
+- Blocks and Tags options were merged in the Mod Menu too
 
 ### Fixed
 
