@@ -107,9 +107,11 @@ object FSitModMenu : ModMenuApi {
                             .name("$categoryKey.root.option.blocks".translatable()).description(
                                 OptionDescription.createBuilder()
                                     .apply { addDefaultText("$categoryKey.root.option.blocks.description") }.build()
-                            )
-                            .description(OptionDescription.of("$categoryKey.root.option.blocks.description".translatable()))
-                            .customController { RegistryController(it, Registries.BLOCK) }.binding(
+                            ).description(
+                                OptionDescription.createBuilder().apply {
+                                    addDefaultText("$categoryKey.root.option.blocks.description")
+                                }.build()
+                            ).customController { RegistryController(it, Registries.BLOCK) }.binding(
                                 ModConfig.Default.onUse.blocks.toList(),
                                 configBuilder.onUseBlocks::toList,
                             ) { configBuilder.onUseBlocks = it.toRegistrySet(Registries.BLOCK) }
