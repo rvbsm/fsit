@@ -6,9 +6,9 @@ import dev.isxander.yacl3.gui.YACLScreen
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownController
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownControllerElement
 import dev.rvbsm.fsit.registry.RegistryIdentifier
-import dev.rvbsm.fsit.registry.contains
 import dev.rvbsm.fsit.registry.find
-import dev.rvbsm.fsit.registry.matchingIdentifiers
+import dev.rvbsm.fsit.registry.getMatchingIdentifiers
+import dev.rvbsm.fsit.registry.isRegistered
 import dev.rvbsm.fsit.util.text.literal
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.item.ItemConvertible
@@ -24,21 +24,22 @@ class RegistryController<T : ItemConvertible>(
     override fun getString() = option.pendingValue().toString()
     override fun setFromString(value: String) = option.requestSet(RegistryIdentifier.of(value))
     override fun formatValue() = string.literal()
-    override fun isValueValid(value: String) = option.pendingValue() in registry
+    override fun isValueValid(value: String) = registry.isRegistered(value)
 
-    override fun getValidValue(value: String, offset: Int) =
-        registry.matchingIdentifiers(value).drop(offset.coerceAtLeast(0)).firstOrNull()?.toString() ?: string
+    override fun getValidValue(value: String, offset: Int): String =
+        registry.getMatchingIdentifiers(value).drop(offset.coerceAtLeast(0)).firstOrNull()?.value?.toString() ?: string
 
     override fun provideWidget(screen: YACLScreen, widgetDimension: Dimension<Int>) =
         RegistryControllerElement(this, screen, widgetDimension)
 }
 
 class RegistryControllerElement<T : ItemConvertible>(
-    private val registryController: RegistryController<T>?,
+    registryController: RegistryController<T>,
     screen: YACLScreen,
     dim: Dimension<Int>,
 ) : AbstractDropdownControllerElement<RegistryIdentifier, RegistryIdentifier>(registryController, screen, dim) {
-    private val registry = registryController!!.registry
+
+    private val registry = registryController.registry
     private var currentElement: T? = null
     private val matchingElements = mutableMapOf<RegistryIdentifier, T>()
 
@@ -48,9 +49,9 @@ class RegistryControllerElement<T : ItemConvertible>(
         super.drawValueText(graphics, mouseX, mouseY, delta)
 
         dimension = prevDimension
-        currentElement?.let {
+        if (currentElement != null) {
             graphics.drawItemWithoutEntity(
-                ItemStack(it),
+                ItemStack(currentElement),
                 dimension.xLimit() - xPadding - decorationPadding + 2,
                 dimension.y() + 2,
             )
@@ -58,12 +59,12 @@ class RegistryControllerElement<T : ItemConvertible>(
     }
 
     override fun computeMatchingValues(): List<RegistryIdentifier> {
-        val ids = registry.matchingIdentifiers(inputField).toList()
+        val ids = registry.getMatchingIdentifiers(inputField).toList()
         currentElement = registry.find(inputField)
 
-        matchingElements.clear()
-        matchingElements.putAll(ids.associateWith(registry::find))
-
+        for (id in ids) {
+            matchingElements.put(id, registry.find(id))
+        }
         return ids
     }
 
@@ -84,8 +85,7 @@ class RegistryControllerElement<T : ItemConvertible>(
     override fun getValueText(): Text = when {
         inputField.isEmpty() -> super.getValueText()
         inputFieldFocused -> inputField.literal()
-        registryController?.option()?.pendingValue()?.isTag == false -> currentElement?.asItem()?.name
-            ?: inputField.literal()
+        !inputField.startsWith('#') -> currentElement?.asItem()?.name ?: inputField.literal()
 
         else -> inputField.literal()
     }

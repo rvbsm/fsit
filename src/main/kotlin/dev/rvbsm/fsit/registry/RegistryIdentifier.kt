@@ -11,18 +11,19 @@ import kotlinx.serialization.encoding.Encoder
 import net.minecraft.util.Identifier
 
 @Serializable(RegistryIdentifier.Serializer::class)
-data class RegistryIdentifier(val id: Identifier, val isTag: Boolean) {
+data class RegistryIdentifier(val value: Identifier, val isTag: Boolean) {
+
     override fun toString() = buildString {
         if (isTag) append('#')
-        append(id)
+        append(value)
     }
 
     companion object {
-        val defaultId = RegistryIdentifier(id = DEFAULT_IDENTIFIER, isTag = false)
+        val defaultId = RegistryIdentifier(value = DEFAULT_IDENTIFIER, isTag = false)
 
         fun of(string: String): RegistryIdentifier {
             val isTag = string.startsWith('#')
-            val id = string.let { if (isTag) it.drop(1) else it }.id()
+            val id = string.drop(if (isTag) 1 else 0).id()
 
             return RegistryIdentifier(id, isTag)
         }
@@ -36,4 +37,4 @@ data class RegistryIdentifier(val id: Identifier, val isTag: Boolean) {
     }
 }
 
-fun Collection<RegistryIdentifier>.filterNotDefault() = filterNot { it.id == DEFAULT_IDENTIFIER }
+fun Collection<RegistryIdentifier>.filterNotDefault() = filterNot { it.value == DEFAULT_IDENTIFIER }

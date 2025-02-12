@@ -20,8 +20,8 @@ class RegistrySet<E>(
     private val ids: Set<RegistryIdentifier> = emptySet(),
 ) : RegistryCollection<E>, Set<RegistryIdentifier> by ids {
 
-    override val entries = filterNot { it.isTag }.associateWith { registry[it.id] }
-    override val tags = filter { it.isTag }.associateWith { TagKey.of(registry.key, it.id) }
+    override val entries = filterNot { it.isTag }.associateWith { registry[it.value] }
+    override val tags = filter { it.isTag }.associateWith { TagKey.of(registry.key, it.value) }
 
     override fun toString(): String = ids.toString()
     override fun equals(other: Any?): Boolean = ids == other
