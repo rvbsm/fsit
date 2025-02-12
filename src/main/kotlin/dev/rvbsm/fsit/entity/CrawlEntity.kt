@@ -32,7 +32,7 @@ class CrawlEntity(private val player: ServerPlayerEntity) : ShulkerEntity(Entity
     }
 
     override fun tick() {
-        if (age % 20 == 0 || (age % 10 == 0 && blockPos != crawlBlockPos)) {
+        if (age % 20 == 0 || blockPos != crawlBlockPos) {
             prevBlockPos = blockPos
             setPosition(crawlPos)
 
