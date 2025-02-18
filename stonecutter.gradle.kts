@@ -27,6 +27,31 @@ tasks {
     }
 }
 
+stonecutter parameters {
+    swaps["ServerPlayNetworking.PlayPayloadHandler"] = if (eval(metadata.version, "<=1.20.4")) {
+        "net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.PlayPacketHandler<P>"
+    } else {
+        "net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.PlayPayloadHandler<P>"
+    }
+    swaps["ClientPlayNetworking.PlayPayloadHandler"] = if (eval(metadata.version, "<=1.20.4")) {
+        "net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.PlayPacketHandler<P>"
+    } else {
+        "net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.PlayPayloadHandler<P>"
+    }
+
+    swaps["CustomPayload"] = if (eval(metadata.version, "<=1.20.4")) {
+        "net.fabricmc.fabric.api.networking.v1.FabricPacket"
+    } else {
+        "net.minecraft.network.packet.CustomPayload"
+    }
+
+    swaps["CustomPayload.Id"] = if (eval(metadata.version, "<=1.20.4")) {
+        "net.fabricmc.fabric.api.networking.v1.PacketType<P>"
+    } else {
+        "net.minecraft.network.packet.CustomPayload.Id<P>"
+    }
+}
+
 val gitVersion: String by extra {
     providers.exec {
         executable = "git"

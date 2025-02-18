@@ -7,7 +7,6 @@ import dev.rvbsm.fsit.networking.payload.CustomPayload
 import dev.rvbsm.fsit.networking.payload.PoseUpdateS2CPayload
 import dev.rvbsm.fsit.networking.payload.RidingRequestS2CPayload
 import dev.rvbsm.fsit.networking.payload.RidingResponseC2SPayload
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.network.ClientPlayerEntity
 
@@ -26,13 +25,8 @@ internal val RidingRequestS2CHandler = ClientPayloadHandler<RidingRequestS2CPayl
     responseSender.sendPacket(RidingResponseC2SPayload(playerUUID, !isRestricted))
 }
 
-private typealias PlayPayloadHandler<P> =
-//? if <=1.20.4
-    ClientPlayNetworking.PlayPacketHandler<P>
-//? if >=1.20.5
-/*ClientPlayNetworking.PlayPayloadHandler<P>*/
-
-internal fun interface ClientPayloadHandler<P : CustomPayload<P>> : PlayPayloadHandler<P> {
+internal fun interface ClientPayloadHandler<P : CustomPayload<P>> : //$ ClientPlayNetworking.PlayPayloadHandler >>
+    net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.PlayPacketHandler<P> {
 
     fun P.handle(player: ClientPlayerEntity, responseSender: PacketSender)
 
@@ -40,7 +34,8 @@ internal fun interface ClientPayloadHandler<P : CustomPayload<P>> : PlayPayloadH
     override fun receive(packet: P, player: ClientPlayerEntity, responseSender: PacketSender) =
         packet.handle(player, responseSender)
     //?} else if >=1.20.5 {
-    /*override fun receive(payload: P, context: ClientPlayNetworking.Context) =
-        payload.handle(context.player(), context.responseSender())
+    /*override fun receive(
+        payload: P, context: net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.Context
+    ) = payload.handle(context.player(), context.responseSender())
     *///?}
 }
