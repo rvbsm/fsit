@@ -18,7 +18,10 @@ import java.util.UUID
 import kotlin.time.Duration
 import kotlin.time.toJavaDuration
 
-internal fun <P> ServerPlayerEntity.trySend(payload: CustomPayload<P>, orAction: () -> Unit = {}) where P : CustomPayload<P> {
+internal fun <P> ServerPlayerEntity.trySend(
+    payload: CustomPayload<P>,
+    orAction: () -> Unit = {}
+) where P : CustomPayload<P> {
     if (ServerPlayNetworking.canSend(this, payload.id)) {
         ServerPlayNetworking.send(this, payload)
     } else orAction()

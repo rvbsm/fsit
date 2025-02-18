@@ -56,5 +56,5 @@ private fun ServerPlayerEntity.isNearGap(): Boolean {
     val expectFullAt = pos.add(offsetX, crouchingDimensions.height.toDouble(), offsetZ)
 
     return world.isSpaceEmpty(this, crawlingDimensions.getBoxAt(expectEmptyAt).contract(1.0e-6)) &&
-            !world.isSpaceEmpty(this, crawlingDimensions.getBoxAt(expectFullAt).contract(1.0e-6))
+        !world.isSpaceEmpty(this, crawlingDimensions.getBoxAt(expectFullAt).contract(1.0e-6))
 }

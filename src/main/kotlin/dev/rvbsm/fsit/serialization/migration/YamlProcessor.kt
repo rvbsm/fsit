@@ -62,7 +62,7 @@ abstract class YamlTransformingSerializer<T : Any>(private val tSerializer: KSer
     final override fun deserialize(decoder: Decoder): T {
         val input = decoder as? YamlInput ?: error(
             "This serializer can be used only with Yaml format." +
-                    "Expected Decoder to be YamlInput, got ${decoder::class}"
+                "Expected Decoder to be YamlInput, got ${decoder::class}"
         )
         val node = input.node
         return input.yaml.decodeFromYamlNode(tSerializer, transformDeserialize(node))

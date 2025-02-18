@@ -1,20 +1,11 @@
 package dev.rvbsm.fsit.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.api.event.UpdatePoseCallback;
-import dev.rvbsm.fsit.api.network.ServerPlayerVelocity;
-import dev.rvbsm.fsit.api.player.PlayerConfig;
-import dev.rvbsm.fsit.api.player.PlayerCrawl;
-import dev.rvbsm.fsit.api.player.PlayerLastSneakTime;
-import dev.rvbsm.fsit.config.ModConfig;
-import dev.rvbsm.fsit.entity.CrawlEntity;
-import dev.rvbsm.fsit.entity.ModPose;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Vec3d;
+
+import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,11 +15,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.api.event.UpdatePoseCallback;
+import dev.rvbsm.fsit.api.network.ServerPlayerVelocity;
+import dev.rvbsm.fsit.api.player.PlayerConfig;
+import dev.rvbsm.fsit.api.player.PlayerCrawl;
+import dev.rvbsm.fsit.api.player.PlayerLastSneakTime;
+import dev.rvbsm.fsit.config.ModConfig;
+import dev.rvbsm.fsit.entity.CrawlEntity;
+import dev.rvbsm.fsit.entity.ModPose;
+
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements PlayerConfig, PlayerCrawl, ServerPlayerVelocity, PlayerLastSneakTime {
-
-    @Shadow
-    public abstract void stopRiding();
 
     @Unique
     private @Nullable ModConfig config;
@@ -38,6 +36,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     private @NotNull Vec3d playerVelocity = Vec3d.ZERO;
     @Unique
     private long lastSneakTime = 0L;
+
+    @Shadow
+    public abstract void stopRiding();
 
     @Inject(method = "playerTick", at = @At("TAIL"))
     private void tickPosing(CallbackInfo ci) {
@@ -75,7 +76,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     }
 
     @Override
-    protected void move(MovementType movementType, Vec3d movement, CallbackInfo ci, Vec3d velocity) {
+    protected void move(CallbackInfo ci, Vec3d velocity) {
         this.playerVelocity = velocity;
     }
 

@@ -2,9 +2,9 @@ package dev.rvbsm.fsit.networking.payload
 
 import dev.rvbsm.fsit.config.ModConfig
 import dev.rvbsm.fsit.config.orDefault
+import dev.rvbsm.fsit.jsonSerializer
 import dev.rvbsm.fsit.serialization.decode
 import dev.rvbsm.fsit.serialization.encode
-import dev.rvbsm.fsit.jsonSerializer
 import net.minecraft.network.NetworkSide
 import net.minecraft.network.PacketByteBuf
 

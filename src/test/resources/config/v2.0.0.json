@@ -3,7 +3,11 @@
   "sittable": {
     "enabled": false,
     "radius": 1,
-    "materials": ["minecraft:amethyst_block", "#minecraft:beds", "#minecraft:stairs"]
+    "materials": [
+      "minecraft:amethyst_block",
+      "#minecraft:beds",
+      "#minecraft:stairs"
+    ]
   },
   "riding": {
     "enabled": false,

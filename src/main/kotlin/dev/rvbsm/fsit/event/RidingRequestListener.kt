@@ -4,8 +4,8 @@ import dev.rvbsm.fsit.api.event.PassedUseEntityCallback
 import dev.rvbsm.fsit.entity.RideEntity
 import dev.rvbsm.fsit.modScope
 import dev.rvbsm.fsit.networking.config
-import dev.rvbsm.fsit.networking.payload.RidingRequestS2CPayload
 import dev.rvbsm.fsit.networking.newRidingRequest
+import dev.rvbsm.fsit.networking.payload.RidingRequestS2CPayload
 import dev.rvbsm.fsit.networking.trySend
 import kotlinx.coroutines.future.asDeferred
 import kotlinx.coroutines.launch
@@ -44,6 +44,6 @@ private fun ServerPlayerEntity.shouldCancelRiding() = shouldCancelInteraction() 
 
 private fun ServerPlayerEntity.canStartRiding(other: ServerPlayerEntity) =
     this != other && uuid != other.uuid &&
-            !shouldCancelRiding() && !other.shouldCancelRiding() &&
-            config.onUse.riding && other.config.onUse.riding &&
-            isInRange(other, config.onUse.range.toDouble())
+        !shouldCancelRiding() && !other.shouldCancelRiding() &&
+        config.onUse.riding && other.config.onUse.riding &&
+        isInRange(other, config.onUse.range.toDouble())

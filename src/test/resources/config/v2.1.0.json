@@ -5,7 +5,11 @@
     "on_use": {
       "enabled": false,
       "range": 1,
-      "blocks": ["minecraft:amethyst_block", "#minecraft:beds", "#minecraft:stairs"]
+      "blocks": [
+        "minecraft:amethyst_block",
+        "#minecraft:beds",
+        "#minecraft:stairs"
+      ]
     },
     "on_double_sneak": {
       "enabled": false,

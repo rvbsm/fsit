@@ -83,9 +83,14 @@ data class Sitting(
 
     @Serializable
     enum class Behaviour {
-        @SerialName("nothing") Nothing,
-        @SerialName("discard") Discard,
-        @SerialName("gravity") Gravity;
+        @SerialName("nothing")
+        Nothing,
+
+        @SerialName("discard")
+        Discard,
+
+        @SerialName("gravity")
+        Gravity;
 
         val shouldMove get() = this == Gravity
         val shouldDiscard get() = this == Discard

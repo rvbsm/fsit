@@ -1,8 +1,5 @@
 package dev.rvbsm.fsit.mixin.client;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import dev.rvbsm.fsit.FSitMod;
-import dev.rvbsm.fsit.client.FSitModClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -12,6 +9,8 @@ import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.text.Text;
+
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,11 +19,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import dev.rvbsm.fsit.FSitMod;
+import dev.rvbsm.fsit.client.FSitModClient;
+
 import java.util.List;
 import java.util.UUID;
 
 @Mixin(SocialInteractionsPlayerListEntry.class)
 public abstract class SocialInteractionsPlayerListEntryMixin extends ElementListWidget.Entry<SocialInteractionsPlayerListEntry> {
+
     //? if <=1.20.1 {
     @Unique
     private static final net.minecraft.util.Identifier RESTRICT_TEXTURE = FSitMod.id("textures/gui/restrict_button.png");
@@ -40,6 +43,7 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     private static final Text ALLOW_BUTTON = FSitMod.translatable("gui", "socialInteractions.allow");
     @Unique
     private static final Text DISABLED_BUTTON = FSitMod.translatable("gui", "socialInteractions.disabled");
+
     @Shadow
     private @Final List<ClickableWidget> buttons;
     @Shadow
@@ -49,7 +53,13 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     @Unique
     private ButtonWidget allowButton;
 
-    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER, ordinal = 1))
+    @Inject(
+        method = "<init>",
+        at = @At(
+            value = "INVOKE",
+            target = "Ljava/util/List;add(Ljava/lang/Object;)Z",
+            shift = At.Shift.AFTER,
+            ordinal = 1))
     protected void restrictButtons(CallbackInfo ci, @Local SocialInteractionsManager socialInteractionsManager) {
         if (FSitModClient.INSTANCE.isServerFSitCompatible()) {
             //? if <=1.20.1 {
@@ -74,7 +84,19 @@ public abstract class SocialInteractionsPlayerListEntryMixin extends ElementList
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    public void renderRestrictButtons(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci) {
+    public void renderRestrictButtons(
+        DrawContext context,
+        int index,
+        int y,
+        int x,
+        int entryWidth,
+        int entryHeight,
+        int mouseX,
+        int mouseY,
+        boolean hovered,
+        float tickDelta,
+        CallbackInfo ci
+    ) {
         if (this.restrictButton != null && this.allowButton != null) {
             final int offset = 24 * (buttons.size() - 1);
 

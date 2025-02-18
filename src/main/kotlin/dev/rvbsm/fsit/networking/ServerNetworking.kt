@@ -30,10 +30,10 @@ internal val RidingResponseC2SHandler = ServerPayloadHandler<RidingResponseC2SPa
 }
 
 private typealias PlayPayloadHandler<P> =
-        //? if <=1.20.4
-        ServerPlayNetworking.PlayPacketHandler<P>
-        //? if >=1.20.5
-        /*ServerPlayNetworking.PlayPayloadHandler<P>*/
+//? if <=1.20.4
+    ServerPlayNetworking.PlayPacketHandler<P>
+//? if >=1.20.5
+/*ServerPlayNetworking.PlayPayloadHandler<P>*/
 
 internal fun interface ServerPayloadHandler<P : CustomPayload<P>> : PlayPayloadHandler<P> {
     fun P.handle(player: ServerPlayerEntity, responseSender: PacketSender)

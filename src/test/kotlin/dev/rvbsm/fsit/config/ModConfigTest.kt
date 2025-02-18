@@ -2,15 +2,15 @@ package dev.rvbsm.fsit.config
 
 import com.charleskorn.kaml.YamlNamingStrategy
 import com.google.common.io.Resources
-import dev.rvbsm.fsit.serialization.migration.version
-import dev.rvbsm.fsit.serialization.migration.withMigration
+import dev.rvbsm.fsit.registry.registrySetOf
 import dev.rvbsm.fsit.serialization.StringDataSerializer
 import dev.rvbsm.fsit.serialization.Yaml
 import dev.rvbsm.fsit.serialization.asSerializer
 import dev.rvbsm.fsit.serialization.decode
 import dev.rvbsm.fsit.serialization.encode
+import dev.rvbsm.fsit.serialization.migration.version
+import dev.rvbsm.fsit.serialization.migration.withMigration
 import dev.rvbsm.fsit.serialization.withDefault
-import dev.rvbsm.fsit.registry.registrySetOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json

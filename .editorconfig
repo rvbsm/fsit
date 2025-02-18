@@ -1,0 +1,40 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+tab_width = 4
+indent_style = space
+insert_final_newline = true
+max_line_length = 120
+
+ij_continuation_indent_size = 4
+
+[*.java]
+indent_size = 4
+
+ij_java_imports_layout = net.minecraft.**, net.fabricmc.**, |, *, |, dev.rvbsm.**, |, java.**, |, $*
+ij_java_annotation_parameter_wrap = on_every_item
+ij_java_new_line_after_lparen_in_annotation = true
+ij_java_method_parameters_wrap = on_every_item
+ij_java_method_parameters_new_line_after_left_paren = true
+ij_java_method_parameters_right_paren_on_new_line = true
+ij_java_method_call_chain_wrap = on_every_item
+ij_java_call_parameters_wrap = on_every_item
+ij_java_call_parameters_new_line_after_left_paren = true
+ij_java_class_count_to_use_import_on_demand = 65535
+ij_java_binary_operation_wrap = on_every_item
+ij_java_keep_simple_classes_in_one_line = true
+ij_java_keep_simple_lambdas_in_one_line = true
+
+[{*.kt,*.kts}]
+indent_size = 4
+
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+ij_kotlin_name_count_to_use_star_import = 65535
+ij_kotlin_packages_to_use_import_on_demand = 65535
+
+ktlint_code_style = intellij_idea
+ktlint_standard_comment-spacing = disabled
+

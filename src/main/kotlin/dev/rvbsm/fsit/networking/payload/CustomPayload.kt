@@ -5,16 +5,16 @@ import net.minecraft.network.NetworkSide
 import net.minecraft.network.PacketByteBuf
 
 private typealias Payload =
-        //? if <=1.20.4
-        net.fabricmc.fabric.api.networking.v1.FabricPacket
-        //? if >=1.20.5
-        /*net.minecraft.network.packet.CustomPayload*/
+//? if <=1.20.4
+    net.fabricmc.fabric.api.networking.v1.FabricPacket
+//? if >=1.20.5
+/*net.minecraft.network.packet.CustomPayload*/
 
 private typealias PayloadId<P> =
-        //? if <=1.20.4
-        net.fabricmc.fabric.api.networking.v1.PacketType<P>
-        //? if >=1.20.5
-        /*net.minecraft.network.packet.CustomPayload.Id<P>*/
+//? if <=1.20.4
+    net.fabricmc.fabric.api.networking.v1.PacketType<P>
+//? if >=1.20.5
+/*net.minecraft.network.packet.CustomPayload.Id<P>*/
 
 abstract class CustomPayload<P : CustomPayload<P>>(@JvmField val id: PayloadId<P>) : Payload {
     //? if <=1.20.4 {

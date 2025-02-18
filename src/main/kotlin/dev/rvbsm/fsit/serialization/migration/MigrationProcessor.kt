@@ -4,7 +4,8 @@ sealed class MutableNode
 
 sealed class MutableNodePrimitive(var content: String, val isString: Boolean) : MutableNode()
 class MutableNodeList(content: MutableList<MutableNode>) : MutableNode(), MutableList<MutableNode> by content
-class MutableNodeMap(content: MutableMap<String, MutableNode>) : MutableNode(), MutableMap<String, MutableNode> by content
+class MutableNodeMap(content: MutableMap<String, MutableNode>) : MutableNode(),
+    MutableMap<String, MutableNode> by content
 
 class MutableNodeLiteral(content: String, isString: Boolean) : MutableNodePrimitive(content, isString)
 data object MutableNodeNull : MutableNodePrimitive(content = "null", isString = false)

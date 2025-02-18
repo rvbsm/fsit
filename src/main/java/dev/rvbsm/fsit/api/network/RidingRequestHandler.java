@@ -1,7 +1,8 @@
 package dev.rvbsm.fsit.api.network;
 
-import dev.rvbsm.fsit.networking.payload.RidingResponseC2SPayload;
 import org.jetbrains.annotations.NotNull;
+
+import dev.rvbsm.fsit.networking.payload.RidingResponseC2SPayload;
 
 import java.time.Duration;
 import java.util.UUID;

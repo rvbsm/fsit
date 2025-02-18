@@ -61,8 +61,7 @@ abstract class CommandBuilder<S, B> where S : CommandSource, B : ArgumentBuilder
         crossinline transformer: (String) -> T,
         argumentBuilder: ArgumentCommandBuilder<S, String>.(argument: CommandContext<S>.() -> T) -> Unit,
     ) = ArgumentCommandBuilder.simple(name, provider)
-        .apply { argumentBuilder { transformer(getArgument(name, String::class.java)) } }
-        .also { children += it }
+        .apply { argumentBuilder { transformer(getArgument(name, String::class.java)) } }.also { children += it }
 
     inline fun argument(
         name: String,

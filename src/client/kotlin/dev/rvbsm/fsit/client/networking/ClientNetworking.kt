@@ -27,12 +27,13 @@ internal val RidingRequestS2CHandler = ClientPayloadHandler<RidingRequestS2CPayl
 }
 
 private typealias PlayPayloadHandler<P> =
-        //? if <=1.20.4
-        ClientPlayNetworking.PlayPacketHandler<P>
-        //? if >=1.20.5
-        /*ClientPlayNetworking.PlayPayloadHandler<P>*/
+//? if <=1.20.4
+    ClientPlayNetworking.PlayPacketHandler<P>
+//? if >=1.20.5
+/*ClientPlayNetworking.PlayPayloadHandler<P>*/
 
 internal fun interface ClientPayloadHandler<P : CustomPayload<P>> : PlayPayloadHandler<P> {
+
     fun P.handle(player: ClientPlayerEntity, responseSender: PacketSender)
 
     //? if <=1.20.4 {

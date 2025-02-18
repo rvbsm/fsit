@@ -1,9 +1,11 @@
 package dev.rvbsm.fsit.api.player;
 
-import dev.rvbsm.fsit.entity.ModPose;
 import net.minecraft.util.math.Vec3d;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import dev.rvbsm.fsit.entity.ModPose;
 
 public interface PlayerPose {
 

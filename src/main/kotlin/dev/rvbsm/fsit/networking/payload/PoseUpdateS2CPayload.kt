@@ -13,6 +13,7 @@ data class PoseUpdateS2CPayload(val pose: ModPose, val pos: Vec3d) : CustomPaylo
     }
 
     companion object : Id<PoseUpdateS2CPayload>("pose_sync", NetworkSide.CLIENTBOUND) {
-        override fun init(buf: PacketByteBuf) = PoseUpdateS2CPayload(buf.readEnumConstant<ModPose>(), Vec3d(buf.readVector3f()))
+        override fun init(buf: PacketByteBuf) =
+            PoseUpdateS2CPayload(buf.readEnumConstant<ModPose>(), Vec3d(buf.readVector3f()))
     }
 }

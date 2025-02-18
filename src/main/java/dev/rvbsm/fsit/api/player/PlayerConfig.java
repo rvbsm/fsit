@@ -1,7 +1,8 @@
 package dev.rvbsm.fsit.api.player;
 
-import dev.rvbsm.fsit.config.ModConfig;
 import org.jetbrains.annotations.NotNull;
+
+import dev.rvbsm.fsit.config.ModConfig;
 
 public interface PlayerConfig {
 
