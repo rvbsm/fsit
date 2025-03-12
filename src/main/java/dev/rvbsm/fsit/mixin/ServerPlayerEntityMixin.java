@@ -1,15 +1,14 @@
 package dev.rvbsm.fsit.mixin;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Vec3d;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,9 +35,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     private @NotNull Vec3d playerVelocity = Vec3d.ZERO;
     @Unique
     private long lastSneakTime = 0L;
-
-    @Shadow
-    public abstract void stopRiding();
 
     @Inject(method = "playerTick", at = @At("TAIL"))
     private void tickPosing(CallbackInfo ci) {
@@ -68,16 +64,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
         }
     }
 
-    @Inject(method = "stopRiding", at = @At("TAIL"))
-    private void resetPose(CallbackInfo ci, @Local Entity entity) {
-        if (this.fsit$isInPose(ModPose.Sitting)) {
-            this.fsit$resetPose();
-        }
+    @Override
+    protected void onMove(MovementType type, Vec3d movement, CallbackInfo ci) {
+        this.playerVelocity = movement;
     }
 
     @Override
-    protected void move(CallbackInfo ci, Vec3d velocity) {
-        this.playerVelocity = velocity;
+    protected void onDismount(Entity vehicle, CallbackInfo ci) {
+        if (this.fsit$isInPose(ModPose.Sitting)) {
+            this.fsit$resetPose();
+        }
     }
 
     @Override
