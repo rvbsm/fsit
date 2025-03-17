@@ -64,9 +64,8 @@ dependencies {
         "fabric-key-binding-api-v1",
         "fabric-lifecycle-events-v1",
         "fabric-networking-api-v1",
-
-        "fabric-screen-api-v1",
     ).map { fabricApi.module(it, property("fabric.api").toString()) }.forEach(::modImplementation)
+    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("fabric.api")}")
 
     modImplementation("com.terraformersmc:modmenu:${property("api.modmenu")}")
     modImplementation("dev.isxander:yet-another-config-lib:${property("api.yacl")}-fabric") {
