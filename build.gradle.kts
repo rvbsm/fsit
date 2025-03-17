@@ -66,7 +66,6 @@ dependencies {
         "fabric-networking-api-v1",
 
         "fabric-screen-api-v1",
-        "fabric-resource-loader-v0" // until yacl is updated
     ).map { fabricApi.module(it, property("fabric.api").toString()) }.forEach(::modImplementation)
 
     modImplementation("com.terraformersmc:modmenu:${property("api.modmenu")}")
