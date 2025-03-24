@@ -1,11 +1,11 @@
 [versions]
-kotlin = "2.1.10"
+kotlin = "2.1.20"
 
 fabric-loom = "1.10-SNAPSHOT"
 fabric-loader = "0.16.10"
-fabric-kotlin = "1.13.1+kotlin.2.1.10"
+fabric-kotlin = "1.13.2+kotlin.2.1.20"
 
-kaml = "0.71.0"
+kaml = "0.73.0"
 
 mod-publish = "0.8.4"
 shadow = "8.3.+"
@@ -35,4 +35,8 @@ fabric-loader-junit = { module = "net.fabricmc:fabric-loader-junit", version.ref
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 [bundles]
-junit-jupiter = ["junit-jupiter-engine", "junit-jupiter-api", "junit-jupiter-params"]
+junit-jupiter = [
+  "junit-jupiter-engine",
+  "junit-jupiter-api",
+  "junit-jupiter-params",
+]
