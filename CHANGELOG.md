@@ -1,8 +1,12 @@
 # Changelog
 
+## v2.7.6
+
+**Spring to Life** drop
+
 ## v2.7.6-beta.1
 
-**Spring Drop 2025** Pre-Release 1
+**Spring to Life** Pre-Release 1
 
 No behaviour changes; internal changes only
 
