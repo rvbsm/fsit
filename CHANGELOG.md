@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.7.7
+
+### Fixed
+
+- Crash when trying to open Social Interactions Screen on servers without FSit installed
+
 ## v2.7.6
 
 **Spring to Life** drop
