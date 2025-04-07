@@ -48,6 +48,7 @@ class CrawlEntity(private val player: ServerPlayerEntity) : ShulkerEntity(Entity
 
             this.prevPlayerPos = player.pos
             this.prevBlockState = blockState
+            //? if <=1.21.1
             this.prevBlockPos = blockPos
             this.setPosition(this.player.pos.add(0.0, 1.49, 0.0))
 
