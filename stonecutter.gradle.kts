@@ -50,6 +50,12 @@ stonecutter parameters {
     } else {
         "net.minecraft.network.packet.CustomPayload.Id<P>"
     }
+
+    swaps["EntityPositionSyncS2CPacket.create"] = if (eval(metadata.version, "<=1.21.1")) {
+        "net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket(this)"
+    } else {
+        "net.minecraft.network.packet.s2c.play.EntityPositionSyncS2CPacket.create(this)"
+    }
 }
 
 val gitVersion: String by extra {
