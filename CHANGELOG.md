@@ -1,10 +1,16 @@
 # Changelog
 
+## v2.7.8
+
+### Fixed
+
+- (maybe) Improper crawling behaviour on non-full blocks for non-modded clients 
+
 ## v2.7.7
 
 ### Fixed
 
-- Crash when trying to open Social Interactions Screen on servers without FSit installed
+- Crash when trying to open Social Interactions Screen on servers without FSit installed. Thanks [#51](https://github.com/rvbsm/fsit/issues/51)
 
 ## v2.7.6
 
