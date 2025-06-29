@@ -17,6 +17,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 val SneakListener = ClientCommandCallback { player, mode ->
+    //? if <=1.21.5 {
     when (mode) {
         ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY -> if (player.firstPassenger is RideEntity) {
             player.removeAllPassengers()
@@ -42,6 +43,7 @@ val SneakListener = ClientCommandCallback { player, mode ->
 
         else -> {}
     }
+    //?}
 }
 
 private fun ServerPlayerEntity.isNearGap(): Boolean {
