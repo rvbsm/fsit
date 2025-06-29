@@ -6,6 +6,7 @@ private val minecraftTargets = setOf(
 //    "1.20.5" to "1.20.6",
     "1.21" to "1.21.1",
     "1.21.2" to "1.21.5",
+    "1.21.6" to "1.21.7-rc2"
 )
 
 pluginManagement {
