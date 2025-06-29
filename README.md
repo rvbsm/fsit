@@ -1,5 +1,8 @@
 # FSit
 
+> [!WARNING]
+> The project is being moved to [Codeberg](https://codeberg.org/rvbsm/fsit)
+
 Customizable server-side mod that allows players to sit, crawl, and ride each other.
 Client-side is supported too,
 it allows players to improve their experience by syncing configuration
