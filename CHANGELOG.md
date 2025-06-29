@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.7.9
+
+**Chase the Skies** drop (and Dennis)
+
 ## v2.7.8
 
 ### Fixed
