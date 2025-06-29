@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.shadow) apply false
 }
 
-stonecutter active "1.20" /* [SC] DO NOT EDIT */
+stonecutter active "1.21" /* [SC] DO NOT EDIT */
 
 tasks {
     stonecutter registerChiseled register("chiseledBuild", stonecutter.chiseled) {

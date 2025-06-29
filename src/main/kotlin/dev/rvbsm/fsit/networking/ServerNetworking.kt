@@ -29,15 +29,15 @@ internal val RidingResponseC2SHandler = ServerPayloadHandler<RidingResponseC2SPa
 }
 
 internal fun interface ServerPayloadHandler<P : CustomPayload<P>> : //$ ServerPlayNetworking.PlayPayloadHandler >>
-    net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.PlayPacketHandler<P> {
+    net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.PlayPayloadHandler<P> {
 
     fun P.handle(player: ServerPlayerEntity, responseSender: PacketSender)
 
     //? if <=1.20.4 {
-    override fun receive(packet: P, player: ServerPlayerEntity, responseSender: PacketSender) =
+    /*override fun receive(packet: P, player: ServerPlayerEntity, responseSender: PacketSender) =
         packet.handle(player, responseSender)
-    //?} else if >=1.20.5 {
-    /*override fun receive(payload: P, context: net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.Context) =
+    *///?} else if >=1.20.5 {
+    override fun receive(payload: P, context: net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.Context) =
         payload.handle(context.player(), context.responseSender())
-    *///?}
+    //?}
 }
