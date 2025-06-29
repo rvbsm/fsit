@@ -60,8 +60,6 @@ Key bindings have three modes: **Hold**, **Toggle**, and **Hybrid**.
 **Hold** and **Toggle** works the same as Vanilla.
 **Hybrid** is an in-between mechanic, that works as Toggle on single-use and as Hold on holding.
 
-![keybinding modes](./public/keybinding-modes.jpg)
-
 ## Configuration
 
 As was stated before, players can use their own configurations if they have this mod installed on the client.
